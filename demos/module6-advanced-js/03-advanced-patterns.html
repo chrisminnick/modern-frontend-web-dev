@@ -328,22 +328,42 @@
           <h2 class="section-title">Functional Programming</h2>
 
           <div class="code-block" data-lang="js">
-            <span class="js-comment">// Higher-order functions and currying</span>
-            <span class="js-keyword">const</span> <span class="js-method">curry</span> = (<span class="js-param">fn</span>) <span class="js-operator">=></span> 
-              (<span class="js-param">...args</span>) <span class="js-operator">=></span> 
-                args.length >= fn.length 
-                  ? fn(...args) 
-                  : curry(fn.bind(<span class="js-keyword">null</span>, ...args));
+            <span class="js-comment"
+              >// Higher-order functions and currying</span
+            >
+            <span class="js-keyword">const</span>
+            <span class="js-method">curry</span> = (<span class="js-param"
+              >fn</span
+            >) <span class="js-operator">=></span> (<span class="js-param"
+              >...args</span
+            >) <span class="js-operator">=></span> args.length >= fn.length ?
+            fn(...args) : curry(fn.bind(<span class="js-keyword">null</span>,
+            ...args));
 
-            <span class="js-keyword">const</span> <span class="js-method">multiply</span> = (<span class="js-param">a</span>, <span class="js-param">b</span>) <span class="js-operator">=></span> a * b;
-            <span class="js-keyword">const</span> <span class="js-method">curriedMultiply</span> = curry(multiply);
+            <span class="js-keyword">const</span>
+            <span class="js-method">multiply</span> = (<span class="js-param"
+              >a</span
+            >, <span class="js-param">b</span>)
+            <span class="js-operator">=></span> a * b;
+            <span class="js-keyword">const</span>
+            <span class="js-method">curriedMultiply</span> = curry(multiply);
 
             <span class="js-comment">// Composition and pipe functions</span>
-            <span class="js-keyword">const</span> <span class="js-method">compose</span> = (<span class="js-param">...fns</span>) <span class="js-operator">=></span> 
-              (<span class="js-param">x</span>) <span class="js-operator">=></span> fns.reduceRight((v, f) => f(v), x);
+            <span class="js-keyword">const</span>
+            <span class="js-method">compose</span> = (<span class="js-param"
+              >...fns</span
+            >) <span class="js-operator">=></span> (<span class="js-param"
+              >x</span
+            >) <span class="js-operator">=></span> fns.reduceRight((v, f) =>
+            f(v), x);
 
-            <span class="js-keyword">const</span> <span class="js-method">pipe</span> = (<span class="js-param">...fns</span>) <span class="js-operator">=></span> 
-              (<span class="js-param">x</span>) <span class="js-operator">=></span> fns.reduce((v, f) => f(v), x);
+            <span class="js-keyword">const</span>
+            <span class="js-method">pipe</span> = (<span class="js-param"
+              >...fns</span
+            >) <span class="js-operator">=></span> (<span class="js-param"
+              >x</span
+            >) <span class="js-operator">=></span> fns.reduce((v, f) => f(v),
+            x);
           </div>
 
           <div class="control-group">
@@ -352,7 +372,10 @@
             <button class="btn" onclick="demonstrateFunctional()">
               🔧 Run Functions
             </button>
-            <button class="btn warning" onclick="clearOutput('functional-output')">
+            <button
+              class="btn warning"
+              onclick="clearOutput('functional-output')"
+            >
               Clear
             </button>
           </div>
@@ -366,37 +389,45 @@
 
           <div class="code-block" data-lang="js">
             <span class="js-comment">// Observer Pattern Implementation</span>
-            <span class="js-keyword">class</span> <span class="js-method">Observable</span> {
-              <span class="js-method">constructor</span>() {
-                <span class="js-keyword">this</span>.observers = [];
-              }
+            <span class="js-keyword">class</span>
+            <span class="js-method">Observable</span> {
+            <span class="js-method">constructor</span>() {
+            <span class="js-keyword">this</span>.observers = []; }
 
-              <span class="js-method">subscribe</span>(<span class="js-param">callback</span>) {
-                <span class="js-keyword">this</span>.observers.push(callback);
-                <span class="js-keyword">return</span> () <span class="js-operator">=></span> {
-                  <span class="js-keyword">this</span>.observers = <span class="js-keyword">this</span>.observers.filter(obs => obs !== callback);
-                };
-              }
+            <span class="js-method">subscribe</span>(<span class="js-param"
+              >callback</span
+            >) { <span class="js-keyword">this</span>.observers.push(callback);
+            <span class="js-keyword">return</span> ()
+            <span class="js-operator">=></span> {
+            <span class="js-keyword">this</span>.observers =
+            <span class="js-keyword">this</span>.observers.filter(obs => obs !==
+            callback); }; }
 
-              <span class="js-method">notify</span>(<span class="js-param">data</span>) {
-                <span class="js-keyword">this</span>.observers.forEach(callback => callback(data));
-              }
-            }
+            <span class="js-method">notify</span>(<span class="js-param"
+              >data</span
+            >) { <span class="js-keyword">this</span>.observers.forEach(callback
+            => callback(data)); } }
 
             <span class="js-comment">// Singleton Pattern with Proxy</span>
-            <span class="js-keyword">const</span> <span class="js-method">Singleton</span> = (<span class="js-keyword">function</span>() {
-              <span class="js-keyword">let</span> instance;
-              <span class="js-keyword">return</span> <span class="js-keyword">class</span> {
-                <span class="js-method">constructor</span>() {
-                  <span class="js-keyword">if</span> (instance) <span class="js-keyword">return</span> instance;
-                  instance = <span class="js-keyword">this</span>;
-                }
-              };
-            })();
+            <span class="js-keyword">const</span>
+            <span class="js-method">Singleton</span> = (<span class="js-keyword"
+              >function</span
+            >() { <span class="js-keyword">let</span> instance;
+            <span class="js-keyword">return</span>
+            <span class="js-keyword">class</span> {
+            <span class="js-method">constructor</span>() {
+            <span class="js-keyword">if</span> (instance)
+            <span class="js-keyword">return</span> instance; instance =
+            <span class="js-keyword">this</span>; } }; })();
           </div>
 
           <div class="control-group">
-            <input type="text" id="message-input" placeholder="Message to broadcast" value="Hello observers!" />
+            <input
+              type="text"
+              id="message-input"
+              placeholder="Message to broadcast"
+              value="Hello observers!"
+            />
             <button class="btn" onclick="demonstrateObserver()">
               📡 Notify Observers
             </button>
@@ -414,25 +445,34 @@
 
           <div class="code-block" data-lang="js">
             <span class="js-comment">// WeakMap for private data</span>
-            <span class="js-keyword">const</span> privateData = <span class="js-keyword">new</span> <span class="js-method">WeakMap</span>();
+            <span class="js-keyword">const</span> privateData =
+            <span class="js-keyword">new</span>
+            <span class="js-method">WeakMap</span>();
 
-            <span class="js-keyword">class</span> <span class="js-method">SecureClass</span> {
-              <span class="js-method">constructor</span>(<span class="js-param">secret</span>) {
-                privateData.set(<span class="js-keyword">this</span>, { secret, counter: <span class="js-number">0</span> });
-              }
+            <span class="js-keyword">class</span>
+            <span class="js-method">SecureClass</span> {
+            <span class="js-method">constructor</span>(<span class="js-param"
+              >secret</span
+            >) { privateData.set(<span class="js-keyword">this</span>, { secret,
+            counter: <span class="js-number">0</span> }); }
 
-              <span class="js-method">getSecret</span>() {
-                <span class="js-keyword">const</span> data = privateData.get(<span class="js-keyword">this</span>);
-                data.counter++;
-                <span class="js-keyword">return</span> `Secret accessed ${data.counter} times: ${data.secret}`;
-              }
-            }
+            <span class="js-method">getSecret</span>() {
+            <span class="js-keyword">const</span> data = privateData.get(<span
+              class="js-keyword"
+              >this</span
+            >); data.counter++; <span class="js-keyword">return</span> `Secret
+            accessed ${data.counter} times: ${data.secret}`; } }
 
             <span class="js-comment">// Memory leak demonstration</span>
-            <span class="js-keyword">function</span> <span class="js-method">createMemoryLeak</span>() {
-              <span class="js-keyword">const</span> largeArray = <span class="js-keyword">new</span> <span class="js-method">Array</span>(<span class="js-number">1000000</span>).fill(<span class="js-string">'memory'</span>);
-              <span class="js-keyword">return</span> () <span class="js-operator">=></span> largeArray.length;
-            }
+            <span class="js-keyword">function</span>
+            <span class="js-method">createMemoryLeak</span>() {
+            <span class="js-keyword">const</span> largeArray =
+            <span class="js-keyword">new</span>
+            <span class="js-method">Array</span>(<span class="js-number"
+              >1000000</span
+            >).fill(<span class="js-string">'memory'</span>);
+            <span class="js-keyword">return</span> ()
+            <span class="js-operator">=></span> largeArray.length; }
           </div>
 
           <div class="control-group">
@@ -473,32 +513,49 @@
 
           <div class="code-block" data-lang="js">
             <span class="js-comment">// Async Iterator and Generator</span>
-            <span class="js-keyword">async function*</span> <span class="js-method">asyncGenerator</span>(<span class="js-param">max</span>) {
-              <span class="js-keyword">for</span> (<span class="js-keyword">let</span> i = <span class="js-number">0</span>; i < max; i++) {
-                <span class="js-keyword">await</span> <span class="js-keyword">new</span> <span class="js-method">Promise</span>(<span class="js-param">resolve</span> <span class="js-operator">=></span> setTimeout(resolve, <span class="js-number">100</span>));
-                <span class="js-keyword">yield</span> `Item ${i + <span class="js-number">1</span>}`;
-              }
-            }
+            <span class="js-keyword">async function*</span>
+            <span class="js-method">asyncGenerator</span>(<span class="js-param"
+              >max</span
+            >) { <span class="js-keyword">for</span> (<span class="js-keyword"
+              >let</span
+            >
+            i = <span class="js-number">0</span>; i < max; i++) {
+            <span class="js-keyword">await</span>
+            <span class="js-keyword">new</span>
+            <span class="js-method">Promise</span>(<span class="js-param"
+              >resolve</span
+            >
+            <span class="js-operator">=></span> setTimeout(resolve,
+            <span class="js-number">100</span>));
+            <span class="js-keyword">yield</span> `Item ${i +
+            <span class="js-number">1</span>}`; } }
 
             <span class="js-comment">// Debounce and throttle utilities</span>
-            <span class="js-keyword">const</span> <span class="js-method">debounce</span> = (<span class="js-param">fn</span>, <span class="js-param">delay</span>) <span class="js-operator">=></span> {
-              <span class="js-keyword">let</span> timeoutId;
-              <span class="js-keyword">return</span> (<span class="js-param">...args</span>) <span class="js-operator">=></span> {
-                clearTimeout(timeoutId);
-                timeoutId = setTimeout(() <span class="js-operator">=></span> fn(...args), delay);
-              };
-            };
+            <span class="js-keyword">const</span>
+            <span class="js-method">debounce</span> = (<span class="js-param"
+              >fn</span
+            >, <span class="js-param">delay</span>)
+            <span class="js-operator">=></span> {
+            <span class="js-keyword">let</span> timeoutId;
+            <span class="js-keyword">return</span> (<span class="js-param"
+              >...args</span
+            >) <span class="js-operator">=></span> { clearTimeout(timeoutId);
+            timeoutId = setTimeout(()
+            <span class="js-operator">=></span> fn(...args), delay); }; };
 
-            <span class="js-keyword">const</span> <span class="js-method">throttle</span> = (<span class="js-param">fn</span>, <span class="js-param">limit</span>) <span class="js-operator">=></span> {
-              <span class="js-keyword">let</span> inThrottle;
-              <span class="js-keyword">return</span> (<span class="js-param">...args</span>) <span class="js-operator">=></span> {
-                <span class="js-keyword">if</span> (!inThrottle) {
-                  fn(...args);
-                  inThrottle = <span class="js-keyword">true</span>;
-                  setTimeout(() <span class="js-operator">=></span> inThrottle = <span class="js-keyword">false</span>, limit);
-                }
-              };
-            };
+            <span class="js-keyword">const</span>
+            <span class="js-method">throttle</span> = (<span class="js-param"
+              >fn</span
+            >, <span class="js-param">limit</span>)
+            <span class="js-operator">=></span> {
+            <span class="js-keyword">let</span> inThrottle;
+            <span class="js-keyword">return</span> (<span class="js-param"
+              >...args</span
+            >) <span class="js-operator">=></span> {
+            <span class="js-keyword">if</span> (!inThrottle) { fn(...args);
+            inThrottle = <span class="js-keyword">true</span>; setTimeout(()
+            <span class="js-operator">=></span> inThrottle =
+            <span class="js-keyword">false</span>, limit); } }; };
           </div>
 
           <div class="control-group">
@@ -522,44 +579,71 @@
 
           <div class="code-block" data-lang="js">
             <span class="js-comment">// Dynamic object with Proxy</span>
-            <span class="js-keyword">const</span> <span class="js-method">createSmartObject</span> = (<span class="js-param">data</span> = {}) <span class="js-operator">=></span> {
-              <span class="js-keyword">const</span> handlers = {
-                <span class="js-method">get</span>(<span class="js-param">target</span>, <span class="js-param">prop</span>) {
-                  <span class="js-keyword">if</span> (prop <span class="js-keyword">in</span> target) <span class="js-keyword">return</span> target[prop];
-                  <span class="js-keyword">if</span> (<span class="js-keyword">typeof</span> prop === <span class="js-string">'string'</span> && prop.startsWith(<span class="js-string">'get'</span>)) {
-                    <span class="js-keyword">const</span> key = prop.slice(<span class="js-number">3</span>).toLowerCase();
-                    <span class="js-keyword">return</span> () <span class="js-operator">=></span> target[key];
-                  }
-                  <span class="js-keyword">return</span> <span class="js-string">`Property ${prop} not found`</span>;
-                },
-                
-                <span class="js-method">set</span>(<span class="js-param">target</span>, <span class="js-param">prop</span>, <span class="js-param">value</span>) {
-                  console.log(`Setting ${prop} = ${value}`);
-                  target[prop] = value;
-                  <span class="js-keyword">return</span> <span class="js-keyword">true</span>;
-                }
-              };
-              
-              <span class="js-keyword">return</span> <span class="js-keyword">new</span> <span class="js-method">Proxy</span>(data, handlers);
-            };
+            <span class="js-keyword">const</span>
+            <span class="js-method">createSmartObject</span> = (<span
+              class="js-param"
+              >data</span
+            >
+            = {}) <span class="js-operator">=></span> {
+            <span class="js-keyword">const</span> handlers = {
+            <span class="js-method">get</span>(<span class="js-param"
+              >target</span
+            >, <span class="js-param">prop</span>) {
+            <span class="js-keyword">if</span> (prop
+            <span class="js-keyword">in</span> target)
+            <span class="js-keyword">return</span> target[prop];
+            <span class="js-keyword">if</span> (<span class="js-keyword"
+              >typeof</span
+            >
+            prop === <span class="js-string">'string'</span> &&
+            prop.startsWith(<span class="js-string">'get'</span>)) {
+            <span class="js-keyword">const</span> key = prop.slice(<span
+              class="js-number"
+              >3</span
+            >).toLowerCase(); <span class="js-keyword">return</span> ()
+            <span class="js-operator">=></span> target[key]; }
+            <span class="js-keyword">return</span>
+            <span class="js-string">`Property ${prop} not found`</span>; },
+
+            <span class="js-method">set</span>(<span class="js-param"
+              >target</span
+            >, <span class="js-param">prop</span>,
+            <span class="js-param">value</span>) { console.log(`Setting ${prop}
+            = ${value}`); target[prop] = value;
+            <span class="js-keyword">return</span>
+            <span class="js-keyword">true</span>; } };
+
+            <span class="js-keyword">return</span>
+            <span class="js-keyword">new</span>
+            <span class="js-method">Proxy</span>(data, handlers); };
 
             <span class="js-comment">// Reflection utilities</span>
-            <span class="js-keyword">const</span> <span class="js-method">objectAnalyzer</span> = {
-              <span class="js-method">analyze</span>(<span class="js-param">obj</span>) {
-                <span class="js-keyword">return</span> {
-                  properties: <span class="js-method">Reflect</span>.ownKeys(obj),
-                  methods: <span class="js-method">Reflect</span>.ownKeys(obj).filter(key => 
-                    <span class="js-keyword">typeof</span> obj[key] === <span class="js-string">'function'</span>
-                  ),
-                  prototype: <span class="js-method">Reflect</span>.getPrototypeOf(obj)?.constructor?.name
-                };
-              }
-            };
+            <span class="js-keyword">const</span>
+            <span class="js-method">objectAnalyzer</span> = {
+            <span class="js-method">analyze</span>(<span class="js-param"
+              >obj</span
+            >) { <span class="js-keyword">return</span> { properties:
+            <span class="js-method">Reflect</span>.ownKeys(obj), methods:
+            <span class="js-method">Reflect</span>.ownKeys(obj).filter(key =>
+            <span class="js-keyword">typeof</span> obj[key] ===
+            <span class="js-string">'function'</span> ), prototype:
+            <span class="js-method">Reflect</span
+            >.getPrototypeOf(obj)?.constructor?.name }; } };
           </div>
 
           <div class="control-group">
-            <input type="text" id="prop-name" placeholder="Property name" value="username" />
-            <input type="text" id="prop-value" placeholder="Property value" value="john_doe" />
+            <input
+              type="text"
+              id="prop-name"
+              placeholder="Property name"
+              value="username"
+            />
+            <input
+              type="text"
+              id="prop-value"
+              placeholder="Property value"
+              value="john_doe"
+            />
             <button class="btn" onclick="demonstrateProxy()">
               🎭 Proxy Demo
             </button>
@@ -577,37 +661,61 @@
 
           <div class="code-block" data-lang="js">
             <span class="js-comment">// Memoization with Map</span>
-            <span class="js-keyword">const</span> <span class="js-method">memoize</span> = (<span class="js-param">fn</span>) <span class="js-operator">=></span> {
-              <span class="js-keyword">const</span> cache = <span class="js-keyword">new</span> <span class="js-method">Map</span>();
-              <span class="js-keyword">return</span> (<span class="js-param">...args</span>) <span class="js-operator">=></span> {
-                <span class="js-keyword">const</span> key = <span class="js-method">JSON</span>.stringify(args);
-                <span class="js-keyword">if</span> (cache.has(key)) <span class="js-keyword">return</span> cache.get(key);
-                
-                <span class="js-keyword">const</span> result = fn(...args);
-                cache.set(key, result);
-                <span class="js-keyword">return</span> result;
-              };
-            };
+            <span class="js-keyword">const</span>
+            <span class="js-method">memoize</span> = (<span class="js-param"
+              >fn</span
+            >) <span class="js-operator">=></span> {
+            <span class="js-keyword">const</span> cache =
+            <span class="js-keyword">new</span>
+            <span class="js-method">Map</span>();
+            <span class="js-keyword">return</span> (<span class="js-param"
+              >...args</span
+            >) <span class="js-operator">=></span> {
+            <span class="js-keyword">const</span> key =
+            <span class="js-method">JSON</span>.stringify(args);
+            <span class="js-keyword">if</span> (cache.has(key))
+            <span class="js-keyword">return</span> cache.get(key);
+
+            <span class="js-keyword">const</span> result = fn(...args);
+            cache.set(key, result);
+            <span class="js-keyword">return</span> result; }; };
 
             <span class="js-comment">// Virtual scrolling helper</span>
-            <span class="js-keyword">class</span> <span class="js-method">VirtualList</span> {
-              <span class="js-method">constructor</span>(<span class="js-param">items</span>, <span class="js-param">itemHeight</span> = <span class="js-number">50</span>, <span class="js-param">visibleCount</span> = <span class="js-number">10</span>) {
-                <span class="js-keyword">this</span>.items = items;
-                <span class="js-keyword">this</span>.itemHeight = itemHeight;
-                <span class="js-keyword">this</span>.visibleCount = visibleCount;
-                <span class="js-keyword">this</span>.scrollTop = <span class="js-number">0</span>;
-              }
+            <span class="js-keyword">class</span>
+            <span class="js-method">VirtualList</span> {
+            <span class="js-method">constructor</span>(<span class="js-param"
+              >items</span
+            >, <span class="js-param">itemHeight</span> =
+            <span class="js-number">50</span>,
+            <span class="js-param">visibleCount</span> =
+            <span class="js-number">10</span>) {
+            <span class="js-keyword">this</span>.items = items;
+            <span class="js-keyword">this</span>.itemHeight = itemHeight;
+            <span class="js-keyword">this</span>.visibleCount = visibleCount;
+            <span class="js-keyword">this</span>.scrollTop =
+            <span class="js-number">0</span>; }
 
-              <span class="js-method">getVisibleItems</span>() {
-                <span class="js-keyword">const</span> startIndex = <span class="js-method">Math</span>.floor(<span class="js-keyword">this</span>.scrollTop / <span class="js-keyword">this</span>.itemHeight);
-                <span class="js-keyword">const</span> endIndex = startIndex + <span class="js-keyword">this</span>.visibleCount;
-                <span class="js-keyword">return</span> <span class="js-keyword">this</span>.items.slice(startIndex, endIndex);
-              }
-            }
+            <span class="js-method">getVisibleItems</span>() {
+            <span class="js-keyword">const</span> startIndex =
+            <span class="js-method">Math</span>.floor(<span class="js-keyword"
+              >this</span
+            >.scrollTop / <span class="js-keyword">this</span>.itemHeight);
+            <span class="js-keyword">const</span> endIndex = startIndex +
+            <span class="js-keyword">this</span>.visibleCount;
+            <span class="js-keyword">return</span>
+            <span class="js-keyword">this</span>.items.slice(startIndex,
+            endIndex); } }
           </div>
 
           <div class="control-group">
-            <input type="number" id="fib-number" placeholder="Fibonacci number" value="35" min="1" max="45" />
+            <input
+              type="number"
+              id="fib-number"
+              placeholder="Fibonacci number"
+              value="35"
+              min="1"
+              max="45"
+            />
             <button class="btn" onclick="demonstratePerformance()">
               ⚡ Performance Test
             </button>
@@ -680,9 +788,9 @@
       let throttleCounter = 0;
 
       // Initialize Observable
-      document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener('DOMContentLoaded', function () {
         console.log('⚡ Advanced JavaScript Patterns Demo loaded!');
-        
+
         // Create observable instance
         class Observable {
           constructor() {
@@ -692,75 +800,110 @@
           subscribe(callback) {
             this.observers.push(callback);
             return () => {
-              this.observers = this.observers.filter(obs => obs !== callback);
+              this.observers = this.observers.filter((obs) => obs !== callback);
             };
           }
 
           notify(data) {
-            this.observers.forEach(callback => callback(data));
+            this.observers.forEach((callback) => callback(data));
           }
         }
 
         observable = new Observable();
-        
+
         // Subscribe some demo observers
-        observable.subscribe(data => {
-          appendOutput('patterns-output', `Observer 1 received: ${data}`, 'success');
+        observable.subscribe((data) => {
+          appendOutput(
+            'patterns-output',
+            `Observer 1 received: ${data}`,
+            'success'
+          );
         });
-        
-        observable.subscribe(data => {
-          appendOutput('patterns-output', `Observer 2 received: ${data}`, 'info');
+
+        observable.subscribe((data) => {
+          appendOutput(
+            'patterns-output',
+            `Observer 2 received: ${data}`,
+            'info'
+          );
         });
       });
 
       // Functional Programming Demo
       function demonstrateFunctional() {
         clearOutput('functional-output');
-        
+
         const num1 = parseInt(document.getElementById('num1').value) || 0;
         const num2 = parseInt(document.getElementById('num2').value) || 0;
-        
+
         // Curry demonstration
-        const curry = (fn) => (...args) => 
-          args.length >= fn.length ? fn(...args) : curry(fn.bind(null, ...args));
-        
+        const curry =
+          (fn) =>
+          (...args) =>
+            args.length >= fn.length
+              ? fn(...args)
+              : curry(fn.bind(null, ...args));
+
         const multiply = (a, b) => a * b;
         const curriedMultiply = curry(multiply);
-        
+
         appendOutput('functional-output', '🔧 Currying Demo:', 'info');
-        appendOutput('functional-output', `multiply(${num1}, ${num2}) = ${multiply(num1, num2)}`);
-        appendOutput('functional-output', `curriedMultiply(${num1})(${num2}) = ${curriedMultiply(num1)(num2)}`);
-        
+        appendOutput(
+          'functional-output',
+          `multiply(${num1}, ${num2}) = ${multiply(num1, num2)}`
+        );
+        appendOutput(
+          'functional-output',
+          `curriedMultiply(${num1})(${num2}) = ${curriedMultiply(num1)(num2)}`
+        );
+
         // Composition demonstration
-        const compose = (...fns) => (x) => fns.reduceRight((v, f) => f(v), x);
-        const pipe = (...fns) => (x) => fns.reduce((v, f) => f(v), x);
-        
-        const addTwo = x => x + 2;
-        const multiplyByThree = x => x * 3;
-        const square = x => x * x;
-        
+        const compose =
+          (...fns) =>
+          (x) =>
+            fns.reduceRight((v, f) => f(v), x);
+        const pipe =
+          (...fns) =>
+          (x) =>
+            fns.reduce((v, f) => f(v), x);
+
+        const addTwo = (x) => x + 2;
+        const multiplyByThree = (x) => x * 3;
+        const square = (x) => x * x;
+
         const composed = compose(square, multiplyByThree, addTwo);
         const piped = pipe(addTwo, multiplyByThree, square);
-        
+
         appendOutput('functional-output', '\n🔄 Function Composition:', 'info');
         appendOutput('functional-output', `Input: ${num1}`);
-        appendOutput('functional-output', `Composed (square ∘ *3 ∘ +2): ${composed(num1)}`);
-        appendOutput('functional-output', `Piped (+2 → *3 → square): ${piped(num1)}`);
+        appendOutput(
+          'functional-output',
+          `Composed (square ∘ *3 ∘ +2): ${composed(num1)}`
+        );
+        appendOutput(
+          'functional-output',
+          `Piped (+2 → *3 → square): ${piped(num1)}`
+        );
       }
 
       // Observer Pattern Demo
       function demonstrateObserver() {
-        const message = document.getElementById('message-input').value || 'Default message';
-        
-        appendOutput('patterns-output', `📡 Broadcasting: "${message}"`, 'warning');
+        const message =
+          document.getElementById('message-input').value || 'Default message';
+
+        appendOutput(
+          'patterns-output',
+          `📡 Broadcasting: "${message}"`,
+          'warning'
+        );
         observable.notify(message);
       }
 
       // Singleton Pattern Demo
       function demonstrateSingleton() {
         clearOutput('patterns-output');
-        
-        const Singleton = (function() {
+
+        const Singleton = (function () {
           let instance;
           return class {
             constructor() {
@@ -770,47 +913,59 @@
             }
           };
         })();
-        
+
         const instance1 = new Singleton();
         const instance2 = new Singleton();
-        
+
         appendOutput('patterns-output', '🏗️ Singleton Pattern Test:', 'info');
         appendOutput('patterns-output', `Instance 1 ID: ${instance1.id}`);
         appendOutput('patterns-output', `Instance 2 ID: ${instance2.id}`);
-        appendOutput('patterns-output', `Are they the same? ${instance1 === instance2 ? 'Yes ✅' : 'No ❌'}`, 'success');
+        appendOutput(
+          'patterns-output',
+          `Are they the same? ${instance1 === instance2 ? 'Yes ✅' : 'No ❌'}`,
+          'success'
+        );
       }
 
       // WeakMap Demo
       function demonstrateWeakMap() {
         clearOutput('memory-output');
-        
+
         const privateData = new WeakMap();
-        
+
         class SecureClass {
           constructor(secret) {
             privateData.set(this, { secret, counter: 0 });
           }
-          
+
           getSecret() {
             const data = privateData.get(this);
             data.counter++;
             return `Secret accessed ${data.counter} times: ${data.secret}`;
           }
         }
-        
+
         const secure1 = new SecureClass('top-secret-1');
         const secure2 = new SecureClass('confidential-2');
-        
+
         appendOutput('memory-output', '🔒 WeakMap Private Data Demo:', 'info');
         appendOutput('memory-output', secure1.getSecret());
         appendOutput('memory-output', secure1.getSecret());
         appendOutput('memory-output', secure2.getSecret());
-        
+
         // Try to access private data directly (should fail)
         try {
-          appendOutput('memory-output', `Direct access attempt: ${secure1.secret}`, 'error');
+          appendOutput(
+            'memory-output',
+            `Direct access attempt: ${secure1.secret}`,
+            'error'
+          );
         } catch (e) {
-          appendOutput('memory-output', 'Direct access failed (as expected) ✅', 'success');
+          appendOutput(
+            'memory-output',
+            'Direct access failed (as expected) ✅',
+            'success'
+          );
         }
       }
 
@@ -818,55 +973,78 @@
       function simulateMemoryUsage() {
         memoryUsageSimulated = Math.min(memoryUsageSimulated + 20, 100);
         objectsCreated += Math.floor(Math.random() * 1000) + 500;
-        
+
         updateMemoryDisplay();
-        
-        appendOutput('memory-output', `📊 Memory usage increased to ${memoryUsageSimulated}%`, 'warning');
-        appendOutput('memory-output', `Created ${objectsCreated} objects total`);
+
+        appendOutput(
+          'memory-output',
+          `📊 Memory usage increased to ${memoryUsageSimulated}%`,
+          'warning'
+        );
+        appendOutput(
+          'memory-output',
+          `Created ${objectsCreated} objects total`
+        );
       }
 
       // Trigger Garbage Collection (simulated)
       function triggerGC() {
         memoryUsageSimulated = Math.max(memoryUsageSimulated - 30, 0);
-        
+
         updateMemoryDisplay();
-        
-        appendOutput('memory-output', '🗑️ Garbage collection triggered', 'success');
-        appendOutput('memory-output', `Memory usage reduced to ${memoryUsageSimulated}%`);
+
+        appendOutput(
+          'memory-output',
+          '🗑️ Garbage collection triggered',
+          'success'
+        );
+        appendOutput(
+          'memory-output',
+          `Memory usage reduced to ${memoryUsageSimulated}%`
+        );
       }
 
       function updateMemoryDisplay() {
-        document.getElementById('memory-meter').style.width = `${memoryUsageSimulated}%`;
-        document.getElementById('heap-used').textContent = Math.round(memoryUsageSimulated * 1.28);
-        document.getElementById('objects-created').textContent = objectsCreated.toLocaleString();
+        document.getElementById(
+          'memory-meter'
+        ).style.width = `${memoryUsageSimulated}%`;
+        document.getElementById('heap-used').textContent = Math.round(
+          memoryUsageSimulated * 1.28
+        );
+        document.getElementById('objects-created').textContent =
+          objectsCreated.toLocaleString();
       }
 
       // Async Iterator Demo
       async function demonstrateAsyncIterator() {
         clearOutput('async-output');
-        
-        appendOutput('async-output', '🔄 Starting async iterator demo...', 'info');
-        
+
+        appendOutput(
+          'async-output',
+          '🔄 Starting async iterator demo...',
+          'info'
+        );
+
         async function* asyncGenerator(max) {
           for (let i = 0; i < max; i++) {
-            await new Promise(resolve => setTimeout(resolve, 200));
+            await new Promise((resolve) => setTimeout(resolve, 200));
             yield `Item ${i + 1}`;
           }
         }
-        
+
         const generator = asyncGenerator(3);
-        
+
         for await (const item of generator) {
           appendOutput('async-output', `Generated: ${item}`, 'success');
         }
-        
+
         appendOutput('async-output', 'Async iteration complete! ✅', 'info');
       }
 
       // Debounce/Throttle Demo
       function demonstrateDebounceThrottle() {
         clearOutput('async-output');
-        
+
         const debounce = (fn, delay) => {
           let timeoutId;
           return (...args) => {
@@ -874,32 +1052,48 @@
             timeoutId = setTimeout(() => fn(...args), delay);
           };
         };
-        
+
         const throttle = (fn, limit) => {
           let inThrottle;
           return (...args) => {
             if (!inThrottle) {
               fn(...args);
               inThrottle = true;
-              setTimeout(() => inThrottle = false, limit);
+              setTimeout(() => (inThrottle = false), limit);
             }
           };
         };
-        
+
         const normalFunction = () => {
-          appendOutput('async-output', `Normal call: ${++debounceCounter}`, 'warning');
+          appendOutput(
+            'async-output',
+            `Normal call: ${++debounceCounter}`,
+            'warning'
+          );
         };
-        
+
         const debouncedFunction = debounce(() => {
-          appendOutput('async-output', `Debounced call executed after delay`, 'success');
+          appendOutput(
+            'async-output',
+            `Debounced call executed after delay`,
+            'success'
+          );
         }, 500);
-        
+
         const throttledFunction = throttle(() => {
-          appendOutput('async-output', `Throttled call: ${++throttleCounter}`, 'info');
+          appendOutput(
+            'async-output',
+            `Throttled call: ${++throttleCounter}`,
+            'info'
+          );
         }, 300);
-        
-        appendOutput('async-output', '⏱️ Testing debounce and throttle...', 'info');
-        
+
+        appendOutput(
+          'async-output',
+          '⏱️ Testing debounce and throttle...',
+          'info'
+        );
+
         // Simulate rapid calls
         for (let i = 0; i < 5; i++) {
           setTimeout(() => {
@@ -908,19 +1102,25 @@
             throttledFunction();
           }, i * 100);
         }
-        
+
         setTimeout(() => {
-          appendOutput('async-output', 'Notice: Debounce executed once, throttle limited calls', 'info');
+          appendOutput(
+            'async-output',
+            'Notice: Debounce executed once, throttle limited calls',
+            'info'
+          );
         }, 1000);
       }
 
       // Proxy Demo
       function demonstrateProxy() {
         clearOutput('meta-output');
-        
-        const propName = document.getElementById('prop-name').value || 'username';
-        const propValue = document.getElementById('prop-value').value || 'john_doe';
-        
+
+        const propName =
+          document.getElementById('prop-name').value || 'username';
+        const propValue =
+          document.getElementById('prop-value').value || 'john_doe';
+
         const createSmartObject = (data = {}) => {
           const handlers = {
             get(target, prop) {
@@ -931,32 +1131,46 @@
               }
               return `Property ${prop} not found`;
             },
-            
+
             set(target, prop, value) {
               appendOutput('meta-output', `Setting ${prop} = ${value}`, 'info');
               target[prop] = value;
               return true;
-            }
+            },
           };
-          
+
           return new Proxy(data, handlers);
         };
-        
+
         const smartObj = createSmartObject();
-        
+
         appendOutput('meta-output', '🎭 Proxy Demo:', 'info');
         smartObj[propName] = propValue;
-        
-        appendOutput('meta-output', `Direct access: ${smartObj[propName]}`, 'success');
-        
+
+        appendOutput(
+          'meta-output',
+          `Direct access: ${smartObj[propName]}`,
+          'success'
+        );
+
         // Try dynamic getter
-        const getterName = `get${propName.charAt(0).toUpperCase() + propName.slice(1)}`;
+        const getterName = `get${
+          propName.charAt(0).toUpperCase() + propName.slice(1)
+        }`;
         if (typeof smartObj[getterName] === 'function') {
-          appendOutput('meta-output', `Dynamic getter: ${smartObj[getterName]()}`, 'success');
+          appendOutput(
+            'meta-output',
+            `Dynamic getter: ${smartObj[getterName]()}`,
+            'success'
+          );
         }
-        
+
         // Try non-existent property
-        appendOutput('meta-output', `Non-existent: ${smartObj.nonExistent}`, 'warning');
+        appendOutput(
+          'meta-output',
+          `Non-existent: ${smartObj.nonExistent}`,
+          'warning'
+        );
       }
 
       // Reflection Demo
@@ -965,76 +1179,108 @@
           analyze(obj) {
             return {
               properties: Reflect.ownKeys(obj),
-              methods: Reflect.ownKeys(obj).filter(key => 
-                typeof obj[key] === 'function'
+              methods: Reflect.ownKeys(obj).filter(
+                (key) => typeof obj[key] === 'function'
               ),
-              prototype: Reflect.getPrototypeOf(obj)?.constructor?.name
+              prototype: Reflect.getPrototypeOf(obj)?.constructor?.name,
             };
-          }
+          },
         };
-        
+
         const testObject = {
           name: 'Test Object',
           value: 42,
-          getName() { return this.name; },
-          getValue() { return this.value; }
+          getName() {
+            return this.name;
+          },
+          getValue() {
+            return this.value;
+          },
         };
-        
+
         const analysis = objectAnalyzer.analyze(testObject);
-        
+
         appendOutput('meta-output', '🔍 Object Analysis:', 'info');
-        appendOutput('meta-output', `Properties: ${analysis.properties.join(', ')}`);
-        appendOutput('meta-output', `Methods: ${analysis.methods.join(', ')}`, 'success');
+        appendOutput(
+          'meta-output',
+          `Properties: ${analysis.properties.join(', ')}`
+        );
+        appendOutput(
+          'meta-output',
+          `Methods: ${analysis.methods.join(', ')}`,
+          'success'
+        );
         appendOutput('meta-output', `Prototype: ${analysis.prototype}`);
       }
 
       // Performance Demo
       function demonstratePerformance() {
         clearOutput('performance-output');
-        
-        const fibNumber = parseInt(document.getElementById('fib-number').value) || 35;
-        
+
+        const fibNumber =
+          parseInt(document.getElementById('fib-number').value) || 35;
+
         // Normal Fibonacci (inefficient)
         function fibonacci(n) {
           if (n <= 1) return n;
           return fibonacci(n - 1) + fibonacci(n - 2);
         }
-        
+
         // Memoized Fibonacci
         const memoize = (fn) => {
           const cache = new Map();
           return (...args) => {
             const key = JSON.stringify(args);
             if (cache.has(key)) return cache.get(key);
-            
+
             const result = fn(...args);
             cache.set(key, result);
             return result;
           };
         };
-        
+
         const memoizedFib = memoize(fibonacci);
-        
-        appendOutput('performance-output', `⚡ Performance test with fibonacci(${fibNumber}):`, 'info');
-        
+
+        appendOutput(
+          'performance-output',
+          `⚡ Performance test with fibonacci(${fibNumber}):`,
+          'info'
+        );
+
         // Test normal version
         const start1 = performance.now();
         const result1 = fibonacci(fibNumber);
         const time1 = performance.now() - start1;
-        
+
         // Test memoized version
         const start2 = performance.now();
         const result2 = memoizedFib(fibNumber);
         const time2 = performance.now() - start2;
-        
-        appendOutput('performance-output', `Normal: ${result1} (${time1.toFixed(2)}ms)`, 'warning');
-        appendOutput('performance-output', `Memoized: ${result2} (${time2.toFixed(2)}ms)`, 'success');
-        
+
+        appendOutput(
+          'performance-output',
+          `Normal: ${result1} (${time1.toFixed(2)}ms)`,
+          'warning'
+        );
+        appendOutput(
+          'performance-output',
+          `Memoized: ${result2} (${time2.toFixed(2)}ms)`,
+          'success'
+        );
+
         const speedup = time1 / time2;
-        appendOutput('performance-output', `Speedup: ${speedup.toFixed(1)}x faster! 🚀`, 'info');
-        
-        document.getElementById('normal-time').textContent = `${time1.toFixed(2)}ms`;
-        document.getElementById('memoized-time').textContent = `${time2.toFixed(2)}ms`;
+        appendOutput(
+          'performance-output',
+          `Speedup: ${speedup.toFixed(1)}x faster! 🚀`,
+          'info'
+        );
+
+        document.getElementById('normal-time').textContent = `${time1.toFixed(
+          2
+        )}ms`;
+        document.getElementById('memoized-time').textContent = `${time2.toFixed(
+          2
+        )}ms`;
       }
 
       // Virtual List Demo
@@ -1050,30 +1296,42 @@
           getVisibleItems(scrollTop = 0) {
             this.scrollTop = scrollTop;
             const startIndex = Math.floor(this.scrollTop / this.itemHeight);
-            const endIndex = Math.min(startIndex + this.visibleCount, this.items.length);
+            const endIndex = Math.min(
+              startIndex + this.visibleCount,
+              this.items.length
+            );
             return {
               startIndex,
               endIndex,
-              items: this.items.slice(startIndex, endIndex)
+              items: this.items.slice(startIndex, endIndex),
             };
           }
         }
-        
+
         // Create a large dataset
-        const largeDataset = Array.from({ length: 10000 }, (_, i) => `Item ${i + 1}`);
+        const largeDataset = Array.from(
+          { length: 10000 },
+          (_, i) => `Item ${i + 1}`
+        );
         const virtualList = new VirtualList(largeDataset, 30, 5);
-        
+
         appendOutput('performance-output', '📜 Virtual List Demo:', 'info');
-        appendOutput('performance-output', `Total items: ${largeDataset.length.toLocaleString()}`);
-        
+        appendOutput(
+          'performance-output',
+          `Total items: ${largeDataset.length.toLocaleString()}`
+        );
+
         // Simulate scrolling
         const scrollPositions = [0, 500, 1500, 3000];
-        
+
         scrollPositions.forEach((scroll, index) => {
           const visible = virtualList.getVisibleItems(scroll);
           setTimeout(() => {
-            appendOutput('performance-output', 
-              `Scroll ${scroll}px - Showing items ${visible.startIndex}-${visible.endIndex}: [${visible.items.slice(0, 3).join(', ')}...]`, 
+            appendOutput(
+              'performance-output',
+              `Scroll ${scroll}px - Showing items ${visible.startIndex}-${
+                visible.endIndex
+              }: [${visible.items.slice(0, 3).join(', ')}...]`,
               'success'
             );
           }, index * 300);
