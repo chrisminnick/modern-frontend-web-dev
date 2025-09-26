@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JavaScript DOM Manipulation Interactive Demo</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #333;
+        line-height: 1.6;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .header {
+        background: #2c3e50;
+        color: white;
+        padding: 30px;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+      }
+
+      .content {
+        padding: 40px;
+      }
+
+      .demo-section {
+        margin: 50px 0;
+        padding: 30px;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        background: #f8f9fa;
+      }
+
+      .demo-section h2 {
+        color: #2c3e50;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 3px solid #667eea;
+        font-size: 1.8em;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 30px;
+        padding: 20px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .btn {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background: #667eea;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #5a67d8;
+        transform: translateY(-2px);
+      }
+
+      .btn-secondary {
+        background: #6c757d;
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        background: #545b62;
+      }
+
+      .btn-success {
+        background: #28a745;
+        color: white;
+      }
+
+      .btn-success:hover {
+        background: #218838;
+      }
+
+      .btn-danger {
+        background: #dc3545;
+        color: white;
+      }
+
+      .btn-danger:hover {
+        background: #c82333;
+      }
+
+      .btn-warning {
+        background: #ffc107;
+        color: #212529;
+      }
+
+      .btn-warning:hover {
+        background: #e0a800;
+      }
+
+      input[type='text'],
+      input[type='number'],
+      input[type='color'],
+      select {
+        padding: 10px;
+        border: 2px solid #dee2e6;
+        border-radius: 6px;
+        font-size: 14px;
+        margin: 0 10px;
+      }
+
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      /* Demo Areas */
+      .playground {
+        min-height: 200px;
+        border: 2px dashed #dee2e6;
+        border-radius: 8px;
+        padding: 20px;
+        background: white;
+        position: relative;
+        margin: 20px 0;
+      }
+
+      .demo-box {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        margin: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .demo-box:hover {
+        transform: scale(1.1);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      .demo-list {
+        list-style: none;
+        padding: 0;
+      }
+
+      .demo-list li {
+        background: white;
+        margin: 10px 0;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .demo-list li:hover {
+        transform: translateX(5px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      }
+
+      .demo-list li.completed {
+        background: #d4edda;
+        border-left-color: #28a745;
+        text-decoration: line-through;
+        opacity: 0.7;
+      }
+
+      .demo-list li.priority {
+        border-left-color: #dc3545;
+        background: #f8d7da;
+      }
+
+      .code-display {
+        background: #2c3e50;
+        color: #ecf0f1;
+        padding: 20px;
+        border-radius: 8px;
+        font-family: 'Courier New', monospace;
+        font-size: 14px;
+        margin: 20px 0;
+        overflow-x: auto;
+        line-height: 1.4;
+      }
+
+      .js-keyword {
+        color: #3498db;
+      }
+      .js-string {
+        color: #e74c3c;
+      }
+      .js-method {
+        color: #2ecc71;
+      }
+      .js-comment {
+        color: #95a5a6;
+      }
+
+      .event-log {
+        background: #343a40;
+        color: #f8f9fa;
+        padding: 15px;
+        border-radius: 6px;
+        font-family: 'Courier New', monospace;
+        font-size: 12px;
+        max-height: 200px;
+        overflow-y: auto;
+        margin: 20px 0;
+      }
+
+      .form-demo {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+      }
+
+      .form-group {
+        margin: 15px 0;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: #495057;
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #dee2e6;
+        border-radius: 6px;
+        font-size: 14px;
+      }
+
+      .validation-error {
+        color: #dc3545;
+        font-size: 12px;
+        margin-top: 5px;
+      }
+
+      .validation-success {
+        color: #28a745;
+        font-size: 12px;
+        margin-top: 5px;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        animation: fadeIn 0.3s ease;
+      }
+
+      .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 30px;
+        border-radius: 8px;
+        width: 80%;
+        max-width: 500px;
+        position: relative;
+        animation: slideIn 0.3s ease;
+      }
+
+      .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: #aaa;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .close:hover {
+        color: #000;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateY(-50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .drag-zone {
+        border: 2px dashed #ccc;
+        border-radius: 8px;
+        padding: 30px;
+        text-align: center;
+        margin: 20px 0;
+        transition: all 0.3s ease;
+      }
+
+      .drag-zone.drag-over {
+        border-color: #667eea;
+        background: rgba(102, 126, 234, 0.1);
+      }
+
+      .draggable {
+        cursor: move;
+        user-select: none;
+      }
+
+      .info-panel {
+        background: #d1ecf1;
+        border: 1px solid #bee5eb;
+        border-left: 4px solid #17a2b8;
+        padding: 15px;
+        border-radius: 4px;
+        margin: 20px 0;
+      }
+
+      .info-panel h4 {
+        color: #0c5460;
+        margin-bottom: 10px;
+      }
+
+      @media (max-width: 768px) {
+        .content {
+          padding: 20px;
+        }
+
+        .controls {
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .btn {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🚀 JavaScript DOM Manipulation</h1>
+        <p>
+          Interactive examples of DOM selection, manipulation, and event
+          handling
+        </p>
+      </div>
+
+      <div class="content">
+        <!-- Element Selection and Manipulation -->
+        <div class="demo-section">
+          <h2>🎯 Element Selection & Manipulation</h2>
+
+          <div class="controls">
+            <button class="btn btn-primary" onclick="addBox()">Add Box</button>
+            <button class="btn btn-danger" onclick="removeBox()">
+              Remove Box
+            </button>
+            <button class="btn btn-success" onclick="changeColors()">
+              Change Colors
+            </button>
+            <button class="btn btn-warning" onclick="animateBoxes()">
+              Animate Boxes
+            </button>
+            <input
+              type="text"
+              id="box-text"
+              placeholder="Enter box text"
+              value="Box"
+            />
+            <input type="color" id="box-color" value="#667eea" />
+          </div>
+
+          <div class="playground" id="box-playground">
+            <div class="demo-box" onclick="selectBox(this)">Box 1</div>
+            <div class="demo-box" onclick="selectBox(this)">Box 2</div>
+            <div class="demo-box" onclick="selectBox(this)">Box 3</div>
+          </div>
+
+          <div class="code-display">
+            <span class="js-comment">// Element selection methods</span>
+            <span class="js-keyword">const</span> element = document.<span
+              class="js-method"
+              >getElementById</span
+            >(<span class="js-string">'myId'</span>);
+            <span class="js-keyword">const</span> elements = document.<span
+              class="js-method"
+              >querySelectorAll</span
+            >(<span class="js-string">'.demo-box'</span>);
+            <span class="js-keyword">const</span> firstBox = document.<span
+              class="js-method"
+              >querySelector</span
+            >(<span class="js-string">'.demo-box'</span>);
+
+            <span class="js-comment">// Manipulating elements</span>
+            element.<span class="js-method">style</span>.backgroundColor =
+            <span class="js-string">'#667eea'</span>; element.<span
+              class="js-method"
+              >textContent</span
+            >
+            = <span class="js-string">'New Text'</span>; element.<span
+              class="js-method"
+              >classList</span
+            >.<span class="js-method">add</span>(<span class="js-string"
+              >'active'</span
+            >);
+          </div>
+
+          <div class="info-panel">
+            <h4>💡 Selection Methods:</h4>
+            <ul>
+              <li>
+                <code>getElementById()</code> - Select by ID (returns single
+                element)
+              </li>
+              <li>
+                <code>querySelector()</code> - Select by CSS selector (returns
+                first match)
+              </li>
+              <li>
+                <code>querySelectorAll()</code> - Select by CSS selector
+                (returns NodeList)
+              </li>
+              <li>
+                <code>getElementsByClassName()</code> - Select by class name
+                (returns HTMLCollection)
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Event Handling -->
+        <div class="demo-section">
+          <h2>🎪 Event Handling</h2>
+
+          <div class="controls">
+            <button class="btn btn-primary" onclick="attachClickEvents()">
+              Attach Click Events
+            </button>
+            <button class="btn btn-secondary" onclick="attachHoverEvents()">
+              Attach Hover Events
+            </button>
+            <button class="btn btn-success" onclick="attachKeyboardEvents()">
+              Keyboard Events
+            </button>
+            <button class="btn btn-warning" onclick="clearEventLog()">
+              Clear Log
+            </button>
+          </div>
+
+          <div class="playground">
+            <div class="demo-box event-box" data-id="1">Click Me</div>
+            <div class="demo-box event-box" data-id="2">Hover Me</div>
+            <div class="demo-box event-box" data-id="3">Double Click</div>
+            <input
+              type="text"
+              id="keyboard-input"
+              placeholder="Type here to see keyboard events"
+              style="width: 100%; margin-top: 20px"
+            />
+          </div>
+
+          <div class="event-log" id="event-log">
+            Event log will appear here...
+          </div>
+
+          <div class="code-display">
+            <span class="js-comment">// Adding event listeners</span>
+            element.<span class="js-method">addEventListener</span>(<span
+              class="js-string"
+              >'click'</span
+            >, <span class="js-keyword">function</span>(event) { console.<span
+              class="js-method"
+              >log</span
+            >(<span class="js-string">'Element clicked!'</span>, event.target);
+            });
+
+            <span class="js-comment">// Modern arrow function syntax</span>
+            element.<span class="js-method">addEventListener</span>(<span
+              class="js-string"
+              >'mouseover'</span
+            >, (e) => { e.target.<span class="js-method">style</span>.transform
+            = <span class="js-string">'scale(1.1)'</span>; });
+
+            <span class="js-comment">// Event object properties</span>
+            <span class="js-keyword">function</span>
+            <span class="js-method">handleClick</span>(event) { event.<span
+              class="js-method"
+              >preventDefault</span
+            >(); event.<span class="js-method">stopPropagation</span>();
+            console.<span class="js-method">log</span>(event.target,
+            event.type); }
+          </div>
+        </div>
+
+        <!-- Dynamic Content Creation -->
+        <div class="demo-section">
+          <h2>🏗️ Dynamic Content Creation</h2>
+
+          <div class="controls">
+            <input type="text" id="todo-input" placeholder="Enter a task" />
+            <button class="btn btn-primary" onclick="addTodoItem()">
+              Add Task
+            </button>
+            <button class="btn btn-secondary" onclick="clearCompleted()">
+              Clear Completed
+            </button>
+            <button class="btn btn-warning" onclick="sortTasks()">
+              Sort A-Z
+            </button>
+          </div>
+
+          <div class="playground">
+            <ul class="demo-list" id="todo-list">
+              <li onclick="toggleTask(this)">
+                Learn JavaScript DOM manipulation
+              </li>
+              <li onclick="toggleTask(this)">Practice with event listeners</li>
+              <li onclick="toggleTask(this)" class="completed">
+                Understand element selection
+              </li>
+            </ul>
+          </div>
+
+          <div class="code-display">
+            <span class="js-comment">// Creating new elements</span>
+            <span class="js-keyword">const</span> newDiv = document.<span
+              class="js-method"
+              >createElement</span
+            >(<span class="js-string">'div'</span>); newDiv.<span
+              class="js-method"
+              >textContent</span
+            >
+            = <span class="js-string">'Hello World'</span>; newDiv.<span
+              class="js-method"
+              >classList</span
+            >.<span class="js-method">add</span>(<span class="js-string"
+              >'demo-box'</span
+            >);
+
+            <span class="js-comment">// Appending to DOM</span>
+            <span class="js-keyword">const</span> container = document.<span
+              class="js-method"
+              >getElementById</span
+            >(<span class="js-string">'container'</span>); container.<span
+              class="js-method"
+              >appendChild</span
+            >(newDiv);
+
+            <span class="js-comment"
+              >// Alternative: innerHTML (be careful with user input!)</span
+            >
+            container.<span class="js-method">innerHTML</span> +=
+            <span class="js-string"
+              >'&lt;div class="demo-box"&gt;New Box&lt;/div&gt;'</span
+            >;
+          </div>
+        </div>
+
+        <!-- Form Handling -->
+        <div class="demo-section">
+          <h2>📋 Form Handling & Validation</h2>
+
+          <div class="form-demo">
+            <form id="demo-form" onsubmit="handleFormSubmit(event)">
+              <div class="form-group">
+                <label for="username">Username:</label>
+                <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  required
+                  minlength="3"
+                />
+                <div class="validation-error" id="username-error"></div>
+              </div>
+
+              <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required />
+                <div class="validation-error" id="email-error"></div>
+              </div>
+
+              <div class="form-group">
+                <label for="age">Age:</label>
+                <input
+                  type="number"
+                  id="age"
+                  name="age"
+                  min="13"
+                  max="120"
+                  required
+                />
+                <div class="validation-error" id="age-error"></div>
+              </div>
+
+              <div class="form-group">
+                <label for="country">Country:</label>
+                <select id="country" name="country" required>
+                  <option value="">Select Country</option>
+                  <option value="us">United States</option>
+                  <option value="ca">Canada</option>
+                  <option value="uk">United Kingdom</option>
+                  <option value="au">Australia</option>
+                </select>
+              </div>
+
+              <div class="controls">
+                <button type="submit" class="btn btn-primary">
+                  Submit Form
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  onclick="validateForm()"
+                >
+                  Validate
+                </button>
+                <button type="reset" class="btn btn-warning">Reset Form</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="code-display">
+            <span class="js-comment">// Form validation</span>
+            <span class="js-keyword">function</span>
+            <span class="js-method">validateForm</span>() {
+            <span class="js-keyword">const</span> form = document.<span
+              class="js-method"
+              >getElementById</span
+            >(<span class="js-string">'demo-form'</span>);
+            <span class="js-keyword">const</span> formData =
+            <span class="js-keyword">new</span>
+            <span class="js-method">FormData</span>(form);
+
+            <span class="js-keyword">for</span> (<span class="js-keyword"
+              >let</span
+            >
+            [key, value] <span class="js-keyword">of</span> formData.entries())
+            { console.<span class="js-method">log</span>(key, value); } }
+
+            <span class="js-comment">// Preventing form submission</span>
+            form.<span class="js-method">addEventListener</span>(<span
+              class="js-string"
+              >'submit'</span
+            >, (e) => { e.<span class="js-method">preventDefault</span>();
+            <span class="js-comment">// Custom validation logic here</span>
+            });
+          </div>
+        </div>
+
+        <!-- Advanced Features -->
+        <div class="demo-section">
+          <h2>🎭 Advanced DOM Features</h2>
+
+          <div class="controls">
+            <button class="btn btn-primary" onclick="openModal()">
+              Open Modal
+            </button>
+            <button class="btn btn-success" onclick="setupDragAndDrop()">
+              Enable Drag & Drop
+            </button>
+            <button class="btn btn-warning" onclick="cloneElement()">
+              Clone Elements
+            </button>
+            <button class="btn btn-secondary" onclick="scrollToElement()">
+              Scroll to Bottom
+            </button>
+          </div>
+
+          <div class="playground">
+            <div class="drag-zone" id="drop-zone">
+              Drop draggable items here
+            </div>
+
+            <div
+              class="demo-box draggable"
+              draggable="true"
+              onclick="makeElementDraggable(this)"
+            >
+              Drag Me
+            </div>
+            <div class="demo-box" id="clone-target">Clone Me</div>
+            <div class="demo-box" id="scroll-target">Scroll Target</div>
+          </div>
+
+          <div class="code-display">
+            <span class="js-comment">// Drag and drop events</span>
+            element.<span class="js-method">addEventListener</span>(<span
+              class="js-string"
+              >'dragstart'</span
+            >, (e) => { e.dataTransfer.<span class="js-method">setData</span
+            >(<span class="js-string">'text/plain'</span>, e.target.id); });
+            dropZone.<span class="js-method">addEventListener</span>(<span
+              class="js-string"
+              >'drop'</span
+            >, (e) => { e.<span class="js-method">preventDefault</span>();
+            <span class="js-keyword">const</span> data = e.dataTransfer.<span
+              class="js-method"
+              >getData</span
+            >(<span class="js-string">'text/plain'</span>);
+            <span class="js-keyword">const</span> draggedElement =
+            document.<span class="js-method">getElementById</span>(data);
+            e.target.<span class="js-method">appendChild</span>(draggedElement);
+            });
+
+            <span class="js-comment">// Cloning elements</span>
+            <span class="js-keyword">const</span> clone = element.<span
+              class="js-method"
+              >cloneNode</span
+            >(<span class="js-keyword">true</span>); container.<span
+              class="js-method"
+              >appendChild</span
+            >(clone);
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="demo-modal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>JavaScript Modal</h2>
+        <p>
+          This modal was created and controlled using JavaScript DOM
+          manipulation!
+        </p>
+        <div style="margin-top: 20px">
+          <button class="btn btn-primary" onclick="closeModal()">
+            Close Modal
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CodeMirror Integration for proper code display -->
+    <script src="../codemirror-integration.js"></script>
+
+    <script>
+      let boxCounter = 3;
+
+      // Element Manipulation Functions
+      function addBox() {
+        boxCounter++;
+        const playground = document.getElementById('box-playground');
+        const newBox = document.createElement('div');
+        const text =
+          document.getElementById('box-text').value || `Box ${boxCounter}`;
+        const color = document.getElementById('box-color').value;
+
+        newBox.className = 'demo-box';
+        newBox.textContent = text;
+        newBox.style.background = color;
+        newBox.onclick = () => selectBox(newBox);
+
+        playground.appendChild(newBox);
+        logEvent(`Added new box: "${text}"`);
+      }
+
+      function removeBox() {
+        const playground = document.getElementById('box-playground');
+        const boxes = playground.querySelectorAll('.demo-box');
+        if (boxes.length > 0) {
+          const lastBox = boxes[boxes.length - 1];
+          playground.removeChild(lastBox);
+          logEvent(`Removed box: "${lastBox.textContent}"`);
+        }
+      }
+
+      function changeColors() {
+        const boxes = document.querySelectorAll('#box-playground .demo-box');
+        const colors = [
+          '#e74c3c',
+          '#3498db',
+          '#2ecc71',
+          '#f39c12',
+          '#9b59b6',
+          '#1abc9c',
+        ];
+
+        boxes.forEach((box, index) => {
+          const randomColor = colors[Math.floor(Math.random() * colors.length)];
+          box.style.background = randomColor;
+        });
+        logEvent('Changed all box colors randomly');
+      }
+
+      function animateBoxes() {
+        const boxes = document.querySelectorAll('#box-playground .demo-box');
+        boxes.forEach((box, index) => {
+          setTimeout(() => {
+            box.style.transform = 'scale(1.2) rotate(360deg)';
+            setTimeout(() => {
+              box.style.transform = 'scale(1) rotate(0deg)';
+            }, 500);
+          }, index * 200);
+        });
+        logEvent('Animated all boxes with staggered timing');
+      }
+
+      function selectBox(box) {
+        // Remove previous selection
+        document.querySelectorAll('.demo-box').forEach((b) => {
+          b.style.border = 'none';
+        });
+
+        // Add selection to clicked box
+        box.style.border = '3px solid #ff6b6b';
+        logEvent(`Selected box: "${box.textContent}"`);
+      }
+
+      // Event Handling Functions
+      function attachClickEvents() {
+        const eventBoxes = document.querySelectorAll('.event-box');
+        eventBoxes.forEach((box) => {
+          box.addEventListener('click', function (e) {
+            const id = this.dataset.id;
+            logEvent(`Click event on box ${id}: "${this.textContent}"`);
+            this.style.background = '#e74c3c';
+            setTimeout(() => {
+              this.style.background = '';
+            }, 500);
+          });
+        });
+        logEvent('Attached click events to all event boxes');
+      }
+
+      function attachHoverEvents() {
+        const eventBoxes = document.querySelectorAll('.event-box');
+        eventBoxes.forEach((box) => {
+          box.addEventListener('mouseenter', function () {
+            this.style.transform = 'scale(1.1)';
+            logEvent(`Mouse enter on: "${this.textContent}"`);
+          });
+
+          box.addEventListener('mouseleave', function () {
+            this.style.transform = 'scale(1)';
+            logEvent(`Mouse leave from: "${this.textContent}"`);
+          });
+        });
+        logEvent('Attached hover events to all event boxes');
+      }
+
+      function attachKeyboardEvents() {
+        const input = document.getElementById('keyboard-input');
+
+        input.addEventListener('keydown', function (e) {
+          logEvent(`Key down: "${e.key}" (Code: ${e.code})`);
+        });
+
+        input.addEventListener('keyup', function (e) {
+          logEvent(`Key up: "${e.key}" - Input value: "${e.target.value}"`);
+        });
+
+        input.focus();
+        logEvent('Attached keyboard events to input field');
+      }
+
+      // Todo List Functions
+      function addTodoItem() {
+        const input = document.getElementById('todo-input');
+        const text = input.value.trim();
+
+        if (text) {
+          const todoList = document.getElementById('todo-list');
+          const newItem = document.createElement('li');
+          newItem.textContent = text;
+          newItem.onclick = () => toggleTask(newItem);
+
+          todoList.appendChild(newItem);
+          input.value = '';
+          logEvent(`Added todo item: "${text}"`);
+        }
+      }
+
+      function toggleTask(item) {
+        item.classList.toggle('completed');
+        const action = item.classList.contains('completed')
+          ? 'completed'
+          : 'uncompleted';
+        logEvent(`Task ${action}: "${item.textContent}"`);
+      }
+
+      function clearCompleted() {
+        const completedTasks = document.querySelectorAll(
+          '#todo-list .completed'
+        );
+        completedTasks.forEach((task) => {
+          task.parentNode.removeChild(task);
+        });
+        logEvent(`Cleared ${completedTasks.length} completed tasks`);
+      }
+
+      function sortTasks() {
+        const todoList = document.getElementById('todo-list');
+        const tasks = Array.from(todoList.children);
+
+        tasks.sort((a, b) => a.textContent.localeCompare(b.textContent));
+
+        tasks.forEach((task) => todoList.appendChild(task));
+        logEvent('Sorted tasks alphabetically');
+      }
+
+      // Form Handling Functions
+      function handleFormSubmit(event) {
+        event.preventDefault();
+
+        if (validateForm()) {
+          const formData = new FormData(event.target);
+          let data = {};
+
+          for (let [key, value] of formData.entries()) {
+            data[key] = value;
+          }
+
+          logEvent(`Form submitted with data: ${JSON.stringify(data)}`);
+          alert(
+            'Form submitted successfully! Check the event log for details.'
+          );
+        } else {
+          logEvent('Form submission failed validation');
+        }
+      }
+
+      function validateForm() {
+        const form = document.getElementById('demo-form');
+        const elements = form.elements;
+        let isValid = true;
+
+        // Clear previous errors
+        document.querySelectorAll('.validation-error').forEach((error) => {
+          error.textContent = '';
+        });
+
+        // Validate username
+        const username = elements.username;
+        if (username.value.length < 3) {
+          document.getElementById('username-error').textContent =
+            'Username must be at least 3 characters';
+          isValid = false;
+        }
+
+        // Validate email
+        const email = elements.email;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email.value)) {
+          document.getElementById('email-error').textContent =
+            'Please enter a valid email address';
+          isValid = false;
+        }
+
+        // Validate age
+        const age = elements.age;
+        if (age.value < 13 || age.value > 120) {
+          document.getElementById('age-error').textContent =
+            'Age must be between 13 and 120';
+          isValid = false;
+        }
+
+        logEvent(`Form validation ${isValid ? 'passed' : 'failed'}`);
+        return isValid;
+      }
+
+      // Advanced Features
+      function openModal() {
+        document.getElementById('demo-modal').style.display = 'block';
+        logEvent('Opened modal dialog');
+      }
+
+      function closeModal() {
+        document.getElementById('demo-modal').style.display = 'none';
+        logEvent('Closed modal dialog');
+      }
+
+      function setupDragAndDrop() {
+        const draggables = document.querySelectorAll('.draggable');
+        const dropZone = document.getElementById('drop-zone');
+
+        draggables.forEach((item) => {
+          item.addEventListener('dragstart', function (e) {
+            e.dataTransfer.setData('text/plain', this.textContent);
+            logEvent(`Started dragging: "${this.textContent}"`);
+          });
+        });
+
+        dropZone.addEventListener('dragover', function (e) {
+          e.preventDefault();
+          this.classList.add('drag-over');
+        });
+
+        dropZone.addEventListener('dragleave', function () {
+          this.classList.remove('drag-over');
+        });
+
+        dropZone.addEventListener('drop', function (e) {
+          e.preventDefault();
+          this.classList.remove('drag-over');
+          const data = e.dataTransfer.getData('text/plain');
+          this.innerHTML += `<div class="demo-box" style="margin: 5px; display: inline-flex;">${data}</div>`;
+          logEvent(`Dropped item: "${data}"`);
+        });
+
+        logEvent('Enabled drag and drop functionality');
+      }
+
+      function cloneElement() {
+        const target = document.getElementById('clone-target');
+        const clone = target.cloneNode(true);
+        clone.id = 'clone-target-' + Date.now();
+        clone.textContent = 'Cloned!';
+        clone.style.background = '#e74c3c';
+
+        target.parentNode.insertBefore(clone, target.nextSibling);
+        logEvent('Cloned element successfully');
+      }
+
+      function scrollToElement() {
+        const target = document.getElementById('scroll-target');
+        target.scrollIntoView({ behavior: 'smooth' });
+        logEvent('Scrolled to target element');
+      }
+
+      // Utility Functions
+      function logEvent(message) {
+        const log = document.getElementById('event-log');
+        const timestamp = new Date().toLocaleTimeString();
+        log.innerHTML += `\n[${timestamp}] ${message}`;
+        log.scrollTop = log.scrollHeight;
+      }
+
+      function clearEventLog() {
+        document.getElementById('event-log').innerHTML = 'Event log cleared...';
+      }
+
+      // Initialize on page load
+      document.addEventListener('DOMContentLoaded', function () {
+        logEvent('DOM fully loaded and parsed');
+
+        // Add Enter key support for todo input
+        document
+          .getElementById('todo-input')
+          .addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+              addTodoItem();
+            }
+          });
+
+        // Close modal when clicking outside
+        document
+          .getElementById('demo-modal')
+          .addEventListener('click', function (e) {
+            if (e.target === this) {
+              closeModal();
+            }
+          });
+
+        console.log('🚀 JavaScript DOM Manipulation Demo loaded!');
+        console.log(
+          'Try the different interactive features to see DOM manipulation in action!'
+        );
+      });
+    </script>
+  </body>
+</html>

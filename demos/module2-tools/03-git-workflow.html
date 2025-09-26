@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Git Version Control Workflow</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: #f6f8fa;
+        color: #24292f;
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .git-workflow {
+        background: white;
+        border-radius: 8px;
+        padding: 30px;
+        margin: 20px 0;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        border: 1px solid #d1d9e0;
+      }
+
+      .commit-graph {
+        display: flex;
+        align-items: center;
+        margin: 20px 0;
+        font-family: 'Fira Code', monospace;
+        font-size: 14px;
+      }
+
+      .commit-node {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #0969da;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+        margin-right: 15px;
+        flex-shrink: 0;
+      }
+
+      .branch-line {
+        height: 2px;
+        background: #0969da;
+        flex: 1;
+        margin-right: 15px;
+      }
+
+      .commit-message {
+        flex: 2;
+        color: #656d76;
+      }
+
+      .command-demo {
+        background: #0d1117;
+        color: #f0f6fc;
+        padding: 20px;
+        border-radius: 6px;
+        margin: 20px 0;
+        font-family: 'Fira Code', monospace;
+        font-size: 14px;
+        position: relative;
+        overflow-x: auto;
+      }
+
+      .command-demo::before {
+        content: 'Terminal';
+        position: absolute;
+        top: -10px;
+        left: 15px;
+        background: #0d1117;
+        padding: 0 10px;
+        font-size: 12px;
+        color: #7d8590;
+      }
+
+      .git-command {
+        color: #58a6ff;
+        font-weight: bold;
+      }
+
+      .git-output {
+        color: #3fb950;
+        margin: 10px 0;
+      }
+
+      .git-error {
+        color: #f85149;
+      }
+
+      .workflow-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin: 30px 0;
+      }
+
+      .workflow-card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        border-left: 4px solid #0969da;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .status-indicator {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: 8px;
+      }
+
+      .modified {
+        background: #fb8500;
+      }
+      .added {
+        background: #3fb950;
+      }
+      .deleted {
+        background: #f85149;
+      }
+      .untracked {
+        background: #7d8590;
+      }
+
+      .interactive-git {
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        margin: 30px 0;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+
+      .git-stage {
+        display: inline-block;
+        margin: 20px;
+        padding: 20px;
+        background: #f6f8fa;
+        border-radius: 8px;
+        border: 2px solid #d1d9e0;
+        min-width: 150px;
+        vertical-align: top;
+      }
+
+      .working-directory {
+        border-color: #fb8500;
+      }
+      .staging-area {
+        border-color: #0969da;
+      }
+      .repository {
+        border-color: #3fb950;
+      }
+
+      .file-item {
+        background: white;
+        padding: 8px 12px;
+        margin: 5px 0;
+        border-radius: 4px;
+        border-left: 4px solid #d1d9e0;
+        font-family: monospace;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .file-item:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .action-btn {
+        padding: 8px 16px;
+        background: #0969da;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        margin: 5px;
+        transition: background 0.2s;
+      }
+
+      .action-btn:hover {
+        background: #0860ca;
+      }
+
+      .action-btn.secondary {
+        background: #6e7681;
+      }
+
+      .action-btn.secondary:hover {
+        background: #656d76;
+      }
+
+      .github-section {
+        background: linear-gradient(135deg, #24292f, #0d1117);
+        color: white;
+        padding: 40px;
+        border-radius: 8px;
+        margin: 30px 0;
+        text-align: center;
+      }
+
+      .branch-diagram {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        margin: 30px 0;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+
+      .branch {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 120px;
+      }
+
+      .branch-name {
+        background: #0969da;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .branch-commits {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .mini-commit {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #0969da;
+        margin: 0 auto;
+      }
+
+      .tips-section {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        border-left: 4px solid #fdcb6e;
+        padding: 20px;
+        border-radius: 6px;
+        margin: 30px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🌱 Git Version Control Mastery</h1>
+      <p>
+        Learn the essential Git workflow that every web developer needs to
+        master.
+      </p>
+
+      <div class="git-workflow">
+        <h2>📊 Git Commit History Visualization</h2>
+        <div class="commit-graph">
+          <div class="commit-node">A</div>
+          <div class="branch-line"></div>
+          <div class="commit-message">
+            Initial commit - Add project structure
+          </div>
+        </div>
+        <div class="commit-graph">
+          <div class="commit-node">B</div>
+          <div class="branch-line"></div>
+          <div class="commit-message">Add HTML structure and basic styles</div>
+        </div>
+        <div class="commit-graph">
+          <div class="commit-node">C</div>
+          <div class="branch-line"></div>
+          <div class="commit-message">Implement responsive navigation</div>
+        </div>
+        <div class="commit-graph">
+          <div class="commit-node">D</div>
+          <div class="branch-line"></div>
+          <div class="commit-message">Add JavaScript interactivity</div>
+        </div>
+        <div class="commit-graph">
+          <div class="commit-node">E</div>
+          <div class="branch-line"></div>
+          <div class="commit-message">Fix mobile layout issues</div>
+        </div>
+      </div>
+
+      <h2>🔄 The Git Workflow</h2>
+      <div class="interactive-git">
+        <h3>Interactive Git Staging Demo</h3>
+        <p>Click files to move them through the Git workflow stages</p>
+
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+          "
+        >
+          <div class="git-stage working-directory">
+            <h4>Working Directory</h4>
+            <p style="font-size: 12px; color: #656d76">Modified files</p>
+            <div id="working-files">
+              <div class="file-item" onclick="stageFile(this)">
+                <span class="status-indicator modified"></span>
+                index.html
+              </div>
+              <div class="file-item" onclick="stageFile(this)">
+                <span class="status-indicator untracked"></span>
+                script.js
+              </div>
+              <div class="file-item" onclick="stageFile(this)">
+                <span class="status-indicator modified"></span>
+                style.css
+              </div>
+            </div>
+            <button class="action-btn" onclick="stageAll()">git add .</button>
+          </div>
+
+          <div class="git-stage staging-area">
+            <h4>Staging Area</h4>
+            <p style="font-size: 12px; color: #656d76">Ready to commit</p>
+            <div id="staged-files">
+              <!-- Files will be moved here -->
+            </div>
+            <button class="action-btn" onclick="commitFiles()">
+              git commit
+            </button>
+            <button class="action-btn secondary" onclick="unstageAll()">
+              git reset
+            </button>
+          </div>
+
+          <div class="git-stage repository">
+            <h4>Repository</h4>
+            <p style="font-size: 12px; color: #656d76">Committed changes</p>
+            <div id="committed-files">
+              <!-- Committed files will appear here -->
+            </div>
+            <button class="action-btn" onclick="pushChanges()">git push</button>
+          </div>
+        </div>
+      </div>
+
+      <h2>💻 Essential Git Commands</h2>
+      <div class="workflow-grid">
+        <div class="workflow-card">
+          <h3>Repository Setup</h3>
+          <div class="command-demo">
+            <span class="git-command">git init</span>
+            <div class="git-output">
+              Initialized empty Git repository in /project/.git/
+            </div>
+
+            <span class="git-command"
+              >git clone https://github.com/username/repo.git</span
+            >
+            <div class="git-output">Cloning into 'repo'...</div>
+
+            <span class="git-command"
+              >git remote add origin https://github.com/username/repo.git</span
+            >
+          </div>
+        </div>
+
+        <div class="workflow-card">
+          <h3>Daily Workflow</h3>
+          <div class="command-demo">
+            <span class="git-command">git status</span>
+            <div class="git-output">
+              On branch main Changes not staged for commit: modified: style.css
+            </div>
+
+            <span class="git-command">git add style.css</span>
+            <span class="git-command"
+              >git commit -m "Update button styles"</span
+            >
+            <div class="git-output">
+              [main a1b2c3d] Update button styles 1 file changed, 5
+              insertions(+), 2 deletions(-)
+            </div>
+          </div>
+        </div>
+
+        <div class="workflow-card">
+          <h3>Viewing History</h3>
+          <div class="command-demo">
+            <span class="git-command">git log --oneline</span>
+            <div class="git-output">
+              a1b2c3d Update button styles e4f5g6h Add responsive navigation
+              i7j8k9l Initial commit
+            </div>
+
+            <span class="git-command">git diff</span>
+            <span class="git-command">git show a1b2c3d</span>
+          </div>
+        </div>
+
+        <div class="workflow-card">
+          <h3>Branching</h3>
+          <div class="command-demo">
+            <span class="git-command">git branch feature-navbar</span>
+            <span class="git-command">git checkout feature-navbar</span>
+            <div class="git-output">Switched to branch 'feature-navbar'</div>
+
+            <span class="git-command">git checkout -b feature-footer</span>
+            <div class="git-output">
+              Switched to a new branch 'feature-footer'
+            </div>
+
+            <span class="git-command">git merge feature-navbar</span>
+          </div>
+        </div>
+
+        <div class="workflow-card">
+          <h3>Remote Operations</h3>
+          <div class="command-demo">
+            <span class="git-command">git pull origin main</span>
+            <div class="git-output">Already up to date.</div>
+
+            <span class="git-command">git push origin main</span>
+            <div class="git-output">
+              Counting objects: 3, done. Writing objects: 100%, 3 objects | 0
+              bytes/s, done. Total 3 (delta 0), reused 0 (delta 0)
+            </div>
+
+            <span class="git-command">git fetch</span>
+          </div>
+        </div>
+
+        <div class="workflow-card">
+          <h3>Undoing Changes</h3>
+          <div class="command-demo">
+            <span class="git-command">git checkout -- filename.txt</span>
+            <span class="git-command">git reset HEAD filename.txt</span>
+            <span class="git-command">git commit --amend</span>
+            <span class="git-command">git revert a1b2c3d</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="github-section">
+        <h2>🐙 GitHub Integration</h2>
+        <p>
+          Connect your local Git repository with GitHub for collaboration and
+          backup
+        </p>
+
+        <div class="branch-diagram">
+          <div class="branch">
+            <div class="branch-name">main</div>
+            <div class="branch-commits">
+              <div class="mini-commit"></div>
+              <div class="mini-commit"></div>
+              <div class="mini-commit"></div>
+              <div class="mini-commit"></div>
+            </div>
+          </div>
+
+          <div class="branch">
+            <div class="branch-name">feature-1</div>
+            <div class="branch-commits">
+              <div class="mini-commit"></div>
+              <div class="mini-commit"></div>
+            </div>
+          </div>
+
+          <div class="branch">
+            <div class="branch-name">feature-2</div>
+            <div class="branch-commits">
+              <div class="mini-commit"></div>
+              <div class="mini-commit"></div>
+              <div class="mini-commit"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="command-demo">
+          <span class="git-command"
+            ># Create a new repository on GitHub first, then:</span
+          >
+          <span class="git-command"
+            >git remote add origin
+            https://github.com/username/my-project.git</span
+          >
+          <span class="git-command">git branch -M main</span>
+          <span class="git-command">git push -u origin main</span>
+          <div class="git-output">
+            Enumerating objects: 12, done. Counting objects: 100%, done. Writing
+            objects: 100%, 12 objects | 1.20 MB/s, done. Total 12 (delta 0),
+            reused 0 (delta 0), pack-reused 0 To
+            https://github.com/username/my-project.git * [new branch] main ->
+            main Branch 'main' set up to track remote branch 'main' from
+            'origin'.
+          </div>
+        </div>
+      </div>
+
+      <div class="tips-section">
+        <h3>💡 Git Best Practices</h3>
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+          "
+        >
+          <div>
+            <h4>🎯 Commit Messages</h4>
+            <ul>
+              <li>Use present tense: "Add feature" not "Added feature"</li>
+              <li>Keep first line under 50 characters</li>
+              <li>Be descriptive and specific</li>
+              <li>Reference issue numbers when applicable</li>
+            </ul>
+          </div>
+          <div>
+            <h4>🌿 Branching Strategy</h4>
+            <ul>
+              <li>Use descriptive branch names</li>
+              <li>Keep main branch stable</li>
+              <li>Create feature branches for new work</li>
+              <li>Delete merged branches</li>
+            </ul>
+          </div>
+          <div>
+            <h4>🔄 Workflow Tips</h4>
+            <ul>
+              <li>Commit early and often</li>
+              <li>Pull before pushing</li>
+              <li>Review changes before committing</li>
+              <li>Use .gitignore for unwanted files</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function stageFile(fileElement) {
+        const stagedArea = document.getElementById('staged-files');
+        const clonedFile = fileElement.cloneNode(true);
+        clonedFile.onclick = () => unstageFile(clonedFile);
+
+        // Change status indicator to staged (green)
+        const indicator = clonedFile.querySelector('.status-indicator');
+        indicator.classList.remove('modified', 'untracked');
+        indicator.classList.add('added');
+
+        stagedArea.appendChild(clonedFile);
+        fileElement.remove();
+
+        updateStatus('File staged for commit');
+      }
+
+      function unstageFile(fileElement) {
+        const workingArea = document.getElementById('working-files');
+        const clonedFile = fileElement.cloneNode(true);
+        clonedFile.onclick = () => stageFile(clonedFile);
+
+        // Restore original status
+        const indicator = clonedFile.querySelector('.status-indicator');
+        indicator.classList.remove('added');
+        indicator.classList.add('modified');
+
+        workingArea.appendChild(clonedFile);
+        fileElement.remove();
+
+        updateStatus('File unstaged');
+      }
+
+      function stageAll() {
+        const workingFiles = document.querySelectorAll(
+          '#working-files .file-item'
+        );
+        workingFiles.forEach((file) => stageFile(file));
+        updateStatus('All files staged');
+      }
+
+      function unstageAll() {
+        const stagedFiles = document.querySelectorAll(
+          '#staged-files .file-item'
+        );
+        stagedFiles.forEach((file) => unstageFile(file));
+        updateStatus('All files unstaged');
+      }
+
+      function commitFiles() {
+        const stagedFiles = document.querySelectorAll(
+          '#staged-files .file-item'
+        );
+        const committedArea = document.getElementById('committed-files');
+
+        if (stagedFiles.length === 0) {
+          updateStatus('No files to commit', 'error');
+          return;
+        }
+
+        const commitMessage = prompt('Enter commit message:') || 'Update files';
+
+        stagedFiles.forEach((file) => {
+          const committedFile = file.cloneNode(true);
+          committedFile.onclick = null;
+          committedFile.style.opacity = '0.7';
+          committedFile.title = `Committed: ${commitMessage}`;
+
+          // Change to committed status
+          const indicator = committedFile.querySelector('.status-indicator');
+          indicator.style.background = '#3fb950';
+
+          committedArea.appendChild(committedFile);
+          file.remove();
+        });
+
+        updateStatus(`Committed with message: "${commitMessage}"`);
+      }
+
+      function pushChanges() {
+        const committedFiles = document.querySelectorAll(
+          '#committed-files .file-item'
+        );
+
+        if (committedFiles.length === 0) {
+          updateStatus('No commits to push', 'error');
+          return;
+        }
+
+        updateStatus('Changes pushed to remote repository! 🚀');
+
+        // Simulate clearing committed files after push
+        setTimeout(() => {
+          committedFiles.forEach((file) => file.remove());
+          updateStatus('Repository synchronized');
+        }, 2000);
+      }
+
+      function updateStatus(message, type = 'success') {
+        const statusDiv =
+          document.getElementById('status-message') || createStatusDiv();
+        statusDiv.textContent = message;
+        statusDiv.className = `status-message ${type}`;
+
+        setTimeout(() => {
+          statusDiv.style.opacity = '0';
+        }, 3000);
+      }
+
+      function createStatusDiv() {
+        const statusDiv = document.createElement('div');
+        statusDiv.id = 'status-message';
+        statusDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 10px 20px;
+                background: #3fb950;
+                color: white;
+                border-radius: 4px;
+                z-index: 1000;
+                transition: opacity 0.3s;
+            `;
+        document.body.appendChild(statusDiv);
+        return statusDiv;
+      }
+
+      // Initialize demo
+      document.addEventListener('DOMContentLoaded', () => {
+        console.log('🌱 Git Workflow Demo loaded!');
+        console.log('Try the interactive Git staging area above!');
+      });
+    </script>
+  </body>
+</html>

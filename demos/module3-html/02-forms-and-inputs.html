@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive HTML Forms Demo</title>
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #333;
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .header {
+        background: #2c3e50;
+        color: white;
+        padding: 30px;
+        text-align: center;
+      }
+
+      .header h1 {
+        margin: 0;
+        font-size: 2.5em;
+      }
+
+      .content {
+        padding: 40px;
+      }
+
+      .form-section {
+        margin: 40px 0;
+        padding: 30px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        background: #f8f9fa;
+      }
+
+      .form-section h2 {
+        color: #2c3e50;
+        margin-top: 0;
+        border-bottom: 3px solid #667eea;
+        padding-bottom: 10px;
+      }
+
+      .form-group {
+        margin: 20px 0;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #495057;
+      }
+
+      input,
+      textarea,
+      select {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #dee2e6;
+        border-radius: 6px;
+        font-size: 16px;
+        transition: all 0.3s;
+        box-sizing: border-box;
+      }
+
+      input:focus,
+      textarea:focus,
+      select:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      input:valid {
+        border-color: #28a745;
+      }
+
+      input:invalid:not(:placeholder-shown) {
+        border-color: #dc3545;
+      }
+
+      .checkbox-group,
+      .radio-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+
+      .checkbox-item,
+      .radio-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .checkbox-item input,
+      .radio-item input {
+        width: auto;
+        margin: 0;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+        flex-wrap: wrap;
+      }
+
+      button {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .btn-primary {
+        background: #667eea;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #5a6fd8;
+        transform: translateY(-2px);
+      }
+
+      .btn-secondary {
+        background: #6c757d;
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        background: #5a6268;
+      }
+
+      .btn-success {
+        background: #28a745;
+        color: white;
+      }
+
+      .btn-success:hover {
+        background: #218838;
+      }
+
+      .form-output {
+        background: #e9ecef;
+        padding: 20px;
+        border-radius: 6px;
+        margin-top: 20px;
+        font-family: 'Courier New', monospace;
+        font-size: 14px;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+
+      .validation-message {
+        color: #dc3545;
+        font-size: 14px;
+        margin-top: 5px;
+      }
+
+      .success-message {
+        color: #28a745;
+        font-size: 14px;
+        margin-top: 5px;
+      }
+
+      .form-demo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin: 30px 0;
+      }
+
+      .input-type-demo {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+      }
+
+      .input-type-demo h3 {
+        color: #495057;
+        margin-top: 0;
+      }
+
+      .code-snippet {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 4px;
+        padding: 10px;
+        font-family: 'Courier New', monospace;
+        font-size: 12px;
+        margin-top: 10px;
+        color: #495057;
+      }
+
+      .accessibility-info {
+        background: #d1ecf1;
+        border: 1px solid #bee5eb;
+        border-left: 4px solid #17a2b8;
+        padding: 15px;
+        border-radius: 4px;
+        margin: 20px 0;
+      }
+
+      .accessibility-info h4 {
+        color: #0c5460;
+        margin-top: 0;
+      }
+
+      .required {
+        color: #dc3545;
+      }
+
+      fieldset {
+        border: 2px solid #dee2e6;
+        padding: 20px;
+        margin: 20px 0;
+        border-radius: 6px;
+        background: white;
+      }
+
+      legend {
+        padding: 0 10px;
+        font-weight: 600;
+        color: #495057;
+      }
+
+      .range-output {
+        display: inline-block;
+        font-weight: bold;
+        color: #667eea;
+      }
+
+      @media (max-width: 768px) {
+        .content {
+          padding: 20px;
+        }
+
+        .button-group {
+          flex-direction: column;
+        }
+
+        button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>📝 Interactive HTML Forms Demo</h1>
+        <p>
+          Explore modern form elements, validation, and accessibility features
+        </p>
+      </div>
+
+      <div class="content">
+        <!-- Basic Form Elements -->
+        <div class="form-section">
+          <h2>📋 Contact Form with Validation</h2>
+          <form id="contactForm" novalidate>
+            <div class="form-group">
+              <label for="fullName"
+                >Full Name <span class="required">*</span></label
+              >
+              <input
+                type="text"
+                id="fullName"
+                name="fullName"
+                required
+                placeholder="Enter your full name"
+                minlength="2"
+                maxlength="50"
+              />
+              <div class="validation-message" id="fullNameError"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="email"
+                >Email Address <span class="required">*</span></label
+              >
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                placeholder="your.email@example.com"
+              />
+              <div class="validation-message" id="emailError"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Phone Number</label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                placeholder="+1 (555) 123-4567"
+                pattern="[+]?[0-9\s\-\(\)]+"
+              />
+              <div class="validation-message" id="phoneError"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="website">Website</label>
+              <input
+                type="url"
+                id="website"
+                name="website"
+                placeholder="https://your-website.com"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="message"
+                >Message <span class="required">*</span></label
+              >
+              <textarea
+                id="message"
+                name="message"
+                rows="5"
+                required
+                placeholder="Tell us about your project..."
+                minlength="10"
+                maxlength="500"
+              ></textarea>
+              <div class="validation-message" id="messageError"></div>
+            </div>
+
+            <div class="button-group">
+              <button type="submit" class="btn-primary">Send Message</button>
+              <button type="reset" class="btn-secondary">Clear Form</button>
+            </div>
+          </form>
+
+          <div class="accessibility-info">
+            <h4>♿ Accessibility Features</h4>
+            <ul>
+              <li>
+                All inputs have associated labels with
+                <code>for</code> attributes
+              </li>
+              <li>
+                Required fields are marked with <code>required</code> attribute
+              </li>
+              <li>Validation messages provide clear feedback</li>
+              <li>Tab navigation works properly through all elements</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- HTML5 Input Types -->
+        <div class="form-section">
+          <h2>🎛️ HTML5 Input Types</h2>
+          <div class="form-demo-grid">
+            <div class="input-type-demo">
+              <h3>Date & Time</h3>
+              <label for="birthdate">Birth Date:</label>
+              <input type="date" id="birthdate" name="birthdate" />
+
+              <label for="meetingTime">Meeting Time:</label>
+              <input
+                type="datetime-local"
+                id="meetingTime"
+                name="meetingTime"
+              />
+
+              <label for="month">Favorite Month:</label>
+              <input type="month" id="month" name="month" />
+
+              <div class="code-snippet">
+                &lt;input type="date"&gt; &lt;input type="datetime-local"&gt;
+                &lt;input type="month"&gt;
+              </div>
+            </div>
+
+            <div class="input-type-demo">
+              <h3>Numbers & Ranges</h3>
+              <label for="age">Age:</label>
+              <input
+                type="number"
+                id="age"
+                name="age"
+                min="18"
+                max="120"
+                value="25"
+              />
+
+              <label for="experience"
+                >Experience (years):
+                <span class="range-output" id="expValue">5</span></label
+              >
+              <input
+                type="range"
+                id="experience"
+                name="experience"
+                min="0"
+                max="20"
+                value="5"
+                oninput="document.getElementById('expValue').textContent = this.value"
+              />
+
+              <label for="salary">Salary Range:</label>
+              <input
+                type="range"
+                id="salary"
+                name="salary"
+                min="30000"
+                max="200000"
+                value="75000"
+                step="5000"
+              />
+
+              <div class="code-snippet">
+                &lt;input type="number" min="18" max="120"&gt; &lt;input
+                type="range" min="0" max="20"&gt;
+              </div>
+            </div>
+
+            <div class="input-type-demo">
+              <h3>Colors & Files</h3>
+              <label for="favColor">Favorite Color:</label>
+              <input
+                type="color"
+                id="favColor"
+                name="favColor"
+                value="#667eea"
+              />
+
+              <label for="profilePic">Profile Picture:</label>
+              <input
+                type="file"
+                id="profilePic"
+                name="profilePic"
+                accept="image/*"
+              />
+
+              <label for="documents">Documents:</label>
+              <input
+                type="file"
+                id="documents"
+                name="documents"
+                multiple
+                accept=".pdf,.doc,.docx"
+              />
+
+              <div class="code-snippet">
+                &lt;input type="color"&gt; &lt;input type="file"
+                accept="image/*"&gt; &lt;input type="file" multiple&gt;
+              </div>
+            </div>
+
+            <div class="input-type-demo">
+              <h3>Search & Password</h3>
+              <label for="search">Search:</label>
+              <input
+                type="search"
+                id="search"
+                name="search"
+                placeholder="Search products..."
+              />
+
+              <label for="password">Password:</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter secure password"
+                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                title="Must contain at least one number, one uppercase and lowercase letter, and at least 8 characters"
+              />
+
+              <div class="code-snippet">
+                &lt;input type="search"&gt; &lt;input type="password"
+                pattern="..."&gt;
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Controls -->
+        <div class="form-section">
+          <h2>🎚️ Form Controls & Grouping</h2>
+
+          <fieldset>
+            <legend>Personal Preferences</legend>
+
+            <div class="form-group">
+              <label for="country">Country:</label>
+              <select id="country" name="country" required>
+                <option value="">Select your country</option>
+                <option value="us">United States</option>
+                <option value="ca">Canada</option>
+                <option value="uk">United Kingdom</option>
+                <option value="au">Australia</option>
+                <option value="de">Germany</option>
+                <option value="fr">France</option>
+                <option value="jp">Japan</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Programming Languages (check all that apply):</label>
+              <div class="checkbox-group">
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="html"
+                    name="languages"
+                    value="html"
+                  />
+                  <label for="html">HTML</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="css"
+                    name="languages"
+                    value="css"
+                  />
+                  <label for="css">CSS</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="javascript"
+                    name="languages"
+                    value="javascript"
+                  />
+                  <label for="javascript">JavaScript</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="python"
+                    name="languages"
+                    value="python"
+                  />
+                  <label for="python">Python</label>
+                </div>
+                <div class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    id="java"
+                    name="languages"
+                    value="java"
+                  />
+                  <label for="java">Java</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Experience Level:</label>
+              <div class="radio-group">
+                <div class="radio-item">
+                  <input
+                    type="radio"
+                    id="beginner"
+                    name="level"
+                    value="beginner"
+                  />
+                  <label for="beginner">Beginner</label>
+                </div>
+                <div class="radio-item">
+                  <input
+                    type="radio"
+                    id="intermediate"
+                    name="level"
+                    value="intermediate"
+                  />
+                  <label for="intermediate">Intermediate</label>
+                </div>
+                <div class="radio-item">
+                  <input
+                    type="radio"
+                    id="advanced"
+                    name="level"
+                    value="advanced"
+                  />
+                  <label for="advanced">Advanced</label>
+                </div>
+                <div class="radio-item">
+                  <input type="radio" id="expert" name="level" value="expert" />
+                  <label for="expert">Expert</label>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+
+          <div class="button-group">
+            <button type="button" class="btn-success" onclick="showFormData()">
+              Show Form Data
+            </button>
+            <button
+              type="button"
+              class="btn-secondary"
+              onclick="clearFormData()"
+            >
+              Clear Data
+            </button>
+          </div>
+
+          <div class="form-output" id="formOutput" style="display: none">
+            <h4>Form Data:</h4>
+            <pre id="formData"></pre>
+          </div>
+        </div>
+
+        <!-- Validation Demo -->
+        <div class="form-section">
+          <h2>✅ Advanced Form Validation</h2>
+          <form id="validationDemo" novalidate>
+            <div class="form-group">
+              <label for="username"
+                >Username (3-15 characters, alphanumeric only):</label
+              >
+              <input
+                type="text"
+                id="username"
+                name="username"
+                pattern="[a-zA-Z0-9]{3,15}"
+                title="Username must be 3-15 characters, letters and numbers only"
+                required
+              />
+              <div class="validation-message" id="usernameError"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="confirmPassword">Confirm Password:</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                required
+              />
+              <div class="validation-message" id="confirmPasswordError"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="creditCard">Credit Card Number:</label>
+              <input
+                type="text"
+                id="creditCard"
+                name="creditCard"
+                pattern="[0-9\s]{13,19}"
+                placeholder="1234 5678 9012 3456"
+                title="Enter a valid credit card number"
+              />
+              <div class="validation-message" id="creditCardError"></div>
+            </div>
+
+            <div class="form-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="terms" name="terms" required />
+                <label for="terms"
+                  >I agree to the terms and conditions
+                  <span class="required">*</span></label
+                >
+              </div>
+              <div class="validation-message" id="termsError"></div>
+            </div>
+
+            <div class="button-group">
+              <button type="submit" class="btn-primary">
+                Validate & Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Form validation functions
+      function validateField(field, errorElementId, customMessage = null) {
+        const errorElement = document.getElementById(errorElementId);
+
+        if (!field.validity.valid) {
+          let message = customMessage || field.validationMessage;
+
+          if (field.validity.valueMissing) {
+            message = 'This field is required.';
+          } else if (field.validity.typeMismatch) {
+            if (field.type === 'email') {
+              message = 'Please enter a valid email address.';
+            } else if (field.type === 'url') {
+              message = 'Please enter a valid URL.';
+            }
+          } else if (field.validity.patternMismatch) {
+            message = field.title || 'Please match the requested format.';
+          } else if (field.validity.tooShort) {
+            message = `Please enter at least ${field.minLength} characters.`;
+          } else if (field.validity.tooLong) {
+            message = `Please enter no more than ${field.maxLength} characters.`;
+          }
+
+          errorElement.textContent = message;
+          errorElement.style.display = 'block';
+          return false;
+        } else {
+          errorElement.textContent = '';
+          errorElement.style.display = 'none';
+          return true;
+        }
+      }
+
+      // Contact form validation
+      document
+        .getElementById('contactForm')
+        .addEventListener('submit', function (e) {
+          e.preventDefault();
+
+          const fullName = document.getElementById('fullName');
+          const email = document.getElementById('email');
+          const phone = document.getElementById('phone');
+          const message = document.getElementById('message');
+
+          let isValid = true;
+
+          isValid &= validateField(fullName, 'fullNameError');
+          isValid &= validateField(email, 'emailError');
+
+          if (phone.value && !phone.validity.valid) {
+            isValid &= validateField(phone, 'phoneError');
+          } else {
+            document.getElementById('phoneError').style.display = 'none';
+          }
+
+          isValid &= validateField(message, 'messageError');
+
+          if (isValid) {
+            alert('Form submitted successfully! 🎉\n(This is just a demo)');
+            this.reset();
+          }
+        });
+
+      // Validation demo form
+      document
+        .getElementById('validationDemo')
+        .addEventListener('submit', function (e) {
+          e.preventDefault();
+
+          const username = document.getElementById('username');
+          const password = document.getElementById('password');
+          const confirmPassword = document.getElementById('confirmPassword');
+          const creditCard = document.getElementById('creditCard');
+          const terms = document.getElementById('terms');
+
+          let isValid = true;
+
+          isValid &= validateField(username, 'usernameError');
+
+          // Custom password confirmation validation
+          if (password.value !== confirmPassword.value) {
+            document.getElementById('confirmPasswordError').textContent =
+              'Passwords do not match.';
+            document.getElementById('confirmPasswordError').style.display =
+              'block';
+            isValid = false;
+          } else {
+            document.getElementById('confirmPasswordError').style.display =
+              'none';
+          }
+
+          if (creditCard.value) {
+            isValid &= validateField(creditCard, 'creditCardError');
+          } else {
+            document.getElementById('creditCardError').style.display = 'none';
+          }
+
+          isValid &= validateField(
+            terms,
+            'termsError',
+            'You must agree to the terms and conditions.'
+          );
+
+          if (isValid) {
+            alert('Validation successful! ✅\nAll form data is valid.');
+          }
+        });
+
+      // Show form data function
+      function showFormData() {
+        const formData = new FormData();
+        const formElements = document.querySelectorAll(
+          'input, select, textarea'
+        );
+
+        formElements.forEach((element) => {
+          if (element.type === 'checkbox' || element.type === 'radio') {
+            if (element.checked) {
+              formData.append(element.name, element.value);
+            }
+          } else if (element.value) {
+            formData.append(element.name, element.value);
+          }
+        });
+
+        let output = '';
+        for (let [key, value] of formData.entries()) {
+          output += `${key}: ${value}\n`;
+        }
+
+        document.getElementById('formData').textContent =
+          output || 'No data entered yet.';
+        document.getElementById('formOutput').style.display = 'block';
+      }
+
+      function clearFormData() {
+        document.getElementById('formOutput').style.display = 'none';
+      }
+
+      // Real-time validation for all inputs
+      document.addEventListener('DOMContentLoaded', function () {
+        const inputs = document.querySelectorAll('input, textarea');
+
+        inputs.forEach((input) => {
+          input.addEventListener('blur', function () {
+            const errorId = this.id + 'Error';
+            const errorElement = document.getElementById(errorId);
+            if (errorElement) {
+              validateField(this, errorId);
+            }
+          });
+
+          input.addEventListener('input', function () {
+            const errorId = this.id + 'Error';
+            const errorElement = document.getElementById(errorId);
+            if (errorElement && this.validity.valid) {
+              errorElement.style.display = 'none';
+            }
+          });
+        });
+
+        console.log('📝 Interactive HTML Forms Demo loaded!');
+        console.log('Try filling out the forms to see validation in action.');
+      });
+    </script>
+  </body>
+</html>

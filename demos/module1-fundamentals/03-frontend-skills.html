@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Frontend Developer Skills Demo</title>
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: #1a1a2e;
+        color: #eee;
+        min-height: 100vh;
+      }
+
+      .skills-container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .skill-category {
+        margin: 40px 0;
+        padding: 25px;
+        background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+        border-radius: 15px;
+        border-left: 5px solid #4facfe;
+        position: relative;
+      }
+
+      .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+      }
+
+      .skill-card {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+      }
+
+      .skill-card:hover {
+        transform: translateY(-3px);
+        border-color: #4facfe;
+        box-shadow: 0 10px 20px rgba(79, 172, 254, 0.3);
+      }
+
+      .skill-level {
+        width: 100%;
+        height: 8px;
+        background: #333;
+        border-radius: 4px;
+        margin: 10px 0;
+        overflow: hidden;
+      }
+
+      .skill-progress {
+        height: 100%;
+        background: linear-gradient(90deg, #4facfe, #00f2fe);
+        border-radius: 4px;
+        transition: width 2s ease-in-out;
+      }
+
+      .demo-playground {
+        background: #fff;
+        color: #333;
+        padding: 30px;
+        border-radius: 15px;
+        margin: 30px 0;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      .tabs {
+        display: flex;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .tab {
+        padding: 12px 24px;
+        cursor: pointer;
+        border: none;
+        background: none;
+        color: #666;
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s ease;
+      }
+
+      .tab.active {
+        color: #4facfe;
+        border-bottom-color: #4facfe;
+      }
+
+      .tab-content {
+        display: none;
+        animation: fadeIn 0.5s ease-in;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .code-example {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 4px solid #4facfe;
+        margin: 15px 0;
+        font-family: 'Courier New', monospace;
+        overflow-x: auto;
+      }
+
+      .interactive-demo {
+        padding: 20px;
+        border: 2px dashed #4facfe;
+        border-radius: 8px;
+        text-align: center;
+        margin: 20px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="skills-container">
+      <h1>Frontend Developer Skills Portfolio</h1>
+      <p>
+        Explore the essential skills every modern frontend developer needs to
+        master.
+      </p>
+
+      <div class="skill-category">
+        <h2>🎨 Technical Skills</h2>
+        <div class="skills-grid">
+          <div class="skill-card" onclick="showSkillDemo('html')">
+            <h3>HTML5</h3>
+            <div class="skill-level">
+              <div class="skill-progress" data-level="90"></div>
+            </div>
+            <p>Semantic markup, accessibility, and modern HTML standards</p>
+          </div>
+
+          <div class="skill-card" onclick="showSkillDemo('css')">
+            <h3>CSS3</h3>
+            <div class="skill-level">
+              <div class="skill-progress" data-level="85"></div>
+            </div>
+            <p>Grid, Flexbox, animations, and responsive design</p>
+          </div>
+
+          <div class="skill-card" onclick="showSkillDemo('javascript')">
+            <h3>JavaScript</h3>
+            <div class="skill-level">
+              <div class="skill-progress" data-level="80"></div>
+            </div>
+            <p>ES6+, DOM manipulation, and async programming</p>
+          </div>
+
+          <div class="skill-card" onclick="showSkillDemo('tools')">
+            <h3>Dev Tools</h3>
+            <div class="skill-level">
+              <div class="skill-progress" data-level="75"></div>
+            </div>
+            <p>Git, VS Code, browser dev tools, build systems</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="skill-category">
+        <h2>🧠 Soft Skills</h2>
+        <div class="skills-grid">
+          <div class="skill-card">
+            <h3>Problem Solving</h3>
+            <div class="skill-level">
+              <div class="skill-progress" data-level="85"></div>
+            </div>
+            <p>Debugging, analytical thinking, creative solutions</p>
+          </div>
+
+          <div class="skill-card">
+            <h3>UX/UI Design</h3>
+            <div class="skill-level">
+              <div class="skill-progress" data-level="70"></div>
+            </div>
+            <p>User-centered design, accessibility, usability</p>
+          </div>
+
+          <div class="skill-card">
+            <h3>Collaboration</h3>
+            <div class="skill-level">
+              <div class="skill-progress" data-level="80"></div>
+            </div>
+            <p>Version control, code reviews, team communication</p>
+          </div>
+
+          <div class="skill-card">
+            <h3>Learning</h3>
+            <div class="skill-level">
+              <div class="skill-progress" data-level="95"></div>
+            </div>
+            <p>Staying current, adapting to new technologies</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-playground">
+        <h2>Interactive Skills Demo</h2>
+        <div class="tabs">
+          <button class="tab active" onclick="showTab('html-demo')">
+            HTML Demo
+          </button>
+          <button class="tab" onclick="showTab('css-demo')">CSS Demo</button>
+          <button class="tab" onclick="showTab('js-demo')">
+            JavaScript Demo
+          </button>
+        </div>
+
+        <div id="html-demo" class="tab-content active">
+          <h3>Semantic HTML Example</h3>
+          <div class="code-example">
+            &lt;article&gt; &lt;header&gt; &lt;h1&gt;Blog Post Title&lt;/h1&gt;
+            &lt;time datetime="2025-09-26"&gt;September 26, 2025&lt;/time&gt;
+            &lt;/header&gt; &lt;section&gt; &lt;p&gt;Content goes
+            here...&lt;/p&gt; &lt;/section&gt; &lt;footer&gt; &lt;p&gt;Author:
+            Developer Name&lt;/p&gt; &lt;/footer&gt; &lt;/article&gt;
+          </div>
+          <p>
+            <strong>Benefits:</strong> Better SEO, accessibility, and code
+            maintainability
+          </p>
+        </div>
+
+        <div id="css-demo" class="tab-content">
+          <h3>Modern CSS Layout</h3>
+          <div class="code-example">
+            .container { display: grid; grid-template-columns: repeat(auto-fit,
+            minmax(250px, 1fr)); gap: 20px; } .card { padding: 20px;
+            border-radius: 10px; transition: transform 0.3s ease; } .card:hover
+            { transform: translateY(-5px); }
+          </div>
+          <div class="interactive-demo">
+            <p>
+              Hover over the skill cards above to see CSS transitions in action!
+            </p>
+          </div>
+        </div>
+
+        <div id="js-demo" class="tab-content">
+          <h3>Modern JavaScript</h3>
+          <div class="code-example">
+            // ES6+ Features const skills = ['HTML', 'CSS', 'JavaScript']; const
+            greeting = name => `Hello, ${name}!`; // Async/Await const fetchData
+            = async () => { try { const response = await fetch('/api/data');
+            const data = await response.json(); return data; } catch (error) {
+            console.error('Error:', error); } };
+          </div>
+          <div class="interactive-demo">
+            <button
+              onclick="demonstrateJS()"
+              style="
+                padding: 10px 20px;
+                background: #4facfe;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+              "
+            >
+              Run JavaScript Demo
+            </button>
+            <div id="js-output" style="margin-top: 15px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Initialize skill progress bars
+      document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+          const progressBars = document.querySelectorAll('.skill-progress');
+          progressBars.forEach((bar) => {
+            const level = bar.dataset.level;
+            bar.style.width = level + '%';
+          });
+        }, 500);
+      });
+
+      // Tab functionality
+      function showTab(tabId) {
+        // Hide all tab contents
+        document.querySelectorAll('.tab-content').forEach((content) => {
+          content.classList.remove('active');
+        });
+
+        // Remove active class from all tabs
+        document.querySelectorAll('.tab').forEach((tab) => {
+          tab.classList.remove('active');
+        });
+
+        // Show selected tab content
+        document.getElementById(tabId).classList.add('active');
+
+        // Add active class to clicked tab
+        event.target.classList.add('active');
+      }
+
+      // Skill demonstration
+      function showSkillDemo(skill) {
+        const demos = {
+          html: 'HTML5: Semantic elements, accessibility, and modern standards',
+          css: 'CSS3: Responsive layouts with Grid and Flexbox',
+          javascript: 'JavaScript: Modern ES6+ features and async programming',
+          tools: 'Dev Tools: Git, VS Code, debugging, and build systems',
+        };
+
+        alert(
+          `${demos[skill]}\n\nThis skill is essential for modern web development!`
+        );
+      }
+
+      // JavaScript capabilities demo
+      function demonstrateJS() {
+        const output = document.getElementById('js-output');
+
+        // Modern JavaScript features
+        const features = [
+          { name: 'Arrow Functions', code: '() => {}' },
+          { name: 'Template Literals', code: '`Hello ${name}!`' },
+          { name: 'Destructuring', code: 'const {x, y} = obj' },
+          { name: 'Async/Await', code: 'await fetch(url)' },
+        ];
+
+        const currentTime = new Date().toLocaleTimeString();
+
+        output.innerHTML = `
+                <h4>JavaScript Demo Results:</h4>
+                <p><strong>Current Time:</strong> ${currentTime}</p>
+                <p><strong>Random Number:</strong> ${Math.floor(
+                  Math.random() * 100
+                )}</p>
+                <p><strong>Modern Features Available:</strong></p>
+                <ul style="text-align: left; display: inline-block;">
+                    ${features
+                      .map(
+                        (feature) =>
+                          `<li><strong>${feature.name}:</strong> <code>${feature.code}</code></li>`
+                      )
+                      .join('')}
+                </ul>
+            `;
+
+        // Animate the output
+        output.style.opacity = '0';
+        setTimeout(() => {
+          output.style.transition = 'opacity 0.5s ease-in';
+          output.style.opacity = '1';
+        }, 100);
+      }
+    </script>
+  </body>
+</html>

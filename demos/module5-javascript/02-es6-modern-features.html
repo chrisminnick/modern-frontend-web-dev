@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modern JavaScript ES6+ Features Demo</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: #0f0f0f;
+        color: #f8f9fa;
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .header {
+        text-align: center;
+        padding: 40px 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        margin-bottom: 40px;
+      }
+
+      .header h1 {
+        font-size: 3em;
+        margin-bottom: 10px;
+      }
+
+      .header p {
+        font-size: 1.2em;
+        opacity: 0.9;
+      }
+
+      .demo-section {
+        background: #1a1a1a;
+        margin: 40px 0;
+        padding: 30px;
+        border-radius: 15px;
+        border: 1px solid #333;
+      }
+
+      .demo-section h2 {
+        color: #667eea;
+        margin-bottom: 25px;
+        font-size: 2em;
+        text-align: center;
+        position: relative;
+      }
+
+      .demo-section h2::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+      }
+
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 25px;
+        margin: 30px 0;
+      }
+
+      .feature-card {
+        background: #2a2a2a;
+        padding: 25px;
+        border-radius: 12px;
+        border: 1px solid #444;
+        transition: all 0.3s ease;
+      }
+
+      .feature-card:hover {
+        border-color: #667eea;
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+      }
+
+      .feature-card h3 {
+        color: #667eea;
+        margin-bottom: 15px;
+        font-size: 1.4em;
+      }
+
+      .code-block {
+        background: #0d1117;
+        border: 1px solid #30363d;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 15px 0;
+        font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+        font-size: 14px;
+        overflow-x: auto;
+        position: relative;
+      }
+
+      .code-block::before {
+        content: attr(data-lang);
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        font-size: 12px;
+        color: #7d8590;
+        text-transform: uppercase;
+      }
+
+      .js-keyword {
+        color: #ff7b72;
+      }
+      .js-string {
+        color: #a5d6ff;
+      }
+      .js-method {
+        color: #d2a8ff;
+      }
+      .js-comment {
+        color: #8b949e;
+      }
+      .js-number {
+        color: #79c0ff;
+      }
+      .js-operator {
+        color: #ff7b72;
+      }
+
+      .interactive-demo {
+        background: #2a2a2a;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+        border-left: 4px solid #667eea;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin: 20px 0;
+      }
+
+      .btn {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: #667eea;
+        color: white;
+      }
+
+      .btn:hover {
+        background: #5a67d8;
+        transform: translateY(-2px);
+      }
+
+      .btn-secondary {
+        background: #6c757d;
+      }
+
+      .btn-secondary:hover {
+        background: #545b62;
+      }
+
+      .output {
+        background: #0d1117;
+        border: 1px solid #30363d;
+        padding: 15px;
+        border-radius: 6px;
+        font-family: monospace;
+        font-size: 13px;
+        margin: 15px 0;
+        min-height: 100px;
+        overflow-y: auto;
+        max-height: 300px;
+      }
+
+      .output-line {
+        margin: 5px 0;
+        padding: 2px 0;
+      }
+
+      .success {
+        color: #3fb950;
+      }
+      .error {
+        color: #f85149;
+      }
+      .info {
+        color: #58a6ff;
+      }
+      .warning {
+        color: #d29922;
+      }
+
+      input[type='text'],
+      input[type='number'],
+      textarea,
+      select {
+        padding: 10px;
+        border: 2px solid #30363d;
+        border-radius: 6px;
+        background: #0d1117;
+        color: #f8f9fa;
+        font-size: 14px;
+        margin: 0 10px 10px 0;
+      }
+
+      input:focus,
+      textarea:focus,
+      select:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      .async-demo {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin: 20px 0;
+      }
+
+      .promise-chain {
+        background: #2a2a2a;
+        padding: 20px;
+        border-radius: 8px;
+        border-left: 4px solid #28a745;
+      }
+
+      .loading {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #30363d;
+        border-radius: 50%;
+        border-top-color: #667eea;
+        animation: spin 1s ease-in-out infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .module-demo {
+        background: #2a2a2a;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+      }
+
+      .comparison {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin: 20px 0;
+      }
+
+      .old-way {
+        background: #3d2914;
+        padding: 15px;
+        border-radius: 6px;
+        border-left: 4px solid #d29922;
+      }
+
+      .new-way {
+        background: #0f2419;
+        padding: 15px;
+        border-radius: 6px;
+        border-left: 4px solid #3fb950;
+      }
+
+      .tip-box {
+        background: #1f2328;
+        border: 1px solid #667eea;
+        border-left: 4px solid #667eea;
+        padding: 20px;
+        border-radius: 6px;
+        margin: 20px 0;
+      }
+
+      .tip-box h4 {
+        color: #667eea;
+        margin-bottom: 10px;
+      }
+
+      @media (max-width: 768px) {
+        .feature-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .async-demo,
+        .comparison {
+          grid-template-columns: 1fr;
+        }
+
+        .controls {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🚀 Modern JavaScript ES6+ Features</h1>
+        <p>
+          Explore the latest JavaScript features that make development more
+          efficient and enjoyable
+        </p>
+      </div>
+
+      <!-- Arrow Functions and Template Literals -->
+      <div class="demo-section">
+        <h2>🏹 Arrow Functions & Template Literals</h2>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <h3>Arrow Functions</h3>
+            <div class="comparison">
+              <div class="old-way">
+                <h5>ES5 Way:</h5>
+                <div class="code-block" data-lang="js">
+                  <span class="js-keyword">function</span>
+                  <span class="js-method">multiply</span>(a, b) {
+                  <span class="js-keyword">return</span> a * b; }
+
+                  <span class="js-keyword">var</span> numbers = [<span
+                    class="js-number"
+                    >1, 2, 3</span
+                  >]; numbers.<span class="js-method">map</span>(<span
+                    class="js-keyword"
+                    >function</span
+                  >(n) { <span class="js-keyword">return</span> n *
+                  <span class="js-number">2</span>; });
+                </div>
+              </div>
+              <div class="new-way">
+                <h5>ES6+ Way:</h5>
+                <div class="code-block" data-lang="js">
+                  <span class="js-keyword">const</span>
+                  <span class="js-method">multiply</span> = (a, b)
+                  <span class="js-operator">=></span> a * b;
+
+                  <span class="js-keyword">const</span> numbers = [<span
+                    class="js-number"
+                    >1, 2, 3</span
+                  >]; numbers.<span class="js-method">map</span>(n
+                  <span class="js-operator">=></span> n *
+                  <span class="js-number">2</span>);
+                </div>
+              </div>
+            </div>
+
+            <div class="interactive-demo">
+              <h4>Try Arrow Functions:</h4>
+              <div class="controls">
+                <input
+                  type="number"
+                  id="num1"
+                  placeholder="Number 1"
+                  value="5"
+                />
+                <input
+                  type="number"
+                  id="num2"
+                  placeholder="Number 2"
+                  value="3"
+                />
+                <button class="btn" onclick="testArrowFunctions()">
+                  Test Arrow Functions
+                </button>
+              </div>
+              <div class="output" id="arrow-output"></div>
+            </div>
+          </div>
+
+          <div class="feature-card">
+            <h3>Template Literals</h3>
+            <div class="comparison">
+              <div class="old-way">
+                <h5>String Concatenation:</h5>
+                <div class="code-block" data-lang="js">
+                  <span class="js-keyword">var</span> name =
+                  <span class="js-string">'John'</span>;
+                  <span class="js-keyword">var</span> age =
+                  <span class="js-number">30</span>;
+                  <span class="js-keyword">var</span> message =
+                  <span class="js-string">'Hello, my name is '</span> + name +
+                  <span class="js-string">' and I am '</span> + age +
+                  <span class="js-string">' years old.'</span>;
+                </div>
+              </div>
+              <div class="new-way">
+                <h5>Template Literals:</h5>
+                <div class="code-block" data-lang="js">
+                  <span class="js-keyword">const</span> name =
+                  <span class="js-string">'John'</span>;
+                  <span class="js-keyword">const</span> age =
+                  <span class="js-number">30</span>;
+                  <span class="js-keyword">const</span> message =
+                  <span class="js-string"
+                    >`Hello, my name is ${name} and I am ${age} years
+                    old.`</span
+                  >;
+                </div>
+              </div>
+            </div>
+
+            <div class="interactive-demo">
+              <h4>Build Template Literals:</h4>
+              <div class="controls">
+                <input
+                  type="text"
+                  id="user-name"
+                  placeholder="Your name"
+                  value="Alice"
+                />
+                <input
+                  type="text"
+                  id="user-city"
+                  placeholder="Your city"
+                  value="New York"
+                />
+                <button class="btn" onclick="generateTemplate()">
+                  Generate Message
+                </button>
+              </div>
+              <div class="output" id="template-output"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Destructuring and Spread Operator -->
+      <div class="demo-section">
+        <h2>📦 Destructuring & Spread Operator</h2>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <h3>Array & Object Destructuring</h3>
+            <div class="code-block" data-lang="js">
+              <span class="js-comment">// Array Destructuring</span>
+              <span class="js-keyword">const</span> colors = [<span
+                class="js-string"
+                >'red'</span
+              >, <span class="js-string">'green'</span>,
+              <span class="js-string">'blue'</span>];
+              <span class="js-keyword">const</span> [primary, secondary,
+              tertiary] = colors;
+
+              <span class="js-comment">// Object Destructuring</span>
+              <span class="js-keyword">const</span> person = { name:
+              <span class="js-string">'John'</span>, age:
+              <span class="js-number">30</span>, city:
+              <span class="js-string">'NYC'</span>
+              };
+              <span class="js-keyword">const</span> { name, age, city } =
+              person;
+
+              <span class="js-comment">// With default values</span>
+              <span class="js-keyword">const</span> { name, age, country =
+              <span class="js-string">'USA'</span> } = person;
+            </div>
+
+            <div class="interactive-demo">
+              <h4>Test Destructuring:</h4>
+              <div class="controls">
+                <button class="btn" onclick="demonstrateDestructuring()">
+                  Run Destructuring Examples
+                </button>
+                <button
+                  class="btn btn-secondary"
+                  onclick="clearOutput('destructuring-output')"
+                >
+                  Clear
+                </button>
+              </div>
+              <div class="output" id="destructuring-output"></div>
+            </div>
+          </div>
+
+          <div class="feature-card">
+            <h3>Spread & Rest Operators</h3>
+            <div class="code-block" data-lang="js">
+              <span class="js-comment">// Spread operator (...)</span>
+              <span class="js-keyword">const</span> arr1 = [<span
+                class="js-number"
+                >1, 2, 3</span
+              >]; <span class="js-keyword">const</span> arr2 = [<span
+                class="js-number"
+                >4, 5, 6</span
+              >]; <span class="js-keyword">const</span> combined = [...arr1,
+              ...arr2];
+
+              <span class="js-comment">// Rest parameters</span>
+              <span class="js-keyword">function</span>
+              <span class="js-method">sum</span>(...numbers) {
+              <span class="js-keyword">return</span> numbers.<span
+                class="js-method"
+                >reduce</span
+              >((a, b) <span class="js-operator">=></span> a + b,
+              <span class="js-number">0</span>); }
+
+              <span class="js-comment">// Object spread</span>
+              <span class="js-keyword">const</span> obj1 = { a:
+              <span class="js-number">1</span>, b:
+              <span class="js-number">2</span> };
+              <span class="js-keyword">const</span> obj2 = { ...obj1, c:
+              <span class="js-number">3</span> };
+            </div>
+
+            <div class="interactive-demo">
+              <h4>Test Spread Operator:</h4>
+              <div class="controls">
+                <input
+                  type="text"
+                  id="numbers-input"
+                  placeholder="Enter numbers: 1,2,3,4,5"
+                  value="1,2,3,4,5"
+                />
+                <button class="btn" onclick="demonstrateSpread()">
+                  Test Spread Operations
+                </button>
+              </div>
+              <div class="output" id="spread-output"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Async/Await and Promises -->
+      <div class="demo-section">
+        <h2>⏰ Promises, Async/Await & Fetch</h2>
+
+        <div class="async-demo">
+          <div class="promise-chain">
+            <h3>Promise Chain vs Async/Await</h3>
+            <div class="code-block" data-lang="js">
+              <span class="js-comment">// Promise chain</span>
+              <span class="js-method">fetch</span>(<span class="js-string"
+                >'/api/user'</span
+              >) .<span class="js-method">then</span>(response
+              <span class="js-operator">=></span> response.<span
+                class="js-method"
+                >json</span
+              >()) .<span class="js-method">then</span>(data
+              <span class="js-operator">=></span> console.<span
+                class="js-method"
+                >log</span
+              >(data)) .<span class="js-method">catch</span>(error
+              <span class="js-operator">=></span> console.<span
+                class="js-method"
+                >error</span
+              >(error));
+
+              <span class="js-comment">// Async/await</span>
+              <span class="js-keyword">async function</span>
+              <span class="js-method">fetchUser</span>() {
+              <span class="js-keyword">try</span> {
+              <span class="js-keyword">const</span> response =
+              <span class="js-keyword">await</span>
+              <span class="js-method">fetch</span>(<span class="js-string"
+                >'/api/user'</span
+              >); <span class="js-keyword">const</span> data =
+              <span class="js-keyword">await</span> response.<span
+                class="js-method"
+                >json</span
+              >(); console.<span class="js-method">log</span>(data); }
+              <span class="js-keyword">catch</span> (error) { console.<span
+                class="js-method"
+                >error</span
+              >(error); } }
+            </div>
+          </div>
+
+          <div class="interactive-demo">
+            <h3>Real API Fetch Demo</h3>
+            <div class="controls">
+              <select id="api-endpoint">
+                <option value="users">Random User</option>
+                <option value="posts">JSON Placeholder Post</option>
+                <option value="quotes">Random Quote</option>
+              </select>
+              <button class="btn" onclick="fetchData()">Fetch Data</button>
+              <button
+                class="btn btn-secondary"
+                onclick="clearOutput('fetch-output')"
+              >
+                Clear
+              </button>
+            </div>
+            <div class="output" id="fetch-output"></div>
+          </div>
+        </div>
+
+        <div class="interactive-demo">
+          <h4>Promise.all() vs Sequential Execution</h4>
+          <div class="controls">
+            <button class="btn" onclick="sequentialExecution()">
+              Sequential Execution
+            </button>
+            <button class="btn" onclick="parallelExecution()">
+              Parallel with Promise.all()
+            </button>
+            <button
+              class="btn btn-secondary"
+              onclick="clearOutput('promise-output')"
+            >
+              Clear
+            </button>
+          </div>
+          <div class="output" id="promise-output"></div>
+        </div>
+      </div>
+
+      <!-- Classes and Modules -->
+      <div class="demo-section">
+        <h2>🏛️ Classes & Modules</h2>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <h3>ES6 Classes</h3>
+            <div class="code-block" data-lang="js">
+              <span class="js-keyword">class</span>
+              <span class="js-method">Animal</span> {
+              <span class="js-method">constructor</span>(name, species) {
+              <span class="js-keyword">this</span>.name = name;
+              <span class="js-keyword">this</span>.species = species; }
+
+              <span class="js-method">speak</span>() {
+              <span class="js-keyword">return</span>
+              <span class="js-string">`${this.name} makes a sound`</span>; }
+
+              <span class="js-comment">// Static method</span>
+              <span class="js-keyword">static</span>
+              <span class="js-method">getSpeciesCount</span>() {
+              <span class="js-keyword">return</span> Animal.count ||
+              <span class="js-number">0</span>; } }
+
+              <span class="js-keyword">class</span>
+              <span class="js-method">Dog</span>
+              <span class="js-keyword">extends</span>
+              <span class="js-method">Animal</span> {
+              <span class="js-method">constructor</span>(name, breed) {
+              <span class="js-keyword">super</span>(name,
+              <span class="js-string">'Canine'</span>);
+              <span class="js-keyword">this</span>.breed = breed; }
+
+              <span class="js-method">speak</span>() {
+              <span class="js-keyword">return</span>
+              <span class="js-string">`${this.name} barks!`</span>; } }
+            </div>
+
+            <div class="interactive-demo">
+              <h4>Create Animals:</h4>
+              <div class="controls">
+                <input
+                  type="text"
+                  id="animal-name"
+                  placeholder="Animal name"
+                  value="Buddy"
+                />
+                <select id="animal-type">
+                  <option value="dog">Dog</option>
+                  <option value="cat">Cat</option>
+                  <option value="bird">Bird</option>
+                </select>
+                <button class="btn" onclick="createAnimal()">
+                  Create Animal
+                </button>
+              </div>
+              <div class="output" id="class-output"></div>
+            </div>
+          </div>
+
+          <div class="feature-card">
+            <h3>Array Methods</h3>
+            <div class="code-block" data-lang="js">
+              <span class="js-keyword">const</span> numbers = [<span
+                class="js-number"
+                >1, 2, 3, 4, 5, 6</span
+              >];
+
+              <span class="js-comment">// map - transform each element</span>
+              <span class="js-keyword">const</span> doubled = numbers.<span
+                class="js-method"
+                >map</span
+              >(n <span class="js-operator">=></span> n *
+              <span class="js-number">2</span>);
+
+              <span class="js-comment">// filter - select elements</span>
+              <span class="js-keyword">const</span> evens = numbers.<span
+                class="js-method"
+                >filter</span
+              >(n <span class="js-operator">=></span> n %
+              <span class="js-number">2</span> ===
+              <span class="js-number">0</span>);
+
+              <span class="js-comment">// reduce - accumulate values</span>
+              <span class="js-keyword">const</span> sum = numbers.<span
+                class="js-method"
+                >reduce</span
+              >((acc, n) <span class="js-operator">=></span> acc + n,
+              <span class="js-number">0</span>);
+
+              <span class="js-comment">// find - locate element</span>
+              <span class="js-keyword">const</span> found = numbers.<span
+                class="js-method"
+                >find</span
+              >(n <span class="js-operator">=></span> n >
+              <span class="js-number">3</span>);
+
+              <span class="js-comment">// some & every - test conditions</span>
+              <span class="js-keyword">const</span> hasEven = numbers.<span
+                class="js-method"
+                >some</span
+              >(n <span class="js-operator">=></span> n %
+              <span class="js-number">2</span> ===
+              <span class="js-number">0</span>);
+              <span class="js-keyword">const</span> allPositive = numbers.<span
+                class="js-method"
+                >every</span
+              >(n <span class="js-operator">=></span> n >
+              <span class="js-number">0</span>);
+            </div>
+
+            <div class="interactive-demo">
+              <h4>Array Operations:</h4>
+              <div class="controls">
+                <input
+                  type="text"
+                  id="array-input"
+                  placeholder="Enter numbers: 1,2,3,4,5"
+                  value="1,2,3,4,5,6,7,8,9,10"
+                />
+                <button class="btn" onclick="demonstrateArrayMethods()">
+                  Run Array Methods
+                </button>
+              </div>
+              <div class="output" id="array-output"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modern JavaScript Features -->
+      <div class="demo-section">
+        <h2>✨ Latest JavaScript Features</h2>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <h3>Optional Chaining & Nullish Coalescing</h3>
+            <div class="code-block" data-lang="js">
+              <span class="js-comment">// Optional chaining (?.)</span>
+              <span class="js-keyword">const</span> user = { name:
+              <span class="js-string">'John'</span>, address: { street:
+              <span class="js-string">'123 Main St'</span>
+              } };
+
+              <span class="js-comment">// Safe property access</span>
+              <span class="js-keyword">const</span> zipCode =
+              user.address?.zipCode; <span class="js-keyword">const</span> phone
+              = user.contact?.phone?.mobile;
+
+              <span class="js-comment">// Nullish coalescing (??)</span>
+              <span class="js-keyword">const</span> defaultValue = someValue ??
+              <span class="js-string">'default'</span>;
+              <span class="js-keyword">const</span> count = user.count ??
+              <span class="js-number">0</span>;
+            </div>
+
+            <div class="interactive-demo">
+              <h4>Test Optional Chaining:</h4>
+              <div class="controls">
+                <button class="btn" onclick="demonstrateOptionalChaining()">
+                  Test Safe Access
+                </button>
+                <button
+                  class="btn btn-secondary"
+                  onclick="clearOutput('modern-output')"
+                >
+                  Clear
+                </button>
+              </div>
+              <div class="output" id="modern-output"></div>
+            </div>
+          </div>
+
+          <div class="feature-card">
+            <h3>Dynamic Imports & Top-level Await</h3>
+            <div class="code-block" data-lang="js">
+              <span class="js-comment">// Dynamic imports</span>
+              <span class="js-keyword">const</span>
+              <span class="js-method">loadModule</span> =
+              <span class="js-keyword">async</span> ()
+              <span class="js-operator">=></span> {
+              <span class="js-keyword">const</span> module =
+              <span class="js-keyword">await</span>
+              <span class="js-keyword">import</span>(<span class="js-string"
+                >'./my-module.js'</span
+              >); module.<span class="js-method">doSomething</span>(); };
+
+              <span class="js-comment">// Top-level await (in modules)</span>
+              <span class="js-keyword">const</span> data =
+              <span class="js-keyword">await</span>
+              <span class="js-method">fetch</span>(<span class="js-string"
+                >'/api/data'</span
+              >); <span class="js-keyword">const</span> config =
+              <span class="js-keyword">await</span>
+              <span class="js-method">loadConfig</span>();
+
+              <span class="js-comment">// BigInt for large numbers</span>
+              <span class="js-keyword">const</span> bigNumber =
+              <span class="js-number">123456789012345678901234567890n</span>;
+              <span class="js-keyword">const</span> anotherBig =
+              <span class="js-method">BigInt</span>(<span class="js-string"
+                >'987654321098765432109876543210'</span
+              >);
+            </div>
+
+            <div class="interactive-demo">
+              <h4>Modern Features Demo:</h4>
+              <div class="controls">
+                <button class="btn" onclick="demonstrateModernFeatures()">
+                  Test Modern JS
+                </button>
+                <button
+                  class="btn btn-secondary"
+                  onclick="clearOutput('modern2-output')"
+                >
+                  Clear
+                </button>
+              </div>
+              <div class="output" id="modern2-output"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Performance Tips -->
+      <div class="tip-box">
+        <h4>🚀 Modern JavaScript Best Practices</h4>
+        <ul>
+          <li>
+            <strong>Use const/let instead of var:</strong> Block scoping
+            prevents common bugs
+          </li>
+          <li>
+            <strong>Prefer arrow functions:</strong> Cleaner syntax and lexical
+            'this' binding
+          </li>
+          <li>
+            <strong>Destructure objects and arrays:</strong> More readable and
+            concise code
+          </li>
+          <li>
+            <strong>Use async/await over promises:</strong> Better error
+            handling and readability
+          </li>
+          <li>
+            <strong>Leverage array methods:</strong> map, filter, reduce are
+            more functional and expressive
+          </li>
+          <li>
+            <strong>Optional chaining for safety:</strong> Avoid runtime errors
+            from undefined properties
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- CodeMirror Integration for proper code display -->
+    <script src="../codemirror-integration.js"></script>
+
+    <script>
+      // Animal class definitions for the demo
+      class Animal {
+        constructor(name, species) {
+          this.name = name;
+          this.species = species;
+        }
+
+        speak() {
+          return `${this.name} makes a sound`;
+        }
+
+        getInfo() {
+          return `${this.name} is a ${this.species}`;
+        }
+      }
+
+      class Dog extends Animal {
+        constructor(name, breed = 'Mixed') {
+          super(name, 'Canine');
+          this.breed = breed;
+        }
+
+        speak() {
+          return `${this.name} barks loudly!`;
+        }
+      }
+
+      class Cat extends Animal {
+        constructor(name, breed = 'Domestic') {
+          super(name, 'Feline');
+          this.breed = breed;
+        }
+
+        speak() {
+          return `${this.name} meows softly`;
+        }
+      }
+
+      class Bird extends Animal {
+        constructor(name, species = 'Songbird') {
+          super(name, species);
+        }
+
+        speak() {
+          return `${this.name} chirps melodiously`;
+        }
+      }
+
+      // Demo Functions
+      function testArrowFunctions() {
+        const num1 = parseInt(document.getElementById('num1').value) || 0;
+        const num2 = parseInt(document.getElementById('num2').value) || 0;
+        const output = document.getElementById('arrow-output');
+
+        // Arrow function examples
+        const multiply = (a, b) => a * b;
+        const add = (a, b) => a + b;
+        const power = (base, exp) => Math.pow(base, exp);
+
+        // Array methods with arrow functions
+        const numbers = [num1, num2];
+        const doubled = numbers.map((n) => n * 2);
+        const sum = numbers.reduce((acc, n) => acc + n, 0);
+
+        output.innerHTML = `
+                <div class="output-line success">multiply(${num1}, ${num2}) = ${multiply(
+          num1,
+          num2
+        )}</div>
+                <div class="output-line info">add(${num1}, ${num2}) = ${add(
+          num1,
+          num2
+        )}</div>
+                <div class="output-line warning">power(${num1}, ${num2}) = ${power(
+          num1,
+          num2
+        )}</div>
+                <div class="output-line">Original array: [${numbers.join(
+                  ', '
+                )}]</div>
+                <div class="output-line">Doubled: [${doubled.join(', ')}]</div>
+                <div class="output-line">Sum: ${sum}</div>
+            `;
+      }
+
+      function generateTemplate() {
+        const name = document.getElementById('user-name').value || 'Anonymous';
+        const city = document.getElementById('user-city').value || 'Unknown';
+        const output = document.getElementById('template-output');
+
+        // Template literal examples
+        const greeting = `Hello, ${name}!`;
+        const info = `You are from ${city}.`;
+        const multiline = `
+                Welcome ${name}!
+                We're glad you're joining us from ${city}.
+                Today is ${new Date().toLocaleDateString()}.
+            `;
+
+        const htmlTemplate = `
+                <div style="background: #2a2a2a; padding: 15px; border-radius: 6px;">
+                    <h4 style="color: #667eea;">${name}'s Profile</h4>
+                    <p><strong>Location:</strong> ${city}</p>
+                    <p><strong>Joined:</strong> ${new Date().toLocaleDateString()}</p>
+                    <p><strong>Expression result:</strong> ${
+                      2 + 2
+                    } (calculated inside template)</p>
+                </div>
+            `;
+
+        output.innerHTML = `
+                <div class="output-line success">Greeting: ${greeting}</div>
+                <div class="output-line info">Info: ${info}</div>
+                <div class="output-line">Multiline template:</div>
+                <pre style="color: #a5d6ff; margin: 10px 0;">${multiline.trim()}</pre>
+                <div class="output-line">HTML Template:</div>
+                ${htmlTemplate}
+            `;
+      }
+
+      function demonstrateDestructuring() {
+        const output = document.getElementById('destructuring-output');
+
+        // Array destructuring
+        const colors = ['red', 'green', 'blue', 'yellow'];
+        const [primary, secondary, ...rest] = colors;
+
+        // Object destructuring
+        const person = {
+          name: 'Alice',
+          age: 25,
+          city: 'San Francisco',
+          job: 'Developer',
+        };
+        const { name, age, city, country = 'USA' } = person;
+
+        // Nested destructuring
+        const user = {
+          id: 1,
+          profile: {
+            email: 'alice@example.com',
+            preferences: {
+              theme: 'dark',
+              notifications: true,
+            },
+          },
+        };
+        const {
+          profile: {
+            email,
+            preferences: { theme, notifications },
+          },
+        } = user;
+
+        output.innerHTML = `
+                <div class="output-line success">Array Destructuring:</div>
+                <div class="output-line">Primary color: ${primary}</div>
+                <div class="output-line">Secondary color: ${secondary}</div>
+                <div class="output-line">Rest colors: [${rest.join(', ')}]</div>
+                
+                <div class="output-line success">Object Destructuring:</div>
+                <div class="output-line">Name: ${name}</div>
+                <div class="output-line">Age: ${age}</div>
+                <div class="output-line">City: ${city}</div>
+                <div class="output-line">Country (default): ${country}</div>
+                
+                <div class="output-line success">Nested Destructuring:</div>
+                <div class="output-line">Email: ${email}</div>
+                <div class="output-line">Theme: ${theme}</div>
+                <div class="output-line">Notifications: ${notifications}</div>
+            `;
+      }
+
+      function demonstrateSpread() {
+        const input = document.getElementById('numbers-input').value;
+        const numbers = input
+          .split(',')
+          .map((n) => parseInt(n.trim()))
+          .filter((n) => !isNaN(n));
+        const output = document.getElementById('spread-output');
+
+        // Spread with arrays
+        const moreNumbers = [0, ...numbers, 100];
+        const doubled = [...numbers].map((n) => n * 2);
+
+        // Rest parameters function
+        const sum = (...nums) => nums.reduce((a, b) => a + b, 0);
+        const multiply = (first, second, ...rest) => {
+          const product = first * second;
+          return rest.length > 0
+            ? `${product} (ignored: ${rest.join(', ')})`
+            : product;
+        };
+
+        // Object spread
+        const baseConfig = { theme: 'light', lang: 'en' };
+        const userConfig = { ...baseConfig, theme: 'dark', fontSize: 14 };
+
+        output.innerHTML = `
+                <div class="output-line success">Original array: [${numbers.join(
+                  ', '
+                )}]</div>
+                <div class="output-line">Spread with extra: [${moreNumbers.join(
+                  ', '
+                )}]</div>
+                <div class="output-line">Doubled (spread then map): [${doubled.join(
+                  ', '
+                )}]</div>
+                
+                <div class="output-line success">Rest Parameters:</div>
+                <div class="output-line">sum(...numbers) = ${sum(
+                  ...numbers
+                )}</div>
+                <div class="output-line">multiply(${numbers[0] || 1}, ${
+          numbers[1] || 2
+        }, ...rest) = ${multiply(...numbers)}</div>
+                
+                <div class="output-line success">Object Spread:</div>
+                <div class="output-line">Base config: ${JSON.stringify(
+                  baseConfig
+                )}</div>
+                <div class="output-line">User config: ${JSON.stringify(
+                  userConfig
+                )}</div>
+            `;
+      }
+
+      async function fetchData() {
+        const endpoint = document.getElementById('api-endpoint').value;
+        const output = document.getElementById('fetch-output');
+
+        output.innerHTML = '<div class="loading"></div> Fetching data...';
+
+        try {
+          let url, dataProcessor;
+
+          switch (endpoint) {
+            case 'users':
+              url = 'https://randomuser.me/api/';
+              dataProcessor = (data) => ({
+                name: `${data.results[0].name.first} ${data.results[0].name.last}`,
+                email: data.results[0].email,
+                country: data.results[0].location.country,
+              });
+              break;
+            case 'posts':
+              url = 'https://jsonplaceholder.typicode.com/posts/1';
+              dataProcessor = (data) => ({
+                title: data.title,
+                body: data.body.substring(0, 100) + '...',
+                userId: data.userId,
+              });
+              break;
+            case 'quotes':
+              url = 'https://api.quotable.io/random';
+              dataProcessor = (data) => ({
+                content: data.content,
+                author: data.author,
+                tags: data.tags.join(', '),
+              });
+              break;
+          }
+
+          const response = await fetch(url);
+          const data = await response.json();
+          const processed = dataProcessor(data);
+
+          output.innerHTML = `
+                    <div class="output-line success">✅ Fetch successful!</div>
+                    <div class="output-line info">Endpoint: ${endpoint}</div>
+                    <div class="output-line">Response:</div>
+                    <pre style="background: #0d1117; padding: 10px; border-radius: 4px; margin: 10px 0;">${JSON.stringify(
+                      processed,
+                      null,
+                      2
+                    )}</pre>
+                `;
+        } catch (error) {
+          output.innerHTML = `
+                    <div class="output-line error">❌ Error: ${error.message}</div>
+                `;
+        }
+      }
+
+      async function sequentialExecution() {
+        const output = document.getElementById('promise-output');
+        output.innerHTML =
+          '<div class="loading"></div> Running sequential execution...';
+
+        const startTime = Date.now();
+
+        const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+        try {
+          await delay(1000);
+          output.innerHTML +=
+            '<div class="output-line">✓ Task 1 completed (1s)</div>';
+
+          await delay(1000);
+          output.innerHTML +=
+            '<div class="output-line">✓ Task 2 completed (1s)</div>';
+
+          await delay(1000);
+          output.innerHTML +=
+            '<div class="output-line">✓ Task 3 completed (1s)</div>';
+
+          const totalTime = Date.now() - startTime;
+          output.innerHTML += `<div class="output-line success">Sequential total: ${totalTime}ms</div>`;
+        } catch (error) {
+          output.innerHTML += `<div class="output-line error">Error: ${error.message}</div>`;
+        }
+      }
+
+      async function parallelExecution() {
+        const output = document.getElementById('promise-output');
+        output.innerHTML =
+          '<div class="loading"></div> Running parallel execution...';
+
+        const startTime = Date.now();
+
+        const delay = (ms, taskName) =>
+          new Promise((resolve) => {
+            setTimeout(() => {
+              output.innerHTML += `<div class="output-line">✓ ${taskName} completed (${ms}ms)</div>`;
+              resolve(taskName);
+            }, ms);
+          });
+
+        try {
+          const promises = [
+            delay(1000, 'Task 1'),
+            delay(1000, 'Task 2'),
+            delay(1000, 'Task 3'),
+          ];
+
+          await Promise.all(promises);
+
+          const totalTime = Date.now() - startTime;
+          output.innerHTML += `<div class="output-line success">Parallel total: ${totalTime}ms (much faster!)</div>`;
+        } catch (error) {
+          output.innerHTML += `<div class="output-line error">Error: ${error.message}</div>`;
+        }
+      }
+
+      function createAnimal() {
+        const name = document.getElementById('animal-name').value || 'Unnamed';
+        const type = document.getElementById('animal-type').value;
+        const output = document.getElementById('class-output');
+
+        let animal;
+
+        switch (type) {
+          case 'dog':
+            animal = new Dog(name, 'Golden Retriever');
+            break;
+          case 'cat':
+            animal = new Cat(name, 'Persian');
+            break;
+          case 'bird':
+            animal = new Bird(name, 'Canary');
+            break;
+        }
+
+        output.innerHTML += `
+                <div class="output-line success">Created ${
+                  animal.constructor.name
+                }:</div>
+                <div class="output-line">Name: ${animal.name}</div>
+                <div class="output-line">Species: ${animal.species}</div>
+                <div class="output-line">Breed: ${animal.breed || 'N/A'}</div>
+                <div class="output-line info">Says: "${animal.speak()}"</div>
+                <div class="output-line">Info: ${animal.getInfo()}</div>
+                <hr style="border: 1px solid #30363d; margin: 15px 0;">
+            `;
+      }
+
+      function demonstrateArrayMethods() {
+        const input = document.getElementById('array-input').value;
+        const numbers = input
+          .split(',')
+          .map((n) => parseInt(n.trim()))
+          .filter((n) => !isNaN(n));
+        const output = document.getElementById('array-output');
+
+        // Array method demonstrations
+        const doubled = numbers.map((n) => n * 2);
+        const evens = numbers.filter((n) => n % 2 === 0);
+        const sum = numbers.reduce((acc, n) => acc + n, 0);
+        const firstBig = numbers.find((n) => n > 5);
+        const hasEven = numbers.some((n) => n % 2 === 0);
+        const allPositive = numbers.every((n) => n > 0);
+        const squares = numbers.map((n) => n ** 2);
+
+        // More complex example: group by even/odd
+        const grouped = numbers.reduce((acc, n) => {
+          const key = n % 2 === 0 ? 'even' : 'odd';
+          acc[key] = acc[key] || [];
+          acc[key].push(n);
+          return acc;
+        }, {});
+
+        output.innerHTML = `
+                <div class="output-line success">Original: [${numbers.join(
+                  ', '
+                )}]</div>
+                <div class="output-line">map (double): [${doubled.join(
+                  ', '
+                )}]</div>
+                <div class="output-line">filter (evens): [${evens.join(
+                  ', '
+                )}]</div>
+                <div class="output-line">reduce (sum): ${sum}</div>
+                <div class="output-line">find (> 5): ${firstBig || 'none'}</div>
+                <div class="output-line">some (has even): ${hasEven}</div>
+                <div class="output-line">every (positive): ${allPositive}</div>
+                <div class="output-line">map (squares): [${squares.join(
+                  ', '
+                )}]</div>
+                <div class="output-line info">Grouped by parity: ${JSON.stringify(
+                  grouped
+                )}</div>
+            `;
+      }
+
+      function demonstrateOptionalChaining() {
+        const output = document.getElementById('modern-output');
+
+        // Test data with missing properties
+        const users = [
+          {
+            name: 'Alice',
+            address: {
+              street: '123 Main St',
+              city: 'Boston',
+              coordinates: { lat: 42.3601, lng: -71.0589 },
+            },
+            contacts: {
+              phone: '555-0123',
+              email: 'alice@example.com',
+            },
+          },
+          {
+            name: 'Bob',
+            address: {
+              street: '456 Oak Ave',
+              city: 'Portland',
+              // missing coordinates
+            },
+            // missing contacts
+          },
+          {
+            name: 'Charlie',
+            // missing address and contacts
+          },
+        ];
+
+        output.innerHTML =
+          '<div class="output-line success">Testing Optional Chaining:</div>';
+
+        users.forEach((user, index) => {
+          // Safe property access
+          const street = user.address?.street ?? 'No address';
+          const phone = user.contacts?.phone ?? 'No phone';
+          const lat = user.address?.coordinates?.lat ?? 'Unknown';
+          const email = user.contacts?.email;
+
+          // Nullish coalescing examples
+          const displayName = user.nickname ?? user.name ?? 'Anonymous';
+          const defaultPhone = user.contacts?.phone ?? '555-0000';
+
+          output.innerHTML += `
+                    <div class="output-line info">User ${index + 1}: ${
+            user.name
+          }</div>
+                    <div class="output-line">Street: ${street}</div>
+                    <div class="output-line">Phone: ${phone}</div>
+                    <div class="output-line">Latitude: ${lat}</div>
+                    <div class="output-line">Email: ${email || 'No email'}</div>
+                    <div class="output-line">Display name: ${displayName}</div>
+                    <div class="output-line">Default phone: ${defaultPhone}</div>
+                    <hr style="border: 1px solid #30363d; margin: 10px 0;">
+                `;
+        });
+      }
+
+      function demonstrateModernFeatures() {
+        const output = document.getElementById('modern2-output');
+
+        // BigInt demonstration
+        const regularNumber = 123456789;
+        const bigNumber = 123456789012345678901234567890n;
+        const bigFromString = BigInt('987654321098765432109876543210');
+
+        // Private fields simulation (using WeakMap for older browsers)
+        class BankAccount {
+          #balance = 0; // Private field (if supported)
+
+          constructor(initialBalance) {
+            this.#balance = initialBalance;
+          }
+
+          deposit(amount) {
+            this.#balance += amount;
+            return this.#balance;
+          }
+
+          getBalance() {
+            return this.#balance;
+          }
+        }
+
+        const account = new BankAccount(1000);
+
+        // Logical assignment operators
+        let config = { theme: 'dark' };
+        config.fontSize ??= 14; // Only assign if nullish
+        config.theme ||= 'light'; // Only assign if falsy
+        config.debug &&= false; // Only assign if truthy
+
+        output.innerHTML = `
+                <div class="output-line success">BigInt Examples:</div>
+                <div class="output-line">Regular number: ${regularNumber}</div>
+                <div class="output-line">BigInt: ${bigNumber}</div>
+                <div class="output-line">BigInt from string: ${bigFromString}</div>
+                <div class="output-line">BigInt arithmetic: ${
+                  bigNumber + 1n
+                }</div>
+                
+                <div class="output-line success">Private Fields (if supported):</div>
+                <div class="output-line">Initial balance: ${account.getBalance()}</div>
+                <div class="output-line">After deposit: ${account.deposit(
+                  500
+                )}</div>
+                
+                <div class="output-line success">Logical Assignment:</div>
+                <div class="output-line">Config: ${JSON.stringify(config)}</div>
+                
+                <div class="output-line info">Modern features depend on browser support!</div>
+            `;
+      }
+
+      function clearOutput(elementId) {
+        document.getElementById(elementId).innerHTML = '';
+      }
+
+      // Initialize on page load
+      document.addEventListener('DOMContentLoaded', function () {
+        console.log('🚀 Modern JavaScript ES6+ Features Demo loaded!');
+        console.log(
+          'Explore the latest JavaScript features and see them in action!'
+        );
+      });
+    </script>
+  </body>
+</html>

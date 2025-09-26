@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Command Line Mastery</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: #0d1117;
+        color: #c9d1d9;
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .terminal {
+        background: #161b22;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+        border: 1px solid #30363d;
+        font-family: 'Fira Code', 'Consolas', monospace;
+        font-size: 14px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      }
+
+      .terminal-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #30363d;
+      }
+
+      .terminal-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+
+      .red {
+        background: #ff5f57;
+      }
+      .yellow {
+        background: #ffbd2e;
+      }
+      .green {
+        background: #28ca42;
+      }
+
+      .prompt {
+        color: #7c3aed;
+        font-weight: bold;
+      }
+
+      .command {
+        color: #58a6ff;
+        font-weight: bold;
+      }
+
+      .output {
+        color: #f0f6fc;
+        margin: 10px 0;
+        padding-left: 0;
+      }
+
+      .success {
+        color: #3fb950;
+      }
+
+      .error {
+        color: #f85149;
+      }
+
+      .warning {
+        color: #d29922;
+      }
+
+      .command-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin: 30px 0;
+      }
+
+      .command-card {
+        background: #21262d;
+        padding: 20px;
+        border-radius: 8px;
+        border-left: 4px solid #58a6ff;
+      }
+
+      .command-demo {
+        background: #0d1117;
+        padding: 15px;
+        border-radius: 4px;
+        margin: 10px 0;
+        border: 1px solid #30363d;
+      }
+
+      .interactive-section {
+        background: #21262d;
+        padding: 30px;
+        border-radius: 8px;
+        margin: 30px 0;
+        text-align: center;
+      }
+
+      .command-input {
+        width: 100%;
+        max-width: 600px;
+        padding: 12px;
+        background: #0d1117;
+        border: 1px solid #30363d;
+        border-radius: 4px;
+        color: #c9d1d9;
+        font-family: 'Fira Code', monospace;
+        font-size: 14px;
+        margin: 10px 0;
+      }
+
+      .execute-btn {
+        padding: 12px 24px;
+        background: #238636;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: background 0.2s;
+      }
+
+      .execute-btn:hover {
+        background: #2ea043;
+      }
+
+      .output-display {
+        margin-top: 20px;
+        padding: 15px;
+        background: #0d1117;
+        border: 1px solid #30363d;
+        border-radius: 4px;
+        text-align: left;
+        font-family: 'Fira Code', monospace;
+        min-height: 100px;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+
+      .tips-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        margin: 20px 0;
+      }
+
+      .tip-card {
+        background: #21262d;
+        padding: 15px;
+        border-radius: 6px;
+        border-left: 3px solid #f79000;
+      }
+
+      .keyboard-shortcut {
+        background: #30363d;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 12px;
+        margin: 0 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🖥️ Command Line Mastery for Web Developers</h1>
+      <p>
+        Master the essential command line skills that every modern web developer
+        needs.
+      </p>
+
+      <div class="terminal">
+        <div class="terminal-header">
+          <div class="terminal-dot red"></div>
+          <div class="terminal-dot yellow"></div>
+          <div class="terminal-dot green"></div>
+          <span style="margin-left: 10px; color: #7d8590">Terminal</span>
+        </div>
+
+        <div>
+          <span class="prompt">user@computer:~$</span>
+          <span class="command">pwd</span>
+          <div class="output success">/Users/user/projects/my-website</div>
+
+          <span class="prompt">user@computer:~$</span>
+          <span class="command">ls -la</span>
+          <div class="output">
+            drwxr-xr-x 8 user staff 256 Nov 15 10:30 . drwxr-xr-x 5 user staff
+            160 Nov 14 09:15 .. drwxr-xr-x 12 user staff 384 Nov 15 10:25 .git
+            -rw-r--r-- 1 user staff 45 Nov 14 09:20 .gitignore -rw-r--r-- 1 user
+            staff 1024 Nov 15 10:30 index.html -rw-r--r-- 1 user staff 512 Nov
+            15 09:45 style.css drwxr-xr-x 3 user staff 96 Nov 14 09:25 images
+            -rw-r--r-- 1 user staff 256 Nov 15 08:30 package.json
+          </div>
+
+          <span class="prompt">user@computer:~$</span>
+          <span class="command">git status</span>
+          <div class="output success">
+            On branch main Your branch is up to date with 'origin/main'. Changes
+            not staged for commit: modified: style.css Untracked files:
+            script.js
+          </div>
+        </div>
+      </div>
+
+      <h2>📂 Essential File System Commands</h2>
+      <div class="command-grid">
+        <div class="command-card">
+          <h3>Navigation</h3>
+          <div class="command-demo">
+            <div><span class="command">cd</span> directory-name</div>
+            <div><span class="command">cd ..</span> # Go up one level</div>
+            <div><span class="command">cd ~</span> # Go to home directory</div>
+            <div>
+              <span class="command">pwd</span> # Print working directory
+            </div>
+          </div>
+          <p>Master navigation to move efficiently between project folders.</p>
+        </div>
+
+        <div class="command-card">
+          <h3>File Operations</h3>
+          <div class="command-demo">
+            <div><span class="command">ls</span> # List files</div>
+            <div><span class="command">ls -la</span> # List with details</div>
+            <div><span class="command">mkdir</span> folder-name</div>
+            <div><span class="command">touch</span> filename.txt</div>
+            <div><span class="command">cp</span> source destination</div>
+            <div><span class="command">mv</span> old-name new-name</div>
+            <div><span class="command">rm</span> filename</div>
+          </div>
+          <p>Create, copy, move, and delete files and directories.</p>
+        </div>
+
+        <div class="command-card">
+          <h3>File Content</h3>
+          <div class="command-demo">
+            <div><span class="command">cat</span> filename.txt</div>
+            <div><span class="command">head -10</span> filename.txt</div>
+            <div><span class="command">tail -10</span> filename.txt</div>
+            <div><span class="command">grep</span> "search" filename.txt</div>
+            <div><span class="command">find</span> . -name "*.js"</div>
+          </div>
+          <p>View and search file contents efficiently.</p>
+        </div>
+
+        <div class="command-card">
+          <h3>Process Management</h3>
+          <div class="command-demo">
+            <div><span class="command">ps aux</span> # List processes</div>
+            <div><span class="command">kill</span> process-id</div>
+            <div><span class="command">killall</span> process-name</div>
+            <div><span class="command">jobs</span> # Background jobs</div>
+            <div><span class="command">nohup</span> command &</div>
+          </div>
+          <p>Manage running processes and background tasks.</p>
+        </div>
+      </div>
+
+      <h2>🔧 Development Workflow Commands</h2>
+      <div class="command-grid">
+        <div class="command-card">
+          <h3>Git Essentials</h3>
+          <div class="command-demo">
+            <div><span class="command">git init</span></div>
+            <div><span class="command">git add .</span></div>
+            <div><span class="command">git commit -m</span> "message"</div>
+            <div><span class="command">git push origin main</span></div>
+            <div><span class="command">git pull</span></div>
+            <div><span class="command">git status</span></div>
+            <div><span class="command">git log --oneline</span></div>
+          </div>
+          <p>Version control commands every developer uses daily.</p>
+        </div>
+
+        <div class="command-card">
+          <h3>Node.js & NPM</h3>
+          <div class="command-demo">
+            <div><span class="command">npm init -y</span></div>
+            <div><span class="command">npm install package-name</span></div>
+            <div><span class="command">npm install -g package-name</span></div>
+            <div><span class="command">npm run start</span></div>
+            <div><span class="command">npm run build</span></div>
+            <div><span class="command">npm ls</span></div>
+            <div><span class="command">npx create-react-app myapp</span></div>
+          </div>
+          <p>Package management and project initialization.</p>
+        </div>
+
+        <div class="command-card">
+          <h3>Development Servers</h3>
+          <div class="command-demo">
+            <div><span class="command">python -m http.server 8000</span></div>
+            <div><span class="command">live-server</span></div>
+            <div><span class="command">npx serve .</span></div>
+            <div><span class="command">npm start</span></div>
+          </div>
+          <p>Quick ways to serve your files locally for testing.</p>
+        </div>
+
+        <div class="command-card">
+          <h3>System Information</h3>
+          <div class="command-demo">
+            <div><span class="command">whoami</span></div>
+            <div><span class="command">uname -a</span></div>
+            <div><span class="command">df -h</span> # Disk space</div>
+            <div><span class="command">free -h</span> # Memory (Linux)</div>
+            <div><span class="command">top</span> # System monitor</div>
+          </div>
+          <p>Check system resources and information.</p>
+        </div>
+      </div>
+
+      <div class="interactive-section">
+        <h2>🎮 Try Commands Interactively</h2>
+        <p>Enter a command to see what it would do (simulated output)</p>
+        <input
+          type="text"
+          class="command-input"
+          id="commandInput"
+          placeholder="Enter a command (e.g., ls, pwd, git status)"
+          onkeypress="handleKeyPress(event)"
+        />
+        <br />
+        <button class="execute-btn" onclick="executeCommand()">
+          Execute Command
+        </button>
+        <div class="output-display" id="commandOutput">
+          Ready to execute commands...
+        </div>
+      </div>
+
+      <h2>💡 Pro Tips & Shortcuts</h2>
+      <div class="tips-grid">
+        <div class="tip-card">
+          <h4>Tab Completion</h4>
+          <p>
+            Press <span class="keyboard-shortcut">Tab</span> to auto-complete
+            file names and commands. Double-tap to see all options.
+          </p>
+        </div>
+
+        <div class="tip-card">
+          <h4>Command History</h4>
+          <p>
+            Use <span class="keyboard-shortcut">↑</span> and
+            <span class="keyboard-shortcut">↓</span> arrows to navigate command
+            history. <span class="keyboard-shortcut">Ctrl+R</span> for reverse
+            search.
+          </p>
+        </div>
+
+        <div class="tip-card">
+          <h4>Clear Terminal</h4>
+          <p>
+            <span class="keyboard-shortcut">Ctrl+L</span> or type
+            <span class="keyboard-shortcut">clear</span> to clean up your
+            terminal.
+          </p>
+        </div>
+
+        <div class="tip-card">
+          <h4>Stop Commands</h4>
+          <p>
+            <span class="keyboard-shortcut">Ctrl+C</span> to stop a running
+            command. <span class="keyboard-shortcut">Ctrl+Z</span> to suspend
+            it.
+          </p>
+        </div>
+
+        <div class="tip-card">
+          <h4>Multiple Commands</h4>
+          <p>
+            Chain commands with <code>&&</code> (if first succeeds) or
+            <code>;</code> (always run both).
+          </p>
+        </div>
+
+        <div class="tip-card">
+          <h4>Wildcards</h4>
+          <p>
+            Use <code>*</code> for multiple characters, <code>?</code> for
+            single character. Example: <code>*.js</code>
+          </p>
+        </div>
+
+        <div class="tip-card">
+          <h4>Pipes & Redirection</h4>
+          <p>
+            <code>|</code> to pipe output, <code>&gt;</code> to redirect to
+            file, <code>&gt;&gt;</code> to append.
+          </p>
+        </div>
+
+        <div class="tip-card">
+          <h4>Background Processes</h4>
+          <p>
+            Add <code>&</code> at the end to run commands in background. Use
+            <code>jobs</code> to see them.
+          </p>
+        </div>
+      </div>
+
+      <div class="command-card" style="margin: 30px 0">
+        <h2>🚀 Quick Start Workflow</h2>
+        <p>Here's a typical workflow for starting a new web project:</p>
+        <div class="terminal">
+          <div class="terminal-header">
+            <div class="terminal-dot red"></div>
+            <div class="terminal-dot yellow"></div>
+            <div class="terminal-dot green"></div>
+            <span style="margin-left: 10px; color: #7d8590"
+              >New Project Workflow</span
+            >
+          </div>
+
+          <div>
+            <span class="prompt">$</span>
+            <span class="command">mkdir my-awesome-project</span><br />
+            <span class="prompt">$</span>
+            <span class="command">cd my-awesome-project</span><br />
+            <span class="prompt">$</span> <span class="command">git init</span
+            ><br />
+            <span class="prompt">$</span>
+            <span class="command">npm init -y</span><br />
+            <span class="prompt">$</span>
+            <span class="command">touch index.html style.css script.js</span
+            ><br />
+            <span class="prompt">$</span> <span class="command">git add .</span
+            ><br />
+            <span class="prompt">$</span>
+            <span class="command">git commit -m "Initial commit"</span><br />
+            <span class="prompt">$</span> <span class="command">code .</span>
+            <span style="color: #7d8590"># Opens VS Code</span><br />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const commandSimulations = {
+        pwd: '/Users/user/projects/my-website',
+        ls: 'index.html  style.css  script.js  images/  package.json',
+        'ls -la': `total 24
+drwxr-xr-x  6 user  staff   192 Nov 15 10:30 .
+drwxr-xr-x  5 user  staff   160 Nov 14 09:15 ..
+-rw-r--r--  1 user  staff  1024 Nov 15 10:30 index.html
+-rw-r--r--  1 user  staff   512 Nov 15 09:45 style.css
+-rw-r--r--  1 user  staff   256 Nov 15 08:30 script.js
+drwxr-xr-x  3 user  staff    96 Nov 14 09:25 images`,
+        'git status': `On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  modified:   style.css
+
+Untracked files:
+  script.js`,
+        'git log --oneline': `a1b2c3d Update header styles
+e4f5g6h Add responsive navigation
+i7j8k9l Initial commit`,
+        'npm ls': `my-website@1.0.0
+├── express@4.18.2
+├── nodemon@2.0.20
+└── live-server@1.2.2`,
+        whoami: 'user',
+        date: new Date().toString(),
+        'echo hello world': 'hello world',
+        'node --version': 'v18.17.0',
+        'npm --version': '9.6.7',
+        'git --version': 'git version 2.39.2',
+      };
+
+      function executeCommand() {
+        const input = document.getElementById('commandInput');
+        const output = document.getElementById('commandOutput');
+        const command = input.value.trim();
+
+        if (!command) {
+          output.innerHTML =
+            '<span class="error">Please enter a command</span>';
+          return;
+        }
+
+        // Simulate command execution
+        let result = commandSimulations[command];
+
+        if (!result) {
+          // Try partial matches for common commands
+          if (command.startsWith('echo ')) {
+            result = command.substring(5);
+          } else if (command.includes('mkdir')) {
+            result = `<span class="success">Directory created successfully</span>`;
+          } else if (command.includes('touch')) {
+            result = `<span class="success">File created successfully</span>`;
+          } else if (command.includes('git add')) {
+            result = `<span class="success">Files staged for commit</span>`;
+          } else if (command.includes('git commit')) {
+            result = `<span class="success">[main a1b2c3d] Your commit message
+1 file changed, 5 insertions(+)</span>`;
+          } else if (command.includes('npm install')) {
+            result = `<span class="success">added 42 packages in 3.2s</span>`;
+          } else {
+            result = `<span class="warning">Command simulation not available for: ${command}
+Try: pwd, ls, git status, npm ls, whoami, date</span>`;
+          }
+        }
+
+        // Display command and output
+        output.innerHTML = `<span class="prompt">user@computer:~$</span> <span class="command">${command}</span>\n${result}`;
+        input.value = '';
+      }
+
+      function handleKeyPress(event) {
+        if (event.key === 'Enter') {
+          executeCommand();
+        }
+      }
+
+      // Focus input on page load
+      document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('commandInput').focus();
+        console.log('🖥️ Command Line Demo loaded!');
+        console.log('Try some commands in the interactive section above.');
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Asynchronous JavaScript & Promises Demo</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: #0f0f0f;
+        color: #f8f9fa;
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .header {
+        text-align: center;
+        padding: 40px 20px;
+        background: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%);
+        border-radius: 20px;
+        margin-bottom: 40px;
+      }
+
+      .header h1 {
+        font-size: 3em;
+        margin-bottom: 10px;
+      }
+
+      .header p {
+        font-size: 1.2em;
+        opacity: 0.9;
+      }
+
+      .demo-section {
+        background: #1a1a1a;
+        margin: 40px 0;
+        padding: 30px;
+        border-radius: 15px;
+        border: 1px solid #333;
+      }
+
+      .demo-section h2 {
+        color: #6f42c1;
+        margin-bottom: 25px;
+        font-size: 2em;
+        text-align: center;
+        position: relative;
+      }
+
+      .demo-section h2::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: linear-gradient(90deg, #6f42c1, #e83e8c);
+      }
+
+      .async-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 25px;
+        margin: 30px 0;
+      }
+
+      .async-card {
+        background: #2a2a2a;
+        padding: 25px;
+        border-radius: 12px;
+        border: 1px solid #444;
+        transition: all 0.3s ease;
+      }
+
+      .async-card:hover {
+        border-color: #6f42c1;
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(111, 66, 193, 0.2);
+      }
+
+      .async-card h3 {
+        color: #6f42c1;
+        margin-bottom: 15px;
+        font-size: 1.4em;
+      }
+
+      .code-block {
+        background: #0d1117;
+        border: 1px solid #30363d;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 15px 0;
+        font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+        font-size: 14px;
+        overflow-x: auto;
+        position: relative;
+      }
+
+      .code-block::before {
+        content: attr(data-lang);
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        font-size: 12px;
+        color: #7d8590;
+        text-transform: uppercase;
+      }
+
+      .js-keyword {
+        color: #ff7b72;
+      }
+      .js-string {
+        color: #a5d6ff;
+      }
+      .js-method {
+        color: #d2a8ff;
+      }
+      .js-comment {
+        color: #8b949e;
+      }
+      .js-number {
+        color: #79c0ff;
+      }
+      .js-operator {
+        color: #ff7b72;
+      }
+      .js-param {
+        color: #ffa657;
+      }
+
+      .interactive-demo {
+        background: #2a2a2a;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+        border-left: 4px solid #6f42c1;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin: 20px 0;
+        align-items: center;
+      }
+
+      .btn {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: #6f42c1;
+        color: white;
+      }
+
+      .btn:hover {
+        background: #5a2d91;
+        transform: translateY(-2px);
+      }
+
+      .btn-secondary {
+        background: #6c757d;
+      }
+
+      .btn-secondary:hover {
+        background: #545b62;
+      }
+
+      .btn-danger {
+        background: #dc3545;
+      }
+
+      .btn-danger:hover {
+        background: #c82333;
+      }
+
+      .btn-success {
+        background: #28a745;
+      }
+
+      .btn-success:hover {
+        background: #218838;
+      }
+
+      .output {
+        background: #0d1117;
+        border: 1px solid #30363d;
+        padding: 15px;
+        border-radius: 6px;
+        font-family: monospace;
+        font-size: 13px;
+        margin: 15px 0;
+        min-height: 120px;
+        overflow-y: auto;
+        max-height: 400px;
+      }
+
+      .output-line {
+        margin: 5px 0;
+        padding: 2px 0;
+      }
+
+      .success {
+        color: #3fb950;
+      }
+      .error {
+        color: #f85149;
+      }
+      .info {
+        color: #58a6ff;
+      }
+      .warning {
+        color: #d29922;
+      }
+      .pending {
+        color: #ffa657;
+      }
+
+      input[type='text'],
+      input[type='number'],
+      input[type='url'],
+      textarea,
+      select {
+        padding: 10px;
+        border: 2px solid #30363d;
+        border-radius: 6px;
+        background: #0d1117;
+        color: #f8f9fa;
+        font-size: 14px;
+        margin: 0 10px 10px 0;
+      }
+
+      input:focus,
+      textarea:focus,
+      select:focus {
+        outline: none;
+        border-color: #6f42c1;
+      }
+
+      .loading {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #30363d;
+        border-radius: 50%;
+        border-top-color: #6f42c1;
+        animation: spin 1s ease-in-out infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .promise-visualizer {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin: 20px 0;
+      }
+
+      .promise-state {
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        border: 2px solid;
+        transition: all 0.3s ease;
+      }
+
+      .promise-pending {
+        background: #3d2914;
+        border-color: #d29922;
+        color: #d29922;
+      }
+
+      .promise-fulfilled {
+        background: #0f2419;
+        border-color: #3fb950;
+        color: #3fb950;
+      }
+
+      .promise-rejected {
+        background: #2d1117;
+        border-color: #f85149;
+        color: #f85149;
+      }
+
+      .event-loop-demo {
+        background: #2a2a2a;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+      }
+
+      .execution-queue {
+        display: flex;
+        gap: 15px;
+        margin: 20px 0;
+        flex-wrap: wrap;
+      }
+
+      .queue-item {
+        padding: 10px 15px;
+        border-radius: 6px;
+        font-size: 12px;
+        min-width: 100px;
+        text-align: center;
+        border: 1px solid;
+      }
+
+      .call-stack {
+        background: #1a2332;
+        border-color: #58a6ff;
+        color: #58a6ff;
+      }
+
+      .macro-task {
+        background: #2d1b32;
+        border-color: #d2a8ff;
+        color: #d2a8ff;
+      }
+
+      .micro-task {
+        background: #321a1a;
+        border-color: #f85149;
+        color: #f85149;
+      }
+
+      .api-demo {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin: 20px 0;
+      }
+
+      .tip-box {
+        background: #1f2328;
+        border: 1px solid #6f42c1;
+        border-left: 4px solid #6f42c1;
+        padding: 20px;
+        border-radius: 6px;
+        margin: 20px 0;
+      }
+
+      .tip-box h4 {
+        color: #6f42c1;
+        margin-bottom: 10px;
+      }
+
+      .performance-monitor {
+        background: #0d1117;
+        border: 1px solid #30363d;
+        padding: 15px;
+        border-radius: 6px;
+        margin: 15px 0;
+      }
+
+      .perf-metric {
+        display: flex;
+        justify-content: space-between;
+        margin: 5px 0;
+        padding: 5px 0;
+        border-bottom: 1px solid #30363d;
+      }
+
+      @media (max-width: 768px) {
+        .async-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .promise-visualizer {
+          grid-template-columns: 1fr;
+        }
+
+        .api-demo {
+          grid-template-columns: 1fr;
+        }
+
+        .controls {
+          flex-direction: column;
+          align-items: stretch;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>⚡ Asynchronous JavaScript & Promises</h1>
+        <p>
+          Master async/await, promises, event loop, and modern asynchronous
+          patterns
+        </p>
+      </div>
+
+      <!-- Promise Fundamentals -->
+      <div class="demo-section">
+        <h2>🔄 Promise Fundamentals & States</h2>
+
+        <div class="promise-visualizer">
+          <div class="promise-state promise-pending">
+            <h4>Pending</h4>
+            <p>Initial state, neither fulfilled nor rejected</p>
+          </div>
+          <div class="promise-state promise-fulfilled">
+            <h4>Fulfilled</h4>
+            <p>Operation completed successfully</p>
+          </div>
+          <div class="promise-state promise-rejected">
+            <h4>Rejected</h4>
+            <p>Operation failed</p>
+          </div>
+        </div>
+
+        <div class="async-grid">
+          <div class="async-card">
+            <h3>Creating Promises</h3>
+            <div class="code-block" data-lang="js">
+              <span class="js-comment">// Basic Promise constructor</span>
+              <span class="js-keyword">const</span>
+              <span class="js-method">myPromise</span> =
+              <span class="js-keyword">new</span>
+              <span class="js-method">Promise</span>((<span class="js-param"
+                >resolve</span
+              >, <span class="js-param">reject</span>)
+              <span class="js-operator">=></span> {
+              <span class="js-keyword">const</span> success = Math.<span
+                class="js-method"
+                >random</span
+              >() > <span class="js-number">0.5</span>; setTimeout(()
+              <span class="js-operator">=></span> {
+              <span class="js-keyword">if</span> (success) {
+              <span class="js-method">resolve</span>(<span class="js-string"
+                >'Success!'</span
+              >); } <span class="js-keyword">else</span> {
+              <span class="js-method">reject</span>(<span class="js-keyword"
+                >new</span
+              >
+              <span class="js-method">Error</span>(<span class="js-string"
+                >'Failed!'</span
+              >)); } }, <span class="js-number">1000</span>); });
+
+              <span class="js-comment">// Immediate promises</span>
+              <span class="js-keyword">const</span> resolvedPromise =
+              Promise.<span class="js-method">resolve</span>(<span
+                class="js-string"
+                >'Immediate success'</span
+              >); <span class="js-keyword">const</span> rejectedPromise =
+              Promise.<span class="js-method">reject</span>(<span
+                class="js-string"
+                >'Immediate failure'</span
+              >);
+            </div>
+
+            <div class="interactive-demo">
+              <h4>Create & Test Promises:</h4>
+              <div class="controls">
+                <input
+                  type="number"
+                  id="promise-delay"
+                  placeholder="Delay (ms)"
+                  value="1000"
+                  min="100"
+                  max="5000"
+                />
+                <input
+                  type="number"
+                  id="success-chance"
+                  placeholder="Success % (0-100)"
+                  value="70"
+                  min="0"
+                  max="100"
+                />
+                <button class="btn" onclick="createTestPromise()">
+                  Create Promise
+                </button>
+                <button
+                  class="btn btn-secondary"
+                  onclick="clearOutput('promise-output')"
+                >
+                  Clear
+                </button>
+              </div>
+              <div class="output" id="promise-output"></div>
+            </div>
+          </div>
+
+          <div class="async-card">
+            <h3>Promise Chaining</h3>
+            <div class="code-block" data-lang="js">
+              <span class="js-comment">// Promise chaining with .then()</span>
+              <span class="js-method">fetchUserData</span>(<span
+                class="js-number"
+                >123</span
+              >) .<span class="js-method">then</span>(<span class="js-param"
+                >user</span
+              >
+              <span class="js-operator">=></span> { console.<span
+                class="js-method"
+                >log</span
+              >(<span class="js-string">'User:'</span>, user);
+              <span class="js-keyword">return</span>
+              <span class="js-method">fetchUserPosts</span>(user.id); }) .<span
+                class="js-method"
+                >then</span
+              >(<span class="js-param">posts</span>
+              <span class="js-operator">=></span> { console.<span
+                class="js-method"
+                >log</span
+              >(<span class="js-string">'Posts:'</span>, posts);
+              <span class="js-keyword">return</span>
+              <span class="js-method">fetchPostComments</span>(posts[<span
+                class="js-number"
+                >0</span
+              >].id); }) .<span class="js-method">then</span>(<span
+                class="js-param"
+                >comments</span
+              >
+              <span class="js-operator">=></span> { console.<span
+                class="js-method"
+                >log</span
+              >(<span class="js-string">'Comments:'</span>, comments); }) .<span
+                class="js-method"
+                >catch</span
+              >(<span class="js-param">error</span>
+              <span class="js-operator">=></span> { console.<span
+                class="js-method"
+                >error</span
+              >(<span class="js-string">'Error in chain:'</span>, error); })
+              .<span class="js-method">finally</span>(()
+              <span class="js-operator">=></span> { console.<span
+                class="js-method"
+                >log</span
+              >(<span class="js-string">'Chain completed'</span>); });
+            </div>
+
+            <div class="interactive-demo">
+              <h4>Promise Chain Demo:</h4>
+              <div class="controls">
+                <button class="btn" onclick="demonstrateChaining()">
+                  Start Chain
+                </button>
+                <button
+                  class="btn btn-danger"
+                  onclick="demonstrateFailedChain()"
+                >
+                  Failed Chain
+                </button>
+              </div>
+              <div class="output" id="chain-output"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Async/Await -->
+      <div class="demo-section">
+        <h2>🎯 Async/Await Patterns</h2>
+
+        <div class="async-grid">
+          <div class="async-card">
+            <h3>Async Functions</h3>
+            <div class="code-block" data-lang="js">
+              <span class="js-comment">// Async function declaration</span>
+              <span class="js-keyword">async function</span>
+              <span class="js-method">fetchData</span>(<span class="js-param"
+                >url</span
+              >) { <span class="js-keyword">try</span> {
+              <span class="js-keyword">const</span> response =
+              <span class="js-keyword">await</span>
+              <span class="js-method">fetch</span>(url);
+              <span class="js-keyword">const</span> data =
+              <span class="js-keyword">await</span> response.<span
+                class="js-method"
+                >json</span
+              >(); <span class="js-keyword">return</span> data; }
+              <span class="js-keyword">catch</span> (error) { console.<span
+                class="js-method"
+                >error</span
+              >(<span class="js-string">'Fetch error:'</span>, error);
+              <span class="js-keyword">throw</span> error; } }
+
+              <span class="js-comment">// Async arrow function</span>
+              <span class="js-keyword">const</span>
+              <span class="js-method">fetchUserProfile</span> =
+              <span class="js-keyword">async</span> (<span class="js-param"
+                >userId</span
+              >) <span class="js-operator">=></span> {
+              <span class="js-keyword">const</span> user =
+              <span class="js-keyword">await</span>
+              <span class="js-method">fetchData</span>(<span class="js-string"
+                >`/api/users/${userId}`</span
+              >); <span class="js-keyword">const</span> profile =
+              <span class="js-keyword">await</span>
+              <span class="js-method">fetchData</span>(<span class="js-string"
+                >`/api/profiles/${userId}`</span
+              >);
+
+              <span class="js-keyword">return</span> { ...user, ...profile }; };
+
+              <span class="js-comment">// Using async/await</span>
+              <span class="js-keyword">async function</span>
+              <span class="js-method">main</span>() {
+              <span class="js-keyword">const</span> userData =
+              <span class="js-keyword">await</span>
+              <span class="js-method">fetchUserProfile</span>(<span
+                class="js-number"
+                >123</span
+              >); console.<span class="js-method">log</span>(userData); }
+            </div>
+
+            <div class="interactive-demo">
+              <h4>Async Function Demo:</h4>
+              <div class="controls">
+                <input
+                  type="url"
+                  id="api-url"
+                  placeholder="API URL"
+                  value="https://jsonplaceholder.typicode.com/posts/1"
+                />
+                <button class="btn" onclick="testAsyncFunction()">
+                  Fetch Data
+                </button>
+                <button class="btn btn-secondary" onclick="testAsyncError()">
+                  Test Error
+                </button>
+              </div>
+              <div class="output" id="async-output"></div>
+            </div>
+          </div>
+
+          <div class="async-card">
+            <h3>Parallel vs Sequential</h3>
+            <div class="code-block" data-lang="js">
+              <span class="js-comment">// Sequential execution (slower)</span>
+              <span class="js-keyword">async function</span>
+              <span class="js-method">sequential</span>() {
+              <span class="js-keyword">const</span> result1 =
+              <span class="js-keyword">await</span>
+              <span class="js-method">slowOperation1</span>();
+              <span class="js-comment">// 2 seconds</span>
+              <span class="js-keyword">const</span> result2 =
+              <span class="js-keyword">await</span>
+              <span class="js-method">slowOperation2</span>();
+              <span class="js-comment">// 2 seconds</span>
+              <span class="js-keyword">const</span> result3 =
+              <span class="js-keyword">await</span>
+              <span class="js-method">slowOperation3</span>();
+              <span class="js-comment">// 2 seconds</span>
+              <span class="js-comment">// Total: ~6 seconds</span>
+              <span class="js-keyword">return</span> [result1, result2,
+              result3]; }
+
+              <span class="js-comment">// Parallel execution (faster)</span>
+              <span class="js-keyword">async function</span>
+              <span class="js-method">parallel</span>() {
+              <span class="js-keyword">const</span> [result1, result2, result3]
+              = <span class="js-keyword">await</span> Promise.<span
+                class="js-method"
+                >all</span
+              >([ <span class="js-method">slowOperation1</span>(),
+              <span class="js-method">slowOperation2</span>(),
+              <span class="js-method">slowOperation3</span>() ]);
+              <span class="js-comment">// Total: ~2 seconds</span>
+              <span class="js-keyword">return</span> [result1, result2,
+              result3]; }
+
+              <span class="js-comment"
+                >// Error handling with Promise.allSettled</span
+              >
+              <span class="js-keyword">const</span> results =
+              <span class="js-keyword">await</span> Promise.<span
+                class="js-method"
+                >allSettled</span
+              >([ <span class="js-method">operation1</span>(),
+              <span class="js-method">operation2</span>(),
+              <span class="js-method">operation3</span>() ]);
+            </div>
+
+            <div class="interactive-demo">
+              <h4>Performance Comparison:</h4>
+              <div class="controls">
+                <button class="btn" onclick="runSequential()">
+                  Sequential Execution
+                </button>
+                <button class="btn btn-success" onclick="runParallel()">
+                  Parallel Execution
+                </button>
+                <button class="btn btn-secondary" onclick="runAllSettled()">
+                  Promise.allSettled
+                </button>
+              </div>
+              <div class="performance-monitor" id="perf-monitor"></div>
+              <div class="output" id="parallel-output"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Event Loop & Microtasks -->
+      <div class="demo-section">
+        <h2>🔄 Event Loop & Task Queues</h2>
+
+        <div class="event-loop-demo">
+          <h3>JavaScript Event Loop Visualization</h3>
+          <div class="execution-queue">
+            <div class="queue-item call-stack">Call Stack</div>
+            <div class="queue-item macro-task">Macro Task Queue</div>
+            <div class="queue-item micro-task">Micro Task Queue</div>
+          </div>
+
+          <div class="code-block" data-lang="js">
+            <span class="js-comment">// Event loop execution order</span>
+            console.<span class="js-method">log</span>(<span class="js-string"
+              >'1. Start'</span
+            >); <span class="js-comment">// Call Stack</span>
+
+            setTimeout(() <span class="js-operator">=></span> { console.<span
+              class="js-method"
+              >log</span
+            >(<span class="js-string">'2. Macro Task'</span>);
+            <span class="js-comment">// Macro Task Queue</span> },
+            <span class="js-number">0</span>); Promise.<span class="js-method"
+              >resolve</span
+            >().<span class="js-method">then</span>(()
+            <span class="js-operator">=></span> { console.<span
+              class="js-method"
+              >log</span
+            >(<span class="js-string">'3. Micro Task'</span>);
+            <span class="js-comment">// Micro Task Queue</span> });
+            console.<span class="js-method">log</span>(<span class="js-string"
+              >'4. End'</span
+            >); <span class="js-comment">// Call Stack</span>
+
+            <span class="js-comment"
+              >// Output: 1. Start → 4. End → 3. Micro Task → 2. Macro
+              Task</span
+            >
+          </div>
+
+          <div class="interactive-demo">
+            <h4>Event Loop Demo:</h4>
+            <div class="controls">
+              <button class="btn" onclick="demonstrateEventLoop()">
+                Run Event Loop
+              </button>
+              <button class="btn" onclick="complexEventLoop()">
+                Complex Example
+              </button>
+              <button
+                class="btn btn-secondary"
+                onclick="clearOutput('eventloop-output')"
+              >
+                Clear
+              </button>
+            </div>
+            <div class="output" id="eventloop-output"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Real-World Async Patterns -->
+      <div class="demo-section">
+        <h2>🌐 Real-World Async Patterns</h2>
+
+        <div class="async-grid">
+          <div class="async-card">
+            <h3>API Request Patterns</h3>
+            <div class="code-block" data-lang="js">
+              <span class="js-comment"
+                >// Retry logic with exponential backoff</span
+              >
+              <span class="js-keyword">async function</span>
+              <span class="js-method">fetchWithRetry</span>(<span
+                class="js-param"
+                >url</span
+              >, <span class="js-param">maxRetries</span> =
+              <span class="js-number">3</span>) {
+              <span class="js-keyword">for</span> (<span class="js-keyword"
+                >let</span
+              >
+              i = <span class="js-number">0</span>; i < maxRetries; i++) {
+              <span class="js-keyword">try</span> {
+              <span class="js-keyword">const</span> response =
+              <span class="js-keyword">await</span>
+              <span class="js-method">fetch</span>(url);
+              <span class="js-keyword">if</span> (response.ok)
+              <span class="js-keyword">return</span> response.<span
+                class="js-method"
+                >json</span
+              >(); <span class="js-keyword">throw new</span>
+              <span class="js-method">Error</span>(<span class="js-string"
+                >`HTTP ${response.status}`</span
+              >); } <span class="js-keyword">catch</span> (error) {
+              <span class="js-keyword">if</span> (i === maxRetries -
+              <span class="js-number">1</span>)
+              <span class="js-keyword">throw</span> error;
+              <span class="js-keyword">await</span>
+              <span class="js-method">delay</span>(Math.<span class="js-method"
+                >pow</span
+              >(<span class="js-number">2</span>, i) *
+              <span class="js-number">1000</span>); } } }
+
+              <span class="js-comment">// Timeout wrapper</span>
+              <span class="js-keyword">function</span>
+              <span class="js-method">withTimeout</span>(<span class="js-param"
+                >promise</span
+              >, <span class="js-param">timeoutMs</span>) {
+              <span class="js-keyword">return</span> Promise.<span
+                class="js-method"
+                >race</span
+              >([ promise, <span class="js-keyword">new</span>
+              <span class="js-method">Promise</span>((_, reject)
+              <span class="js-operator">=></span> setTimeout(()
+              <span class="js-operator">=></span>
+              <span class="js-method">reject</span>(<span class="js-keyword"
+                >new</span
+              >
+              <span class="js-method">Error</span>(<span class="js-string"
+                >'Timeout'</span
+              >)), timeoutMs) ) ]); }
+            </div>
+
+            <div class="interactive-demo">
+              <h4>Advanced Fetch Patterns:</h4>
+              <div class="controls">
+                <input
+                  type="url"
+                  id="retry-url"
+                  placeholder="URL to test"
+                  value="https://httpstat.us/200"
+                />
+                <input
+                  type="number"
+                  id="timeout-ms"
+                  placeholder="Timeout (ms)"
+                  value="5000"
+                />
+                <button class="btn" onclick="testRetryPattern()">
+                  Test Retry
+                </button>
+                <button class="btn" onclick="testTimeout()">
+                  Test Timeout
+                </button>
+              </div>
+              <div class="output" id="patterns-output"></div>
+            </div>
+          </div>
+
+          <div class="async-card">
+            <h3>Concurrent Control</h3>
+            <div class="code-block" data-lang="js">
+              <span class="js-comment">// Limit concurrent operations</span>
+              <span class="js-keyword">class</span>
+              <span class="js-method">ConcurrencyLimiter</span> {
+              <span class="js-method">constructor</span>(<span class="js-param"
+                >limit</span
+              >) { <span class="js-keyword">this</span>.limit = limit;
+              <span class="js-keyword">this</span>.running =
+              <span class="js-number">0</span>;
+              <span class="js-keyword">this</span>.queue = []; }
+
+              <span class="js-keyword">async</span>
+              <span class="js-method">run</span>(<span class="js-param">fn</span
+              >) { <span class="js-keyword">return new</span>
+              <span class="js-method">Promise</span>((<span class="js-param"
+                >resolve</span
+              >, <span class="js-param">reject</span>)
+              <span class="js-operator">=></span> {
+              <span class="js-keyword">this</span>.queue.<span class="js-method"
+                >push</span
+              >({ fn, resolve, reject });
+              <span class="js-keyword">this</span>.<span class="js-method"
+                >tryNext</span
+              >(); }); }
+
+              <span class="js-keyword">async</span>
+              <span class="js-method">tryNext</span>() {
+              <span class="js-keyword">if</span> (<span class="js-keyword"
+                >this</span
+              >.running >= <span class="js-keyword">this</span>.limit ||
+              <span class="js-keyword">this</span>.queue.length ===
+              <span class="js-number">0</span>) {
+              <span class="js-keyword">return</span>; }
+
+              <span class="js-keyword">this</span>.running++;
+              <span class="js-keyword">const</span> { fn, resolve, reject } =
+              <span class="js-keyword">this</span>.queue.<span class="js-method"
+                >shift</span
+              >();
+
+              <span class="js-keyword">try</span> {
+              <span class="js-keyword">const</span> result =
+              <span class="js-keyword">await</span>
+              <span class="js-method">fn</span>();
+              <span class="js-method">resolve</span>(result); }
+              <span class="js-keyword">catch</span> (error) {
+              <span class="js-method">reject</span>(error); }
+              <span class="js-keyword">finally</span> {
+              <span class="js-keyword">this</span>.running--;
+              <span class="js-keyword">this</span>.<span class="js-method"
+                >tryNext</span
+              >(); } } }
+            </div>
+
+            <div class="interactive-demo">
+              <h4>Concurrency Control:</h4>
+              <div class="controls">
+                <input
+                  type="number"
+                  id="task-count"
+                  placeholder="Number of tasks"
+                  value="10"
+                  min="1"
+                  max="50"
+                />
+                <input
+                  type="number"
+                  id="concurrency-limit"
+                  placeholder="Max concurrent"
+                  value="3"
+                  min="1"
+                  max="10"
+                />
+                <button class="btn" onclick="testConcurrencyLimit()">
+                  Test Concurrency
+                </button>
+              </div>
+              <div class="output" id="concurrency-output"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Best Practices -->
+      <div class="tip-box">
+        <h4>⚡ Async JavaScript Best Practices</h4>
+        <ul>
+          <li>
+            <strong>Prefer async/await over Promises:</strong> More readable and
+            easier error handling
+          </li>
+          <li>
+            <strong>Use Promise.all() for independent operations:</strong>
+            Significant performance gains
+          </li>
+          <li>
+            <strong>Handle errors appropriately:</strong> Try/catch with
+            async/await, .catch() with promises
+          </li>
+          <li>
+            <strong>Avoid async/await in loops:</strong> Use Promise.all() or
+            for...of instead
+          </li>
+          <li>
+            <strong>Implement proper timeout and retry logic:</strong> Make
+            applications resilient
+          </li>
+          <li>
+            <strong>Understand the event loop:</strong> Microtasks execute
+            before macrotasks
+          </li>
+          <li>
+            <strong>Use AbortController for cancellation:</strong> Cancel fetch
+            requests when needed
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- CodeMirror Integration for proper code display -->
+    <script src="../codemirror-integration.js"></script>
+
+    <script>
+      // Performance monitoring
+      const performanceMonitor = {
+        start: (name) => {
+          performance.mark(`${name}-start`);
+        },
+        end: (name) => {
+          performance.mark(`${name}-end`);
+          performance.measure(name, `${name}-start`, `${name}-end`);
+          const measure = performance.getEntriesByName(name)[0];
+          return measure.duration;
+        },
+      };
+
+      // Utility functions
+      const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+      const randomDelay = (min = 500, max = 2000) =>
+        delay(Math.random() * (max - min) + min);
+
+      // Promise creation demo
+      async function createTestPromise() {
+        const delayMs =
+          parseInt(document.getElementById('promise-delay').value) || 1000;
+        const successChance =
+          parseInt(document.getElementById('success-chance').value) || 70;
+        const output = document.getElementById('promise-output');
+
+        output.innerHTML += `<div class="output-line info">Creating promise with ${delayMs}ms delay, ${successChance}% success rate...</div>`;
+
+        const testPromise = new Promise((resolve, reject) => {
+          setTimeout(() => {
+            const success = Math.random() * 100 < successChance;
+            if (success) {
+              resolve(`Success after ${delayMs}ms!`);
+            } else {
+              reject(new Error(`Failed after ${delayMs}ms`));
+            }
+          }, delayMs);
+        });
+
+        try {
+          const result = await testPromise;
+          output.innerHTML += `<div class="output-line success">✅ ${result}</div>`;
+        } catch (error) {
+          output.innerHTML += `<div class="output-line error">❌ ${error.message}</div>`;
+        }
+
+        output.innerHTML += `<div class="output-line">Timestamp: ${new Date().toLocaleTimeString()}</div><hr style="border: 1px solid #30363d; margin: 10px 0;">`;
+      }
+
+      // Promise chaining demonstration
+      async function demonstrateChaining() {
+        const output = document.getElementById('chain-output');
+        output.innerHTML =
+          '<div class="output-line info">Starting promise chain...</div>';
+
+        // Simulate API calls
+        const fetchUser = (id) => {
+          return delay(800).then(() => ({
+            id,
+            name: `User${id}`,
+            email: `user${id}@example.com`,
+          }));
+        };
+
+        const fetchUserPosts = (userId) => {
+          return delay(600).then(() => [
+            { id: 1, title: 'First Post', userId },
+            { id: 2, title: 'Second Post', userId },
+          ]);
+        };
+
+        const fetchPostComments = (postId) => {
+          return delay(400).then(() => [
+            { id: 1, text: 'Great post!', postId },
+            { id: 2, text: 'Thanks for sharing', postId },
+          ]);
+        };
+
+        try {
+          output.innerHTML +=
+            '<div class="output-line pending">📡 Fetching user...</div>';
+          const user = await fetchUser(123);
+          output.innerHTML += `<div class="output-line success">✅ User: ${user.name}</div>`;
+
+          output.innerHTML +=
+            '<div class="output-line pending">📡 Fetching posts...</div>';
+          const posts = await fetchUserPosts(user.id);
+          output.innerHTML += `<div class="output-line success">✅ Posts: ${posts.length} found</div>`;
+
+          output.innerHTML +=
+            '<div class="output-line pending">📡 Fetching comments...</div>';
+          const comments = await fetchPostComments(posts[0].id);
+          output.innerHTML += `<div class="output-line success">✅ Comments: ${comments.length} found</div>`;
+
+          output.innerHTML +=
+            '<div class="output-line info">🎉 Chain completed successfully!</div>';
+        } catch (error) {
+          output.innerHTML += `<div class="output-line error">❌ Chain failed: ${error.message}</div>`;
+        }
+      }
+
+      async function demonstrateFailedChain() {
+        const output = document.getElementById('chain-output');
+        output.innerHTML =
+          '<div class="output-line info">Starting chain with intentional failure...</div>';
+
+        const fetchUser = () =>
+          delay(500).then(() => ({ id: 123, name: 'TestUser' }));
+        const fetchUserPostsWithError = () =>
+          delay(300).then(() => {
+            throw new Error('API temporarily unavailable');
+          });
+
+        try {
+          const user = await fetchUser();
+          output.innerHTML += `<div class="output-line success">✅ User: ${user.name}</div>`;
+
+          const posts = await fetchUserPostsWithError();
+          output.innerHTML += `<div class="output-line success">✅ Posts loaded</div>`;
+        } catch (error) {
+          output.innerHTML += `<div class="output-line error">❌ Chain failed: ${error.message}</div>`;
+          output.innerHTML +=
+            '<div class="output-line warning">⚠️ Error handling prevented crash</div>';
+        }
+      }
+
+      // Async function testing
+      async function testAsyncFunction() {
+        const url = document.getElementById('api-url').value;
+        const output = document.getElementById('async-output');
+
+        if (!url) {
+          output.innerHTML =
+            '<div class="output-line error">Please enter a URL</div>';
+          return;
+        }
+
+        output.innerHTML = '<div class="loading"></div> Fetching data...';
+        performanceMonitor.start('fetch');
+
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+
+          const data = await response.json();
+          const duration = performanceMonitor.end('fetch');
+
+          output.innerHTML = `
+                    <div class="output-line success">✅ Fetch successful!</div>
+                    <div class="output-line info">Duration: ${duration.toFixed(
+                      2
+                    )}ms</div>
+                    <div class="output-line">Status: ${response.status} ${
+            response.statusText
+          }</div>
+                    <div class="output-line">Content-Type: ${response.headers.get(
+                      'content-type'
+                    )}</div>
+                    <div class="output-line">Data preview:</div>
+                    <pre style="background: #0d1117; padding: 10px; border-radius: 4px; margin: 10px 0; max-height: 200px; overflow-y: auto;">${JSON.stringify(
+                      data,
+                      null,
+                      2
+                    )}</pre>
+                `;
+        } catch (error) {
+          const duration = performanceMonitor.end('fetch');
+          output.innerHTML = `
+                    <div class="output-line error">❌ Error: ${
+                      error.message
+                    }</div>
+                    <div class="output-line info">Duration: ${duration.toFixed(
+                      2
+                    )}ms</div>
+                `;
+        }
+      }
+
+      async function testAsyncError() {
+        const output = document.getElementById('async-output');
+
+        output.innerHTML =
+          '<div class="output-line info">Testing error handling...</div>';
+
+        async function problematicFunction() {
+          await delay(1000);
+          throw new Error('Simulated async error');
+        }
+
+        try {
+          await problematicFunction();
+        } catch (error) {
+          output.innerHTML += `<div class="output-line error">❌ Caught error: ${error.message}</div>`;
+          output.innerHTML +=
+            '<div class="output-line success">✅ Error handling working correctly</div>';
+        }
+      }
+
+      // Performance comparison
+      async function runSequential() {
+        const output = document.getElementById('parallel-output');
+        const perfMonitor = document.getElementById('perf-monitor');
+
+        output.innerHTML =
+          '<div class="output-line info">Running sequential operations...</div>';
+        performanceMonitor.start('sequential');
+
+        const slowOperation = (name, duration) => {
+          return delay(duration).then(() => {
+            output.innerHTML += `<div class="output-line">✅ ${name} completed (${duration}ms)</div>`;
+            return `Result from ${name}`;
+          });
+        };
+
+        const result1 = await slowOperation('Task 1', 1000);
+        const result2 = await slowOperation('Task 2', 800);
+        const result3 = await slowOperation('Task 3', 600);
+
+        const duration = performanceMonitor.end('sequential');
+
+        perfMonitor.innerHTML = `
+                <div class="perf-metric">
+                    <span>Sequential Execution:</span>
+                    <span class="warning">${duration.toFixed(2)}ms</span>
+                </div>
+            `;
+
+        output.innerHTML += `<div class="output-line success">🏁 Sequential completed in ${duration.toFixed(
+          2
+        )}ms</div>`;
+      }
+
+      async function runParallel() {
+        const output = document.getElementById('parallel-output');
+        const perfMonitor = document.getElementById('perf-monitor');
+
+        output.innerHTML =
+          '<div class="output-line info">Running parallel operations...</div>';
+        performanceMonitor.start('parallel');
+
+        const slowOperation = (name, duration) => {
+          return delay(duration).then(() => {
+            output.innerHTML += `<div class="output-line">✅ ${name} completed (${duration}ms)</div>`;
+            return `Result from ${name}`;
+          });
+        };
+
+        const [result1, result2, result3] = await Promise.all([
+          slowOperation('Task 1', 1000),
+          slowOperation('Task 2', 800),
+          slowOperation('Task 3', 600),
+        ]);
+
+        const duration = performanceMonitor.end('parallel');
+
+        perfMonitor.innerHTML += `
+                <div class="perf-metric">
+                    <span>Parallel Execution:</span>
+                    <span class="success">${duration.toFixed(2)}ms</span>
+                </div>
+            `;
+
+        output.innerHTML += `<div class="output-line success">🚀 Parallel completed in ${duration.toFixed(
+          2
+        )}ms</div>`;
+      }
+
+      async function runAllSettled() {
+        const output = document.getElementById('parallel-output');
+
+        output.innerHTML =
+          '<div class="output-line info">Running Promise.allSettled...</div>';
+
+        const operations = [
+          delay(800).then(() => 'Success 1'),
+          delay(600).then(() => {
+            throw new Error('Intentional failure');
+          }),
+          delay(1000).then(() => 'Success 2'),
+          delay(400).then(() => {
+            throw new Error('Another failure');
+          }),
+        ];
+
+        const results = await Promise.allSettled(operations);
+
+        results.forEach((result, index) => {
+          if (result.status === 'fulfilled') {
+            output.innerHTML += `<div class="output-line success">✅ Operation ${
+              index + 1
+            }: ${result.value}</div>`;
+          } else {
+            output.innerHTML += `<div class="output-line error">❌ Operation ${
+              index + 1
+            }: ${result.reason.message}</div>`;
+          }
+        });
+
+        const successful = results.filter(
+          (r) => r.status === 'fulfilled'
+        ).length;
+        output.innerHTML += `<div class="output-line info">📊 ${successful}/${results.length} operations succeeded</div>`;
+      }
+
+      // Event loop demonstration
+      function demonstrateEventLoop() {
+        const output = document.getElementById('eventloop-output');
+        output.innerHTML =
+          '<div class="output-line info">Demonstrating event loop execution order...</div>';
+
+        let executionOrder = [];
+
+        const log = (message) => {
+          executionOrder.push(message);
+          output.innerHTML += `<div class="output-line">${executionOrder.length}. ${message}</div>`;
+        };
+
+        log('📋 Start (Call Stack)');
+
+        setTimeout(() => {
+          log('⏰ setTimeout callback (Macro Task)');
+        }, 0);
+
+        Promise.resolve().then(() => {
+          log('🔄 Promise.then callback (Micro Task)');
+        });
+
+        queueMicrotask(() => {
+          log('⚡ queueMicrotask callback (Micro Task)');
+        });
+
+        log('📋 End (Call Stack)');
+
+        setTimeout(() => {
+          output.innerHTML +=
+            '<div class="output-line success">✅ Event loop demonstration complete!</div>';
+          output.innerHTML +=
+            '<div class="output-line info">Notice: Call Stack → Micro Tasks → Macro Tasks</div>';
+        }, 100);
+      }
+
+      function complexEventLoop() {
+        const output = document.getElementById('eventloop-output');
+        output.innerHTML =
+          '<div class="output-line info">Complex event loop example...</div>';
+
+        let step = 0;
+        const log = (message, type = '') => {
+          step++;
+          const className = type ? `output-line ${type}` : 'output-line';
+          output.innerHTML += `<div class="${className}">${step}. ${message}</div>`;
+        };
+
+        log('Start script execution', 'info');
+
+        setTimeout(() => log('Timeout 1 (0ms)', 'warning'), 0);
+        setTimeout(() => log('Timeout 2 (0ms)', 'warning'), 0);
+
+        Promise.resolve()
+          .then(() => log('Promise 1', 'success'))
+          .then(() => log('Promise 1 chained', 'success'));
+
+        Promise.resolve().then(() => {
+          log('Promise 2', 'success');
+          setTimeout(() => log('Timeout inside Promise', 'warning'), 0);
+        });
+
+        queueMicrotask(() => log('Microtask 1', 'info'));
+        queueMicrotask(() => log('Microtask 2', 'info'));
+
+        log('End script execution', 'info');
+      }
+
+      // Advanced patterns
+      async function testRetryPattern() {
+        const url =
+          document.getElementById('retry-url').value ||
+          'https://httpstat.us/500';
+        const output = document.getElementById('patterns-output');
+
+        output.innerHTML =
+          '<div class="output-line info">Testing retry pattern...</div>';
+
+        async function fetchWithRetry(url, maxRetries = 3) {
+          for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+              output.innerHTML += `<div class="output-line pending">🔄 Attempt ${attempt}/${maxRetries}...</div>`;
+
+              const response = await fetch(url);
+              if (response.ok) {
+                output.innerHTML += `<div class="output-line success">✅ Success on attempt ${attempt}!</div>`;
+                return response;
+              }
+              throw new Error(`HTTP ${response.status}`);
+            } catch (error) {
+              output.innerHTML += `<div class="output-line error">❌ Attempt ${attempt} failed: ${error.message}</div>`;
+
+              if (attempt === maxRetries) {
+                throw new Error(`All ${maxRetries} attempts failed`);
+              }
+
+              const backoffTime = Math.pow(2, attempt - 1) * 1000;
+              output.innerHTML += `<div class="output-line warning">⏳ Waiting ${backoffTime}ms before retry...</div>`;
+              await delay(backoffTime);
+            }
+          }
+        }
+
+        try {
+          await fetchWithRetry(url);
+          output.innerHTML +=
+            '<div class="output-line success">🎉 Retry pattern completed successfully!</div>';
+        } catch (error) {
+          output.innerHTML += `<div class="output-line error">💥 Final failure: ${error.message}</div>`;
+        }
+      }
+
+      async function testTimeout() {
+        const timeoutMs =
+          parseInt(document.getElementById('timeout-ms').value) || 5000;
+        const output = document.getElementById('patterns-output');
+
+        output.innerHTML =
+          '<div class="output-line info">Testing timeout pattern...</div>';
+
+        function withTimeout(promise, timeoutMs) {
+          return Promise.race([
+            promise,
+            new Promise((_, reject) =>
+              setTimeout(
+                () => reject(new Error(`Timeout after ${timeoutMs}ms`)),
+                timeoutMs
+              )
+            ),
+          ]);
+        }
+
+        // Simulate a slow operation
+        const slowOperation = delay(3000).then(() => 'Operation completed');
+
+        try {
+          output.innerHTML += `<div class="output-line pending">⏱️ Racing against ${timeoutMs}ms timeout...</div>`;
+          const result = await withTimeout(slowOperation, timeoutMs);
+          output.innerHTML += `<div class="output-line success">✅ ${result}</div>`;
+        } catch (error) {
+          output.innerHTML += `<div class="output-line error">❌ ${error.message}</div>`;
+        }
+      }
+
+      // Concurrency limiter
+      class ConcurrencyLimiter {
+        constructor(limit) {
+          this.limit = limit;
+          this.running = 0;
+          this.queue = [];
+        }
+
+        async run(fn) {
+          return new Promise((resolve, reject) => {
+            this.queue.push({ fn, resolve, reject });
+            this.tryNext();
+          });
+        }
+
+        async tryNext() {
+          if (this.running >= this.limit || this.queue.length === 0) {
+            return;
+          }
+
+          this.running++;
+          const { fn, resolve, reject } = this.queue.shift();
+
+          try {
+            const result = await fn();
+            resolve(result);
+          } catch (error) {
+            reject(error);
+          } finally {
+            this.running--;
+            this.tryNext();
+          }
+        }
+      }
+
+      async function testConcurrencyLimit() {
+        const taskCount =
+          parseInt(document.getElementById('task-count').value) || 10;
+        const limit =
+          parseInt(document.getElementById('concurrency-limit').value) || 3;
+        const output = document.getElementById('concurrency-output');
+
+        output.innerHTML = `<div class="output-line info">Running ${taskCount} tasks with max ${limit} concurrent...</div>`;
+
+        const limiter = new ConcurrencyLimiter(limit);
+        performanceMonitor.start('concurrency');
+
+        const tasks = Array.from({ length: taskCount }, (_, i) => {
+          return limiter.run(async () => {
+            const duration = Math.random() * 2000 + 500; // 500-2500ms
+            await delay(duration);
+            output.innerHTML += `<div class="output-line success">✅ Task ${
+              i + 1
+            } completed (${duration.toFixed(0)}ms)</div>`;
+            return `Task ${i + 1} result`;
+          });
+        });
+
+        await Promise.all(tasks);
+        const totalDuration = performanceMonitor.end('concurrency');
+
+        output.innerHTML += `<div class="output-line success">🏁 All ${taskCount} tasks completed in ${totalDuration.toFixed(
+          2
+        )}ms</div>`;
+        output.innerHTML += `<div class="output-line info">📊 Max concurrent: ${limit}, Average per task: ${(
+          totalDuration / taskCount
+        ).toFixed(2)}ms</div>`;
+      }
+
+      function clearOutput(elementId) {
+        document.getElementById(elementId).innerHTML = '';
+      }
+
+      // Initialize on page load
+      document.addEventListener('DOMContentLoaded', function () {
+        console.log('⚡ Asynchronous JavaScript & Promises Demo loaded!');
+        console.log(
+          'Explore promises, async/await, event loop, and advanced async patterns!'
+        );
+      });
+    </script>
+  </body>
+</html>

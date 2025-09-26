@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Development Timeline</title>
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        line-height: 1.6;
+      }
+      .timeline {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        margin: 30px 0;
+      }
+      .era {
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .then {
+        background: linear-gradient(135deg, #ff6b6b, #ffa500);
+        color: white;
+      }
+      .now {
+        background: linear-gradient(135deg, #4ecdc4, #44a08d);
+        color: white;
+      }
+      .feature-list {
+        list-style: none;
+        padding: 0;
+      }
+      .feature-list li {
+        margin: 10px 0;
+        padding: 8px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+      }
+      .demo-section {
+        margin: 30px 0;
+        padding: 20px;
+        background: #f8f9fa;
+        border-left: 4px solid #007bff;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>The Evolution of Web Development</h1>
+    <p>
+      This demo shows how web development has evolved from simple static pages
+      to modern interactive applications.
+    </p>
+
+    <div class="timeline">
+      <div class="era then">
+        <h2>Early 2000s - "The Dark Ages"</h2>
+        <ul class="feature-list">
+          <li>🚫 Table-based layouts</li>
+          <li>🚫 Inline styles everywhere</li>
+          <li>🚫 No responsive design</li>
+          <li>🚫 Browser compatibility hell</li>
+          <li>🚫 No modern JavaScript</li>
+        </ul>
+      </div>
+
+      <div class="era now">
+        <h2>Modern Era - "The Renaissance"</h2>
+        <ul class="feature-list">
+          <li>✅ Semantic HTML5</li>
+          <li>✅ CSS Grid & Flexbox</li>
+          <li>✅ Mobile-first design</li>
+          <li>✅ Cross-browser standards</li>
+          <li>✅ Modern JavaScript (ES6+)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <h3>Interactive Demo</h3>
+      <p>Click the button to see modern web capabilities in action:</p>
+      <button
+        onclick="showModernFeatures()"
+        style="
+          padding: 10px 20px;
+          background: #007bff;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+        "
+      >
+        Show Modern Features
+      </button>
+      <div id="demo-output" style="margin-top: 20px"></div>
+    </div>
+
+    <script>
+      function showModernFeatures() {
+        const output = document.getElementById('demo-output');
+
+        // Modern JavaScript features
+        const features = [
+          'Responsive Design (CSS Grid/Flexbox)',
+          'Semantic HTML5 Elements',
+          'ES6+ Arrow Functions & Template Literals',
+          'Async/Await for API calls',
+          'Local Storage & Service Workers',
+          'Progressive Web App capabilities',
+        ];
+
+        // Template literal and arrow function (ES6+ features)
+        const featureHTML = features
+          .map(
+            (feature, index) =>
+              `<div style="padding: 10px; margin: 5px 0; background: linear-gradient(90deg, #007bff, #0056b3); color: white; border-radius: 5px; animation: fadeIn 0.5s ease-in ${
+                index * 0.1
+              }s both;">
+                    ${feature}
+                </div>`
+          )
+          .join('');
+
+        output.innerHTML = `
+                <h4>Modern Web Capabilities:</h4>
+                ${featureHTML}
+                <style>
+                    @keyframes fadeIn {
+                        from { opacity: 0; transform: translateY(20px); }
+                        to { opacity: 1; transform: translateY(0); }
+                    }
+                </style>
+            `;
+      }
+
+      // Modern JavaScript - addEventListener instead of inline handlers
+      document.addEventListener('DOMContentLoaded', () => {
+        console.log('Modern JavaScript loaded! 🚀');
+
+        // Demonstrate responsive design
+        window.addEventListener('resize', () => {
+          const width = window.innerWidth;
+          console.log(
+            `Viewport width: ${width}px - ${
+              width < 768 ? 'Mobile' : width < 1024 ? 'Tablet' : 'Desktop'
+            }`
+          );
+        });
+      });
+    </script>
+  </body>
+</html>

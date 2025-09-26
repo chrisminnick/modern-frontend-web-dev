@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JavaScript Functions & Scope Demo</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: #0f0f0f;
+        color: #f8f9fa;
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .header {
+        text-align: center;
+        padding: 40px 20px;
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+        border-radius: 20px;
+        margin-bottom: 40px;
+      }
+
+      .header h1 {
+        font-size: 3em;
+        margin-bottom: 10px;
+      }
+
+      .header p {
+        font-size: 1.2em;
+        opacity: 0.9;
+      }
+
+      .demo-section {
+        background: #1a1a1a;
+        margin: 40px 0;
+        padding: 30px;
+        border-radius: 15px;
+        border: 1px solid #333;
+      }
+
+      .demo-section h2 {
+        color: #ff6b6b;
+        margin-bottom: 25px;
+        font-size: 2em;
+        text-align: center;
+        position: relative;
+      }
+
+      .demo-section h2::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: linear-gradient(90deg, #ff6b6b, #ee5a24);
+      }
+
+      .function-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 25px;
+        margin: 30px 0;
+      }
+
+      .function-card {
+        background: #2a2a2a;
+        padding: 25px;
+        border-radius: 12px;
+        border: 1px solid #444;
+        transition: all 0.3s ease;
+      }
+
+      .function-card:hover {
+        border-color: #ff6b6b;
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(255, 107, 107, 0.2);
+      }
+
+      .function-card h3 {
+        color: #ff6b6b;
+        margin-bottom: 15px;
+        font-size: 1.4em;
+      }
+
+      .code-block {
+        background: #0d1117;
+        border: 1px solid #30363d;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 15px 0;
+        font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+        font-size: 14px;
+        overflow-x: auto;
+        position: relative;
+      }
+
+      .code-block::before {
+        content: attr(data-lang);
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        font-size: 12px;
+        color: #7d8590;
+        text-transform: uppercase;
+      }
+
+      .js-keyword {
+        color: #ff7b72;
+      }
+      .js-string {
+        color: #a5d6ff;
+      }
+      .js-method {
+        color: #d2a8ff;
+      }
+      .js-comment {
+        color: #8b949e;
+      }
+      .js-number {
+        color: #79c0ff;
+      }
+      .js-operator {
+        color: #ff7b72;
+      }
+      .js-param {
+        color: #ffa657;
+      }
+
+      .interactive-demo {
+        background: #2a2a2a;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+        border-left: 4px solid #ff6b6b;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin: 20px 0;
+        align-items: center;
+      }
+
+      .btn {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: #ff6b6b;
+        color: white;
+      }
+
+      .btn:hover {
+        background: #e55555;
+        transform: translateY(-2px);
+      }
+
+      .btn-secondary {
+        background: #6c757d;
+      }
+
+      .btn-secondary:hover {
+        background: #545b62;
+      }
+
+      .output {
+        background: #0d1117;
+        border: 1px solid #30363d;
+        padding: 15px;
+        border-radius: 6px;
+        font-family: monospace;
+        font-size: 13px;
+        margin: 15px 0;
+        min-height: 100px;
+        overflow-y: auto;
+        max-height: 400px;
+      }
+
+      .output-line {
+        margin: 5px 0;
+        padding: 2px 0;
+      }
+
+      .success {
+        color: #3fb950;
+      }
+      .error {
+        color: #f85149;
+      }
+      .info {
+        color: #58a6ff;
+      }
+      .warning {
+        color: #d29922;
+      }
+
+      input[type='text'],
+      input[type='number'],
+      textarea,
+      select {
+        padding: 10px;
+        border: 2px solid #30363d;
+        border-radius: 6px;
+        background: #0d1117;
+        color: #f8f9fa;
+        font-size: 14px;
+        margin: 0 10px 10px 0;
+      }
+
+      input:focus,
+      textarea:focus,
+      select:focus {
+        outline: none;
+        border-color: #ff6b6b;
+      }
+
+      .scope-visualizer {
+        background: #2a2a2a;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+        border: 2px solid #ff6b6b;
+      }
+
+      .scope-level {
+        margin: 10px 0;
+        padding: 15px;
+        border-left: 4px solid;
+        border-radius: 4px;
+      }
+
+      .global-scope {
+        background: #1a2332;
+        border-left-color: #58a6ff;
+      }
+
+      .function-scope {
+        background: #2d1b32;
+        border-left-color: #d2a8ff;
+      }
+
+      .block-scope {
+        background: #321a1a;
+        border-left-color: #f85149;
+      }
+
+      .closure-demo {
+        background: #1a321a;
+        border-left-color: #3fb950;
+      }
+
+      .comparison {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin: 20px 0;
+      }
+
+      .old-way {
+        background: #3d2914;
+        padding: 15px;
+        border-radius: 6px;
+        border-left: 4px solid #d29922;
+      }
+
+      .new-way {
+        background: #0f2419;
+        padding: 15px;
+        border-radius: 6px;
+        border-left: 4px solid #3fb950;
+      }
+
+      .tip-box {
+        background: #1f2328;
+        border: 1px solid #ff6b6b;
+        border-left: 4px solid #ff6b6b;
+        padding: 20px;
+        border-radius: 6px;
+        margin: 20px 0;
+      }
+
+      .tip-box h4 {
+        color: #ff6b6b;
+        margin-bottom: 10px;
+      }
+
+      .execution-flow {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin: 20px 0;
+      }
+
+      .step {
+        background: #2a2a2a;
+        padding: 10px 15px;
+        border-radius: 6px;
+        border-left: 4px solid #ff6b6b;
+        position: relative;
+      }
+
+      .step::before {
+        content: counter(step-counter);
+        counter-increment: step-counter;
+        position: absolute;
+        left: -15px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 30px;
+        height: 30px;
+        background: #ff6b6b;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 14px;
+      }
+
+      .execution-flow {
+        counter-reset: step-counter;
+      }
+
+      @media (max-width: 768px) {
+        .function-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .comparison {
+          grid-template-columns: 1fr;
+        }
+
+        .controls {
+          flex-direction: column;
+          align-items: stretch;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🎯 JavaScript Functions & Scope</h1>
+        <p>
+          Master function declarations, expressions, closures, and scope
+          management
+        </p>
+      </div>
+
+      <!-- Function Types and Declarations -->
+      <div class="demo-section">
+        <h2>📋 Function Types & Declarations</h2>
+
+        <div class="function-grid">
+          <div class="function-card">
+            <h3>Function Declarations vs Expressions</h3>
+            <div class="comparison">
+              <div class="old-way">
+                <h5>Function Declaration:</h5>
+                <div class="code-block" data-lang="js">
+                  <span class="js-comment"
+                    >// Hoisted - can call before declaration</span
+                  >
+                  <span class="js-keyword">function</span>
+                  <span class="js-method">greet</span>(<span class="js-param"
+                    >name</span
+                  >) { <span class="js-keyword">return</span>
+                  <span class="js-string">`Hello, ${name}!`</span>; }
+
+                  <span class="js-comment">// This works due to hoisting</span>
+                  console.<span class="js-method">log</span>(<span
+                    class="js-method"
+                    >greet</span
+                  >(<span class="js-string">'Alice'</span>));
+                </div>
+              </div>
+              <div class="new-way">
+                <h5>Function Expression:</h5>
+                <div class="code-block" data-lang="js">
+                  <span class="js-comment"
+                    >// Not hoisted - must declare first</span
+                  >
+                  <span class="js-keyword">const</span>
+                  <span class="js-method">greet</span> =
+                  <span class="js-keyword">function</span>(<span
+                    class="js-param"
+                    >name</span
+                  >) { <span class="js-keyword">return</span>
+                  <span class="js-string">`Hello, ${name}!`</span>; };
+
+                  <span class="js-comment"
+                    >// Arrow function (also expression)</span
+                  >
+                  <span class="js-keyword">const</span>
+                  <span class="js-method">greetArrow</span> =
+                  <span class="js-param">name</span>
+                  <span class="js-operator">=></span>
+                  <span class="js-string">`Hello, ${name}!`</span>;
+                </div>
+              </div>
+            </div>
+
+            <div class="interactive-demo">
+              <h4>Test Function Types:</h4>
+              <div class="controls">
+                <input
+                  type="text"
+                  id="function-name"
+                  placeholder="Enter name"
+                  value="World"
+                />
+                <select id="function-type">
+                  <option value="declaration">Function Declaration</option>
+                  <option value="expression">Function Expression</option>
+                  <option value="arrow">Arrow Function</option>
+                  <option value="iife">IIFE</option>
+                </select>
+                <button class="btn" onclick="testFunctionTypes()">
+                  Execute Function
+                </button>
+              </div>
+              <div class="output" id="function-output"></div>
+            </div>
+          </div>
+
+          <div class="function-card">
+            <h3>Parameters & Arguments</h3>
+            <div class="code-block" data-lang="js">
+              <span class="js-comment">// Default parameters</span>
+              <span class="js-keyword">function</span>
+              <span class="js-method">greet</span>(<span class="js-param"
+                >name</span
+              >
+              = <span class="js-string">'Guest'</span>,
+              <span class="js-param">greeting</span> =
+              <span class="js-string">'Hello'</span>) {
+              <span class="js-keyword">return</span>
+              <span class="js-string">`${greeting}, ${name}!`</span>; }
+
+              <span class="js-comment">// Rest parameters</span>
+              <span class="js-keyword">function</span>
+              <span class="js-method">sum</span>(...<span class="js-param"
+                >numbers</span
+              >) { <span class="js-keyword">return</span> numbers.<span
+                class="js-method"
+                >reduce</span
+              >((<span class="js-param">a</span>,
+              <span class="js-param">b</span>)
+              <span class="js-operator">=></span> a + b,
+              <span class="js-number">0</span>); }
+
+              <span class="js-comment">// Destructuring parameters</span>
+              <span class="js-keyword">function</span>
+              <span class="js-method">createUser</span>({<span class="js-param"
+                >name</span
+              >, <span class="js-param">email</span>,
+              <span class="js-param">age</span> =
+              <span class="js-number">18</span>}) {
+              <span class="js-keyword">return</span> { name, email, age, id:
+              Date.<span class="js-method">now</span>() }; }
+            </div>
+
+            <div class="interactive-demo">
+              <h4>Test Parameters:</h4>
+              <div class="controls">
+                <input
+                  type="text"
+                  id="param-numbers"
+                  placeholder="Numbers: 1,2,3,4"
+                  value="5,10,15,20"
+                />
+                <input
+                  type="text"
+                  id="param-name"
+                  placeholder="Name"
+                  value="John"
+                />
+                <input
+                  type="text"
+                  id="param-email"
+                  placeholder="Email"
+                  value="john@example.com"
+                />
+                <button class="btn" onclick="testParameters()">
+                  Test Parameters
+                </button>
+              </div>
+              <div class="output" id="parameter-output"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scope and Closures -->
+      <div class="demo-section">
+        <h2>🔍 Scope & Variable Lifecycle</h2>
+
+        <div class="scope-visualizer">
+          <h3>Scope Chain Visualization</h3>
+          <div class="scope-level global-scope">
+            <strong>Global Scope:</strong> Variables accessible everywhere
+            <div class="scope-level function-scope">
+              <strong>Function Scope:</strong> Variables with 'var' or function
+              parameters
+              <div class="scope-level block-scope">
+                <strong>Block Scope:</strong> Variables with 'let' and 'const'
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="function-grid">
+          <div class="function-card">
+            <h3>var vs let vs const</h3>
+            <div class="code-block" data-lang="js">
+              <span class="js-comment">// var: function-scoped, hoisted</span>
+              <span class="js-keyword">function</span>
+              <span class="js-method">testVar</span>() { console.<span
+                class="js-method"
+                >log</span
+              >(x); <span class="js-comment">// undefined (hoisted)</span>
+              <span class="js-keyword">var</span> x =
+              <span class="js-number">1</span>;
+
+              <span class="js-keyword">if</span> (<span class="js-keyword"
+                >true</span
+              >) { <span class="js-keyword">var</span> x =
+              <span class="js-number">2</span>;
+              <span class="js-comment">// same variable!</span> } console.<span
+                class="js-method"
+                >log</span
+              >(x); <span class="js-comment">// 2</span>
+              }
+
+              <span class="js-comment">// let/const: block-scoped</span>
+              <span class="js-keyword">function</span>
+              <span class="js-method">testLet</span>() {
+              <span class="js-keyword">let</span> y =
+              <span class="js-number">1</span>;
+              <span class="js-keyword">const</span> z =
+              <span class="js-number">3</span>;
+
+              <span class="js-keyword">if</span> (<span class="js-keyword"
+                >true</span
+              >) { <span class="js-keyword">let</span> y =
+              <span class="js-number">2</span>;
+              <span class="js-comment">// different variable</span>
+              console.<span class="js-method">log</span>(y);
+              <span class="js-comment">// 2</span> } console.<span
+                class="js-method"
+                >log</span
+              >(y); <span class="js-comment">// 1</span>
+              }
+            </div>
+
+            <div class="interactive-demo">
+              <h4>Test Scope Behavior:</h4>
+              <div class="controls">
+                <button class="btn" onclick="demonstrateScope()">
+                  Show Scope Differences
+                </button>
+                <button
+                  class="btn btn-secondary"
+                  onclick="clearOutput('scope-output')"
+                >
+                  Clear
+                </button>
+              </div>
+              <div class="output" id="scope-output"></div>
+            </div>
+          </div>
+
+          <div class="function-card">
+            <h3>Closures</h3>
+            <div class="code-block" data-lang="js">
+              <span class="js-comment"
+                >// Closure: inner function accessing outer variables</span
+              >
+              <span class="js-keyword">function</span>
+              <span class="js-method">createCounter</span>(<span
+                class="js-param"
+                >initialValue</span
+              >
+              = <span class="js-number">0</span>) {
+              <span class="js-keyword">let</span> count = initialValue;
+
+              <span class="js-keyword">return</span> {
+              <span class="js-method">increment</span>: ()
+              <span class="js-operator">=></span> ++count,
+              <span class="js-method">decrement</span>: ()
+              <span class="js-operator">=></span> --count,
+              <span class="js-method">getValue</span>: ()
+              <span class="js-operator">=></span> count,
+              <span class="js-method">reset</span>: ()
+              <span class="js-operator">=></span> count = initialValue }; }
+
+              <span class="js-comment">// Private variables with closures</span>
+              <span class="js-keyword">function</span>
+              <span class="js-method">createBankAccount</span>(<span
+                class="js-param"
+                >initialBalance</span
+              >) { <span class="js-keyword">let</span> balance = initialBalance;
+
+              <span class="js-keyword">return</span> {
+              <span class="js-method">deposit</span>(<span class="js-param"
+                >amount</span
+              >) { balance += amount;
+              <span class="js-keyword">return</span> balance; },
+              <span class="js-method">withdraw</span>(<span class="js-param"
+                >amount</span
+              >) { <span class="js-keyword">if</span> (amount <= balance) {
+              balance -= amount; <span class="js-keyword">return</span> balance;
+              } <span class="js-keyword">throw new</span>
+              <span class="js-method">Error</span>(<span class="js-string"
+                >'Insufficient funds'</span
+              >); }, <span class="js-method">getBalance</span>: ()
+              <span class="js-operator">=></span> balance }; }
+            </div>
+
+            <div class="interactive-demo">
+              <h4>Closure Playground:</h4>
+              <div class="controls">
+                <input
+                  type="number"
+                  id="counter-start"
+                  placeholder="Counter start"
+                  value="0"
+                />
+                <button class="btn" onclick="createNewCounter()">
+                  Create Counter
+                </button>
+                <button class="btn" onclick="testCounter('increment')">
+                  +
+                </button>
+                <button class="btn" onclick="testCounter('decrement')">
+                  -
+                </button>
+                <button
+                  class="btn btn-secondary"
+                  onclick="testCounter('reset')"
+                >
+                  Reset
+                </button>
+              </div>
+              <div class="output" id="closure-output"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Higher-Order Functions -->
+      <div class="demo-section">
+        <h2>🚀 Higher-Order Functions & Callbacks</h2>
+
+        <div class="function-grid">
+          <div class="function-card">
+            <h3>Functions as First-Class Citizens</h3>
+            <div class="code-block" data-lang="js">
+              <span class="js-comment"
+                >// Functions can be assigned to variables</span
+              >
+              <span class="js-keyword">const</span>
+              <span class="js-method">sayHello</span> =
+              <span class="js-keyword">function</span>() { console.<span
+                class="js-method"
+                >log</span
+              >(<span class="js-string">'Hello!'</span>); };
+
+              <span class="js-comment"
+                >// Functions can be passed as arguments</span
+              >
+              <span class="js-keyword">function</span>
+              <span class="js-method">executeCallback</span>(<span
+                class="js-param"
+                >callback</span
+              >, <span class="js-param">delay</span>) { setTimeout(callback,
+              delay); }
+
+              <span class="js-comment"
+                >// Functions can return other functions</span
+              >
+              <span class="js-keyword">function</span>
+              <span class="js-method">createMultiplier</span>(<span
+                class="js-param"
+                >factor</span
+              >) { <span class="js-keyword">return</span>
+              <span class="js-keyword">function</span>(<span class="js-param"
+                >number</span
+              >) { <span class="js-keyword">return</span> number * factor; }; }
+
+              <span class="js-keyword">const</span>
+              <span class="js-method">double</span> =
+              <span class="js-method">createMultiplier</span>(<span
+                class="js-number"
+                >2</span
+              >); <span class="js-keyword">const</span>
+              <span class="js-method">triple</span> =
+              <span class="js-method">createMultiplier</span>(<span
+                class="js-number"
+                >3</span
+              >);
+            </div>
+
+            <div class="interactive-demo">
+              <h4>Higher-Order Function Demo:</h4>
+              <div class="controls">
+                <input
+                  type="number"
+                  id="hof-number"
+                  placeholder="Number"
+                  value="5"
+                />
+                <select id="hof-operation">
+                  <option value="double">Double</option>
+                  <option value="triple">Triple</option>
+                  <option value="square">Square</option>
+                  <option value="cube">Cube</option>
+                </select>
+                <button class="btn" onclick="testHigherOrder()">
+                  Apply Operation
+                </button>
+              </div>
+              <div class="output" id="hof-output"></div>
+            </div>
+          </div>
+
+          <div class="function-card">
+            <h3>Advanced Array Methods</h3>
+            <div class="code-block" data-lang="js">
+              <span class="js-keyword">const</span> users = [ { name:
+              <span class="js-string">'Alice'</span>, age:
+              <span class="js-number">25</span>, active:
+              <span class="js-keyword">true</span> }, { name:
+              <span class="js-string">'Bob'</span>, age:
+              <span class="js-number">30</span>, active:
+              <span class="js-keyword">false</span> }, { name:
+              <span class="js-string">'Charlie'</span>, age:
+              <span class="js-number">35</span>, active:
+              <span class="js-keyword">true</span> } ];
+
+              <span class="js-comment">// Chain array methods</span>
+              <span class="js-keyword">const</span> result = users .<span
+                class="js-method"
+                >filter</span
+              >(user <span class="js-operator">=></span> user.active) .<span
+                class="js-method"
+                >map</span
+              >(user <span class="js-operator">=></span> user.name.<span
+                class="js-method"
+                >toUpperCase</span
+              >()) .<span class="js-method">sort</span>();
+
+              <span class="js-comment">// Custom callback functions</span>
+              <span class="js-keyword">function</span>
+              <span class="js-method">processData</span>(<span class="js-param"
+                >data</span
+              >, <span class="js-param">processor</span>) {
+              <span class="js-keyword">return</span> data.<span
+                class="js-method"
+                >map</span
+              >(processor); }
+
+              <span class="js-keyword">const</span> doubledAges =
+              <span class="js-method">processData</span>(users, user
+              <span class="js-operator">=></span> ({ ...user, age: user.age *
+              <span class="js-number">2</span> }));
+            </div>
+
+            <div class="interactive-demo">
+              <h4>Array Method Chaining:</h4>
+              <div class="controls">
+                <textarea
+                  id="array-data"
+                  placeholder="JSON array of objects"
+                  rows="3"
+                >
+[{"name":"Alice","age":25,"score":85},{"name":"Bob","age":30,"score":92}]</textarea
+                >
+                <button class="btn" onclick="chainArrayMethods()">
+                  Process Array
+                </button>
+              </div>
+              <div class="output" id="array-chain-output"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Execution Context and Call Stack -->
+      <div class="demo-section">
+        <h2>⚙️ Execution Context & Call Stack</h2>
+
+        <div class="function-card">
+          <h3>Call Stack Visualization</h3>
+          <div class="code-block" data-lang="js">
+            <span class="js-keyword">function</span>
+            <span class="js-method">first</span>() { console.<span
+              class="js-method"
+              >log</span
+            >(<span class="js-string">'First function starts'</span>);
+            <span class="js-method">second</span>(); console.<span
+              class="js-method"
+              >log</span
+            >(<span class="js-string">'First function ends'</span>); }
+
+            <span class="js-keyword">function</span>
+            <span class="js-method">second</span>() { console.<span
+              class="js-method"
+              >log</span
+            >(<span class="js-string">'Second function starts'</span>);
+            <span class="js-method">third</span>(); console.<span
+              class="js-method"
+              >log</span
+            >(<span class="js-string">'Second function ends'</span>); }
+
+            <span class="js-keyword">function</span>
+            <span class="js-method">third</span>() { console.<span
+              class="js-method"
+              >log</span
+            >(<span class="js-string">'Third function executes'</span>); }
+
+            <span class="js-method">first</span>();
+            <span class="js-comment">// Start the call chain</span>
+          </div>
+
+          <div class="interactive-demo">
+            <h4>Call Stack Demo:</h4>
+            <div class="controls">
+              <button class="btn" onclick="demonstrateCallStack()">
+                Show Call Stack
+              </button>
+              <button class="btn" onclick="demonstrateRecursion()">
+                Show Recursion
+              </button>
+              <button
+                class="btn btn-secondary"
+                onclick="clearOutput('callstack-output')"
+              >
+                Clear
+              </button>
+            </div>
+            <div class="output" id="callstack-output"></div>
+
+            <div class="execution-flow">
+              <div class="step">Global execution context created</div>
+              <div class="step">
+                Function first() called - new execution context
+              </div>
+              <div class="step">
+                Function second() called - new execution context
+              </div>
+              <div class="step">
+                Function third() called - new execution context
+              </div>
+              <div class="step">
+                third() completes - context popped from stack
+              </div>
+              <div class="step">
+                second() completes - context popped from stack
+              </div>
+              <div class="step">
+                first() completes - context popped from stack
+              </div>
+              <div class="step">Global context remains</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Best Practices -->
+      <div class="tip-box">
+        <h4>🎯 JavaScript Function Best Practices</h4>
+        <ul>
+          <li>
+            <strong>Use const for function expressions:</strong> Prevents
+            accidental reassignment
+          </li>
+          <li>
+            <strong>Prefer arrow functions for callbacks:</strong> Cleaner
+            syntax and lexical 'this'
+          </li>
+          <li>
+            <strong>Keep functions pure when possible:</strong> Same input =
+            same output, no side effects
+          </li>
+          <li>
+            <strong>Use descriptive function names:</strong> Functions should do
+            one thing well
+          </li>
+          <li>
+            <strong>Avoid deep nesting:</strong> Use early returns and guard
+            clauses
+          </li>
+          <li>
+            <strong>Leverage closures for data privacy:</strong> Create private
+            variables and methods
+          </li>
+          <li>
+            <strong>Understand the call stack:</strong> Helps with debugging and
+            performance
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- CodeMirror Integration for proper code display -->
+    <script src="../codemirror-integration.js"></script>
+
+    <script>
+      // Global counter for closure demo
+      let currentCounter = null;
+
+      // Function type demonstrations
+      function testFunctionTypes() {
+        const name = document.getElementById('function-name').value || 'World';
+        const type = document.getElementById('function-type').value;
+        const output = document.getElementById('function-output');
+
+        let result = '';
+
+        switch (type) {
+          case 'declaration':
+            // Function declaration (hoisted)
+            function declaredGreet(name) {
+              return `Hello from declaration, ${name}!`;
+            }
+            result = declaredGreet(name);
+            break;
+
+          case 'expression':
+            // Function expression (not hoisted)
+            const expressionGreet = function (name) {
+              return `Hello from expression, ${name}!`;
+            };
+            result = expressionGreet(name);
+            break;
+
+          case 'arrow':
+            // Arrow function
+            const arrowGreet = (name) => `Hello from arrow function, ${name}!`;
+            result = arrowGreet(name);
+            break;
+
+          case 'iife':
+            // Immediately Invoked Function Expression
+            result = (function (name) {
+              return `Hello from IIFE, ${name}!`;
+            })(name);
+            break;
+        }
+
+        output.innerHTML = `
+                <div class="output-line success">Function Type: ${type}</div>
+                <div class="output-line info">Result: ${result}</div>
+                <div class="output-line">Executed at: ${new Date().toLocaleTimeString()}</div>
+            `;
+      }
+
+      function testParameters() {
+        const numbersInput = document.getElementById('param-numbers').value;
+        const name = document.getElementById('param-name').value || 'John';
+        const email =
+          document.getElementById('param-email').value || 'john@example.com';
+        const output = document.getElementById('parameter-output');
+
+        // Parse numbers for rest parameter demo
+        const numbers = numbersInput
+          .split(',')
+          .map((n) => parseFloat(n.trim()))
+          .filter((n) => !isNaN(n));
+
+        // Default parameters function
+        function greet(name = 'Guest', greeting = 'Hello') {
+          return `${greeting}, ${name}!`;
+        }
+
+        // Rest parameters function
+        function sum(...numbers) {
+          return numbers.reduce((a, b) => a + b, 0);
+        }
+
+        // Destructuring parameters function
+        function createUser({ name, email, age = 18 }) {
+          return {
+            name,
+            email,
+            age,
+            id: Date.now(),
+            created: new Date().toISOString(),
+          };
+        }
+
+        const user = createUser({ name, email });
+
+        output.innerHTML = `
+                <div class="output-line success">Default Parameters:</div>
+                <div class="output-line">${greet()}</div>
+                <div class="output-line">${greet(name)}</div>
+                <div class="output-line">${greet(name, 'Hi')}</div>
+                
+                <div class="output-line success">Rest Parameters:</div>
+                <div class="output-line">Numbers: [${numbers.join(', ')}]</div>
+                <div class="output-line">Sum: ${sum(...numbers)}</div>
+                
+                <div class="output-line success">Destructuring Parameters:</div>
+                <div class="output-line">Created user: ${JSON.stringify(
+                  user,
+                  null,
+                  2
+                )}</div>
+            `;
+      }
+
+      function demonstrateScope() {
+        const output = document.getElementById('scope-output');
+        let results = [];
+
+        // Demonstrate var hoisting and function scope
+        function testVar() {
+          results.push('--- Testing var ---');
+          results.push(`x before declaration: ${typeof x}`); // undefined due to hoisting
+          var x = 1;
+          results.push(`x after declaration: ${x}`);
+
+          if (true) {
+            var x = 2; // Same variable due to function scope
+            results.push(`x inside if block: ${x}`);
+          }
+          results.push(`x after if block: ${x}`); // Still 2
+        }
+
+        // Demonstrate let/const block scope
+        function testLet() {
+          results.push('--- Testing let/const ---');
+          let y = 1;
+          const z = 3;
+          results.push(`y in function scope: ${y}`);
+          results.push(`z in function scope: ${z}`);
+
+          if (true) {
+            let y = 2; // Different variable due to block scope
+            const w = 4;
+            results.push(`y inside if block: ${y}`);
+            results.push(`w inside if block: ${w}`);
+          }
+          results.push(`y after if block: ${y}`); // Still 1
+          // w is not accessible here
+        }
+
+        // Demonstrate temporal dead zone
+        function testTDZ() {
+          results.push('--- Temporal Dead Zone ---');
+          try {
+            results.push(`Trying to access letVar before declaration...`);
+            console.log(letVar); // This would throw an error
+          } catch (e) {
+            results.push(`Error: ${e.message}`);
+          }
+          let letVar = 'Now it exists';
+          results.push(`letVar after declaration: ${letVar}`);
+        }
+
+        testVar();
+        testLet();
+        testTDZ();
+
+        output.innerHTML = results
+          .map(
+            (line) =>
+              `<div class="output-line ${
+                line.includes('Error')
+                  ? 'error'
+                  : line.includes('---')
+                  ? 'success'
+                  : ''
+              }">${line}</div>`
+          )
+          .join('');
+      }
+
+      function createNewCounter() {
+        const initialValue =
+          parseInt(document.getElementById('counter-start').value) || 0;
+
+        // Closure factory function
+        function createCounter(initialValue = 0) {
+          let count = initialValue;
+
+          return {
+            increment: () => ++count,
+            decrement: () => --count,
+            getValue: () => count,
+            reset: () => (count = initialValue),
+            getInitial: () => initialValue,
+          };
+        }
+
+        currentCounter = createCounter(initialValue);
+
+        const output = document.getElementById('closure-output');
+        output.innerHTML = `
+                <div class="output-line success">New counter created!</div>
+                <div class="output-line">Initial value: ${initialValue}</div>
+                <div class="output-line">Current value: ${currentCounter.getValue()}</div>
+            `;
+      }
+
+      function testCounter(operation) {
+        if (!currentCounter) {
+          createNewCounter();
+        }
+
+        const output = document.getElementById('closure-output');
+        let result;
+
+        switch (operation) {
+          case 'increment':
+            result = currentCounter.increment();
+            break;
+          case 'decrement':
+            result = currentCounter.decrement();
+            break;
+          case 'reset':
+            currentCounter.reset();
+            result = currentCounter.getValue();
+            break;
+        }
+
+        output.innerHTML += `
+                <div class="output-line info">Operation: ${operation}</div>
+                <div class="output-line">New value: ${
+                  result || currentCounter.getValue()
+                }</div>
+                <hr style="border: 1px solid #30363d; margin: 10px 0;">
+            `;
+      }
+
+      function testHigherOrder() {
+        const number =
+          parseFloat(document.getElementById('hof-number').value) || 0;
+        const operation = document.getElementById('hof-operation').value;
+        const output = document.getElementById('hof-output');
+
+        // Higher-order function that creates other functions
+        function createOperation(operationType) {
+          const operations = {
+            double: (n) => n * 2,
+            triple: (n) => n * 3,
+            square: (n) => n * n,
+            cube: (n) => n * n * n,
+          };
+          return operations[operationType];
+        }
+
+        // Generic processor function
+        function processNumber(num, processor) {
+          return processor(num);
+        }
+
+        const operationFunc = createOperation(operation);
+        const result = processNumber(number, operationFunc);
+
+        // Demonstrate function composition
+        const compose = (f, g) => (x) => f(g(x));
+        const addOne = (x) => x + 1;
+        const multiplyByTwo = (x) => x * 2;
+        const composedFunction = compose(multiplyByTwo, addOne);
+        const composedResult = composedFunction(number);
+
+        output.innerHTML = `
+                <div class="output-line success">Higher-Order Function Demo:</div>
+                <div class="output-line">Input: ${number}</div>
+                <div class="output-line">Operation: ${operation}</div>
+                <div class="output-line info">Result: ${result}</div>
+                
+                <div class="output-line success">Function Composition:</div>
+                <div class="output-line">compose(multiplyByTwo, addOne)(${number})</div>
+                <div class="output-line">= multiplyByTwo(addOne(${number}))</div>
+                <div class="output-line">= multiplyByTwo(${number + 1})</div>
+                <div class="output-line info">= ${composedResult}</div>
+            `;
+      }
+
+      function chainArrayMethods() {
+        const arrayInput = document.getElementById('array-data').value;
+        const output = document.getElementById('array-chain-output');
+
+        try {
+          const data = JSON.parse(arrayInput);
+
+          if (!Array.isArray(data)) {
+            throw new Error('Input must be an array');
+          }
+
+          // Various array method chains
+          const results = {
+            original: data,
+            mapped: data.map((item) => ({
+              ...item,
+              nameUpper: item.name?.toUpperCase(),
+              category: item.age >= 30 ? 'Senior' : 'Junior',
+            })),
+            filtered: data.filter((item) => item.age >= 25),
+            sorted: [...data].sort((a, b) => a.age - b.age),
+            reduced: data.reduce(
+              (acc, item) => {
+                acc.totalAge += item.age || 0;
+                acc.totalScore += item.score || 0;
+                acc.count += 1;
+                return acc;
+              },
+              { totalAge: 0, totalScore: 0, count: 0 }
+            ),
+          };
+
+          // Complex chain
+          const complexChain = data
+            .filter((item) => item.age >= 20)
+            .map((item) => ({
+              ...item,
+              scoreGrade: item.score >= 90 ? 'A' : item.score >= 80 ? 'B' : 'C',
+            }))
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 3);
+
+          output.innerHTML = `
+                    <div class="output-line success">Array Method Chaining Results:</div>
+                    <div class="output-line">Original data (${
+                      data.length
+                    } items)</div>
+                    
+                    <div class="output-line success">Map (add properties):</div>
+                    <pre style="font-size: 12px;">${JSON.stringify(
+                      results.mapped,
+                      null,
+                      2
+                    )}</pre>
+                    
+                    <div class="output-line success">Filter (age >= 25): ${
+                      results.filtered.length
+                    } items</div>
+                    
+                    <div class="output-line success">Reduce (aggregation):</div>
+                    <div class="output-line">Average age: ${(
+                      results.reduced.totalAge / results.reduced.count
+                    ).toFixed(1)}</div>
+                    <div class="output-line">Average score: ${(
+                      results.reduced.totalScore / results.reduced.count
+                    ).toFixed(1)}</div>
+                    
+                    <div class="output-line success">Complex chain (filter + map + sort + slice):</div>
+                    <pre style="font-size: 12px;">${JSON.stringify(
+                      complexChain,
+                      null,
+                      2
+                    )}</pre>
+                `;
+        } catch (error) {
+          output.innerHTML = `
+                    <div class="output-line error">Error: ${error.message}</div>
+                    <div class="output-line">Please enter valid JSON array</div>
+                `;
+        }
+      }
+
+      function demonstrateCallStack() {
+        const output = document.getElementById('callstack-output');
+        let callStack = [];
+
+        function first() {
+          callStack.push('first() called');
+          callStack.push('first() calling second()');
+          second();
+          callStack.push('first() after second() returns');
+          callStack.push('first() ending');
+        }
+
+        function second() {
+          callStack.push('second() called');
+          callStack.push('second() calling third()');
+          third();
+          callStack.push('second() after third() returns');
+          callStack.push('second() ending');
+        }
+
+        function third() {
+          callStack.push('third() called');
+          callStack.push('third() executing');
+          callStack.push('third() ending');
+        }
+
+        callStack.push('Starting execution...');
+        first();
+        callStack.push('Execution complete');
+
+        output.innerHTML = callStack
+          .map(
+            (step, index) =>
+              `<div class="output-line">${index + 1}. ${step}</div>`
+          )
+          .join('');
+      }
+
+      function demonstrateRecursion() {
+        const output = document.getElementById('callstack-output');
+        let steps = [];
+
+        function factorial(n, depth = 0) {
+          const indent = '  '.repeat(depth);
+          steps.push(`${indent}factorial(${n}) called`);
+
+          if (n <= 1) {
+            steps.push(`${indent}Base case: return 1`);
+            return 1;
+          } else {
+            steps.push(`${indent}Recursive case: ${n} * factorial(${n - 1})`);
+            const result = n * factorial(n - 1, depth + 1);
+            steps.push(`${indent}factorial(${n}) returns ${result}`);
+            return result;
+          }
+        }
+
+        const result = factorial(5);
+
+        output.innerHTML = `
+                <div class="output-line success">Recursive Factorial Call Stack:</div>
+                ${steps
+                  .map((step) => `<div class="output-line">${step}</div>`)
+                  .join('')}
+                <div class="output-line info">Final result: 5! = ${result}</div>
+            `;
+      }
+
+      function clearOutput(elementId) {
+        document.getElementById(elementId).innerHTML = '';
+      }
+
+      // Initialize on page load
+      document.addEventListener('DOMContentLoaded', function () {
+        console.log('🎯 JavaScript Functions & Scope Demo loaded!');
+        console.log(
+          'Explore function types, scope, closures, and execution context!'
+        );
+      });
+    </script>
+  </body>
+</html>
