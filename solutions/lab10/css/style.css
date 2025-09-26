@@ -1,0 +1,78 @@
+/* element selector */
+p {
+  font-family: sans-serif;
+}
+
+/* class selector */
+.subhead {
+  font-style: italic;
+}
+
+/* multiple selectors */
+h1,
+h2,
+h3 {
+  text-align: center;
+}
+
+/* id selector */
+#pubdate {
+  background-color: gray;
+  color: white;
+  width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* pseudo-class selector */
+p:first-of-type {
+  font-size: 24px;
+}
+
+/* indent subsequent paragraphs */
+p:not(:first-of-type) {
+  text-indent: 2em;
+}
+
+/* attribute selector */
+a[target='_blank'] {
+  text-decoration: underline;
+}
+
+/* pseudo-element example: initial cap */
+p:first-of-type::first-letter {
+  font-size: 200%;
+  font-weight: bold;
+}
+
+/* center the hr */
+hr {
+  width: 50%;
+  margin: 1rem auto;
+}
+
+/* Advanced selectors - nth-child examples */
+.items li:nth-child(odd) {
+  background-color: #f0f0f0;
+}
+
+.items li:nth-child(2) {
+  font-weight: bold;
+  color: darkblue;
+}
+
+/* Sibling combinators */
+h1 + h3 {
+  margin-top: -10px; /* reduce space after h1 if followed by h3 */
+}
+
+h3 ~ hr {
+  border-color: darkblue; /* style hr that comes after any h3 */
+}
+
+/* Modern :has() selector (where supported) */
+header:has(#pubdate) {
+  border: 2px solid #ccc;
+  padding: 1rem;
+  border-radius: 8px;
+}

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Positioning & Flexbox</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <nav class="nav">My Fixed Nav</nav>
+
+    <section class="stage">
+      <img
+        src="https://via.placeholder.com/150"
+        alt="astronaut"
+        class="pic pic-1"
+      />
+      <img
+        src="https://via.placeholder.com/120"
+        alt="dinosaur"
+        class="pic pic-2"
+      />
+      <p class="blurb">This is a paragraph of text.</p>
+      <div class="box">This is a div</div>
+    </section>
+
+    <div class="sticky-nav">Sticky Navigation - Scroll to see it stick!</div>
+
+    <section class="flex-demo">
+      <div class="card">Card 1 (Flexbox)</div>
+      <div class="card">Card 2 (Flexbox)</div>
+      <div class="card">Card 3 (Flexbox)</div>
+    </section>
+
+    <section class="grid-demo">
+      <div class="grid-item">Grid Item 1</div>
+      <div class="grid-item">Grid Item 2</div>
+      <div class="grid-item">Grid Item 3</div>
+      <div class="grid-item">Grid Item 4</div>
+    </section>
+
+    <!-- Add some content to make scrolling meaningful -->
+    <div
+      style="
+        height: 1000px;
+        padding: 2rem;
+        background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+      "
+    >
+      <h2>Scroll down to see the sticky navigation in action!</h2>
+      <p>
+        This section has extra height to demonstrate the sticky positioning. The
+        sticky nav should stick to the top when you scroll past it.
+      </p>
+    </div>
+  </body>
+</html>
