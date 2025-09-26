@@ -15,12 +15,13 @@ import sys
 
 def process_markdown_simple(markdown_content):
     """
-    Simple markdown to HTML conversion with slide breaks and proper list handling
+    Simple markdown to HTML conversion with slide breaks, lists, and tables
     """
     lines = markdown_content.split('\n')
     html_lines = []
     in_code_block = False
     in_list = False
+    in_table = False
     code_lang = ''
     
     # Pre-process to remove horizontal rules that are immediately followed by slide titles
@@ -78,6 +79,14 @@ def process_markdown_simple(markdown_content):
             if in_list:
                 html_lines.append('</ul>')
                 in_list = False
+            # Close any open table before starting new slide
+            if in_table:
+                if '<tbody>' in ''.join(html_lines[-10:]):
+                    html_lines.append('</tbody>')
+                elif '<thead>' in ''.join(html_lines[-10:]) and '</thead>' not in ''.join(html_lines[-5:]):
+                    html_lines.append('</thead>')
+                html_lines.append('</table>')
+                in_table = False
             
             # Add page break only if this isn't the first content
             if i > 0 and html_lines:
@@ -105,6 +114,14 @@ def process_markdown_simple(markdown_content):
             if in_list:
                 html_lines.append('</ul>')
                 in_list = False
+            # Close any open table before header
+            if in_table:
+                if '<tbody>' in ''.join(html_lines[-10:]):
+                    html_lines.append('</tbody>')
+                elif '<thead>' in ''.join(html_lines[-10:]) and '</thead>' not in ''.join(html_lines[-5:]):
+                    html_lines.append('</thead>')
+                html_lines.append('</table>')
+                in_table = False
             html_lines.append(f'<h3>{html.escape(line[4:])}</h3>')
             continue
         elif line.startswith('#### '):
@@ -112,6 +129,14 @@ def process_markdown_simple(markdown_content):
             if in_list:
                 html_lines.append('</ul>')
                 in_list = False
+            # Close any open table before header
+            if in_table:
+                if '<tbody>' in ''.join(html_lines[-10:]):
+                    html_lines.append('</tbody>')
+                elif '<thead>' in ''.join(html_lines[-10:]) and '</thead>' not in ''.join(html_lines[-5:]):
+                    html_lines.append('</thead>')
+                html_lines.append('</table>')
+                in_table = False
             html_lines.append(f'<h4>{html.escape(line[5:])}</h4>')
             continue
         
@@ -123,10 +148,83 @@ def process_markdown_simple(markdown_content):
             
             # Process the list item content for inline formatting
             item_content = line[2:].strip()
+            # Process markdown links first
+            item_content = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2">\1</a>', item_content)
             item_content = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', item_content)
             # Escape HTML inside code tags before creating code elements
             item_content = re.sub(r'`([^`]+)`', lambda m: f'<code>{html.escape(m.group(1))}</code>', item_content)
-            html_lines.append(f'<li>{html.escape(item_content) if not ("<strong>" in item_content or "<code>" in item_content) else item_content}</li>')
+            html_lines.append(f'<li>{html.escape(item_content) if not ("<strong>" in item_content or "<code>" in item_content or "<a href=" in item_content) else item_content}</li>')
+            continue
+        
+        # Handle tables (only if not in code block and line starts with |)
+        elif not in_code_block and line.strip().startswith('|') and line.strip().endswith('|') and line.count('|') >= 2:
+            # Close any open list before table
+            if in_list:
+                html_lines.append('</ul>')
+                in_list = False
+            
+            # Check if this is a table separator line (|---|---|)
+            if re.match(r'^\s*\|[\s\-\|]*\|\s*$', line):
+                continue  # Skip separator lines
+            
+            # Process table row
+            if not in_table:
+                html_lines.append('<table>')
+                in_table = True
+                # Check if this looks like a header row by looking ahead for separator
+                is_header = False
+                if i + 1 < len(cleaned_lines):
+                    next_line = cleaned_lines[i + 1]
+                    if re.match(r'^\s*\|[\s\-\|]*\|\s*$', next_line):
+                        is_header = True
+                
+                if is_header:
+                    html_lines.append('<thead>')
+            
+            # Split the line by pipes and clean up
+            cells = [cell.strip() for cell in line.split('|')[1:-1]]  # Remove first and last empty parts
+            
+            # Determine if this is a header row
+            is_header_row = False
+            if in_table and i + 1 < len(cleaned_lines):
+                next_line = cleaned_lines[i + 1]
+                if re.match(r'^\s*\|[\s\-\|]*\|\s*$', next_line):
+                    is_header_row = True
+            
+            # Create table row
+            if is_header_row:
+                row_cells = []
+                for cell in cells:
+                    # Process inline formatting in cell
+                    processed_cell = cell
+                    processed_cell = re.sub(r'`([^`]+)`', lambda m: f'<code>{html.escape(m.group(1))}</code>', processed_cell)
+                    processed_cell = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', processed_cell)
+                    if "<code>" in processed_cell or "<strong>" in processed_cell:
+                        row_cells.append(f'<th>{processed_cell}</th>')
+                    else:
+                        row_cells.append(f'<th>{html.escape(processed_cell)}</th>')
+                html_lines.append(f'<tr>{"".join(row_cells)}</tr>')
+            else:
+                # Check if we need to close thead and open tbody
+                if in_table and '</thead>' not in html_lines[-5:]:  # Look back a few lines
+                    # Check if we just finished a header
+                    if i > 0 and re.match(r'^\s*\|[\s\-\|]*\|\s*$', cleaned_lines[i-1]):
+                        html_lines.append('</thead>')
+                        html_lines.append('<tbody>')
+                elif in_table and '<tbody>' not in ''.join(html_lines[-10:]):
+                    html_lines.append('<tbody>')
+                
+                row_cells = []
+                for cell in cells:
+                    # Process inline formatting in cell
+                    processed_cell = cell
+                    processed_cell = re.sub(r'`([^`]+)`', lambda m: f'<code>{html.escape(m.group(1))}</code>', processed_cell)
+                    processed_cell = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', processed_cell)
+                    if "<code>" in processed_cell or "<strong>" in processed_cell:
+                        row_cells.append(f'<td>{processed_cell}</td>')
+                    else:
+                        row_cells.append(f'<td>{html.escape(processed_cell)}</td>')
+                html_lines.append(f'<tr>{"".join(row_cells)}</tr>')
             continue
         
         # Handle horizontal rules (slide separators) - these should be rare now due to pre-processing
@@ -135,6 +233,14 @@ def process_markdown_simple(markdown_content):
             if in_list:
                 html_lines.append('</ul>')
                 in_list = False
+            # Close any open table before page break
+            if in_table:
+                if '<tbody>' in ''.join(html_lines[-10:]):
+                    html_lines.append('</tbody>')
+                elif '<thead>' in ''.join(html_lines[-10:]) and '</thead>' not in ''.join(html_lines[-5:]):
+                    html_lines.append('</thead>')
+                html_lines.append('</table>')
+                in_table = False
             html_lines.append('<div class="page-break"></div>')
             continue
         
@@ -144,6 +250,14 @@ def process_markdown_simple(markdown_content):
             if in_list:
                 html_lines.append('</ul>')
                 in_list = False
+            # Close table on empty line
+            if in_table:
+                if '<tbody>' in ''.join(html_lines[-10:]):
+                    html_lines.append('</tbody>')
+                elif '<thead>' in ''.join(html_lines[-10:]) and '</thead>' not in ''.join(html_lines[-5:]):
+                    html_lines.append('</thead>')
+                html_lines.append('</table>')
+                in_table = False
             continue
         
         # Handle regular paragraphs
@@ -152,14 +266,24 @@ def process_markdown_simple(markdown_content):
             if in_list:
                 html_lines.append('</ul>')
                 in_list = False
+            # Close any open table before paragraph
+            if in_table:
+                if '<tbody>' in ''.join(html_lines[-10:]):
+                    html_lines.append('</tbody>')
+                elif '<thead>' in ''.join(html_lines[-10:]) and '</thead>' not in ''.join(html_lines[-5:]):
+                    html_lines.append('</thead>')
+                html_lines.append('</table>')
+                in_table = False
             
             # Process inline formatting
             processed_line = line
+            # Process markdown links first
+            processed_line = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2">\1</a>', processed_line)
             processed_line = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', processed_line)
             # Escape HTML inside code tags before creating code elements
             processed_line = re.sub(r'`([^`]+)`', lambda m: f'<code>{html.escape(m.group(1))}</code>', processed_line)
             
-            if "<strong>" in processed_line or "<code>" in processed_line:
+            if "<strong>" in processed_line or "<code>" in processed_line or "<a href=" in processed_line:
                 html_lines.append(f'<p>{processed_line}</p>')
             else:
                 html_lines.append(f'<p>{html.escape(processed_line)}</p>')
@@ -167,6 +291,14 @@ def process_markdown_simple(markdown_content):
     # Close any remaining open list
     if in_list:
         html_lines.append('</ul>')
+    
+    # Close any remaining open table
+    if in_table:
+        if '<tbody>' in ''.join(html_lines[-10:]):
+            html_lines.append('</tbody>')
+        elif '<thead>' in ''.join(html_lines[-10:]) and '</thead>' not in ''.join(html_lines[-5:]):
+            html_lines.append('</thead>')
+        html_lines.append('</table>')
     
     return '\n'.join(html_lines)
 
@@ -181,7 +313,7 @@ def create_complete_html(content, title="Modern Frontend Web Development Slides"
     <style>
         @media print {{
             @page {{
-                size: A4 landscape;
+                size: A4 portrait;
                 margin: 0.5in;
             }}
             
@@ -343,6 +475,46 @@ def create_complete_html(content, title="Modern Frontend Web Development Slides"
             color: #34495e;
         }}
         
+        a {{
+            color: #3498db;
+            text-decoration: underline;
+            font-weight: 500;
+        }}
+        
+        a:hover {{
+            color: #2980b9;
+        }}
+        
+        /* Table styling */
+        table {{
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+            font-size: 10pt;
+        }}
+        
+        th, td {{
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+            vertical-align: top;
+        }}
+        
+        th {{
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }}
+        
+        tr:nth-child(even) {{
+            background-color: #f9f9f9;
+        }}
+        
+        /* Ensure code in tables doesn't break */
+        td code {{
+            white-space: nowrap;
+        }}
+        
         .page-break {{
             page-break-before: always;
             height: 0;
@@ -460,7 +632,7 @@ def markdown_to_pdf_simple(input_file, output_file=None):
                 print(f"   1. Open {html_output} in your browser")
                 print(f"   2. Press Cmd+P (or Ctrl+P)")
                 print(f"   3. Select 'Save as PDF'")
-                print(f"   4. Choose landscape orientation")
+                print(f"   4. Choose portrait orientation")
                 print(f"   5. Save as {output_file}")
                 return True
                 

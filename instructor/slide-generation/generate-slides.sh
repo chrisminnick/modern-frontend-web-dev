@@ -9,7 +9,7 @@ echo "🎯 Generating Slides PDF..."
 echo "=========================="
 
 # Change to the slide generation scripts directory and run
-cd "$(dirname "$0")/slide-generation/scripts"
+cd "$(dirname "$0")/scripts"
 ./generate_pdf.sh
 
 echo "✅ PDF generation complete!"
