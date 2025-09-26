@@ -150,26 +150,11 @@ Client (Browser)          Server
 
 ## Frontend vs Backend vs Full-Stack
 
-**Frontend Developer:**
-
-- User interface and experience
-- Client-side logic and interactivity
-- Browser compatibility and performance
-- Design implementation
-
-**Backend Developer:**
-
-- Server-side logic and APIs
-- Database design and management
-- Security and authentication
-- Infrastructure and deployment
-
-**Full-Stack Developer:**
-
-- Both frontend and backend skills
-- End-to-end application development
-- System architecture decisions
-- DevOps and deployment workflows
+| Role                     | Focus Areas                   | Key Responsibilities                                                                                  | Technologies                                                          |
+| ------------------------ | ----------------------------- | ----------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| **Frontend Developer**   | User interface and experience | Client-side logic and interactivity<br>Browser compatibility and performance<br>Design implementation | HTML, CSS, JavaScript<br>React, Vue, Angular<br>Sass, Webpack         |
+| **Backend Developer**    | Server-side logic and APIs    | Database design and management<br>Security and authentication<br>Infrastructure and deployment        | Node.js, Python, Java<br>SQL, NoSQL databases<br>APIs, Cloud services |
+| **Full-Stack Developer** | End-to-end development        | Both frontend and backend skills<br>System architecture decisions<br>DevOps and deployment workflows  | All of the above<br>Docker, CI/CD<br>System design                    |
 
 ---
 
@@ -396,19 +381,17 @@ git branch -d feature-login  # Delete branch
 
 ## Dependencies vs DevDependencies
 
-**Dependencies:** Needed in production
+| Type                | Purpose                | Examples                     | Installation Command          |
+| ------------------- | ---------------------- | ---------------------------- | ----------------------------- |
+| **Dependencies**    | Needed in production   | React, lodash, axios         | `npm install package-name`    |
+| **DevDependencies** | Development tools only | Vite, Jest, ESLint, Prettier | `npm install -D package-name` |
 
-- Libraries your app needs to run
-- React, lodash, axios
-- Installed with `npm install package-name`
+**Key Differences:**
 
-**DevDependencies:** Development tools only
+- **Dependencies** - Libraries your app needs to run in production
+- **DevDependencies** - Build tools, testing frameworks, linters (not shipped to users)
 
-- Build tools, testing frameworks, linters
-- Vite, Jest, ESLint, Prettier
-- Installed with `npm install --save-dev package-name`
-
-**Example:**
+**Examples:**
 
 ```bash
 npm install react          # Production dependency
@@ -899,6 +882,27 @@ value
 
 ---
 
+## HTML Input Types Reference
+
+| Input Type | Purpose           | Validation       | Example                                      |
+| ---------- | ----------------- | ---------------- | -------------------------------------------- |
+| `text`     | Single-line text  | Length, pattern  | `<input type="text" name="username">`        |
+| `email`    | Email addresses   | Email format     | `<input type="email" name="email">`          |
+| `password` | Hidden text input | Length, pattern  | `<input type="password" name="pass">`        |
+| `number`   | Numeric input     | Min, max, step   | `<input type="number" min="1" max="100">`    |
+| `tel`      | Phone numbers     | Pattern matching | `<input type="tel" name="phone">`            |
+| `url`      | Web addresses     | URL format       | `<input type="url" name="website">`          |
+| `date`     | Date picker       | Date range       | `<input type="date" name="birthday">`        |
+| `time`     | Time picker       | Time format      | `<input type="time" name="meeting">`         |
+| `file`     | File uploads      | File types       | `<input type="file" accept=".pdf,.jpg">`     |
+| `checkbox` | On/off toggle     | N/A              | `<input type="checkbox" name="agree">`       |
+| `radio`    | Single choice     | N/A              | `<input type="radio" name="size" value="M">` |
+| `range`    | Slider control    | Min, max, step   | `<input type="range" min="0" max="100">`     |
+| `search`   | Search input      | Text validation  | `<input type="search" name="query">`         |
+| `hidden`   | Hidden data       | N/A              | `<input type="hidden" name="token">`         |
+
+---
+
 ## HTML Validation Attributes
 
 **Built-in Form Validation:**
@@ -1347,6 +1351,25 @@ img[alt] {
 
 ---
 
+## CSS Selector Reference
+
+| Selector Type          | Syntax            | Description                       | Example                                |
+| ---------------------- | ----------------- | --------------------------------- | -------------------------------------- |
+| **Element**            | `element`         | Selects all elements of that type | `p { color: blue; }`                   |
+| **Class**              | `.class`          | Selects elements with that class  | `.highlight { background: yellow; }`   |
+| **ID**                 | `#id`             | Selects element with that ID      | `#header { font-size: 24px; }`         |
+| **Descendant**         | `A B`             | B inside A (any level)            | `.nav a { color: white; }`             |
+| **Child**              | `A > B`           | B directly inside A               | `.nav > li { display: inline; }`       |
+| **Adjacent Sibling**   | `A + B`           | B immediately after A             | `h1 + p { font-weight: bold; }`        |
+| **General Sibling**    | `A ~ B`           | B after A (same parent)           | `h1 ~ p { color: gray; }`              |
+| **Attribute**          | `[attr]`          | Has attribute                     | `img[alt] { border: 1px solid; }`      |
+| **Attribute Value**    | `[attr="value"]`  | Exact attribute value             | `input[type="text"] { width: 200px; }` |
+| **Attribute Contains** | `[attr*="value"]` | Contains substring                | `a[href*="example"] { color: red; }`   |
+| **Attribute Starts**   | `[attr^="value"]` | Starts with string                | `a[href^="https"] { color: green; }`   |
+| **Attribute Ends**     | `[attr$="value"]` | Ends with string                  | `a[href$=".pdf"] { color: blue; }`     |
+
+---
+
 ## CSS Specificity and Cascade
 
 **Specificity Hierarchy (highest to lowest):**
@@ -1384,17 +1407,14 @@ p.text {
 
 ## CSS Inheritance and Cascade
 
-**Inherited Properties:**
+**Property Inheritance Comparison:**
 
-- Font properties (font-family, font-size, color)
-- Text properties (text-align, line-height)
-- List properties (list-style)
-
-**Non-Inherited Properties:**
-
-- Box model (margin, padding, border)
-- Background properties
-- Positioning properties
+| Inherited Properties            | Non-Inherited Properties             | Why?                                   |
+| ------------------------------- | ------------------------------------ | -------------------------------------- |
+| `font-family, font-size, color` | `margin, padding, border`            | Text styling flows down to children    |
+| `text-align, line-height`       | `background-color, background-image` | Layout properties are element-specific |
+| `list-style`                    | `width, height`                      | Typography should be consistent        |
+| `cursor`                        | `position, top, left`                | Positioning is unique per element      |
 
 **Example:**
 
@@ -1680,35 +1700,49 @@ body {
 
 ---
 
-## CSS Positioning Basics
+## CSS Positioning Reference
 
-**Position Property Values:**
+| Position Value | Behavior                   | Positioned Relative To      | Use Cases                               |
+| -------------- | -------------------------- | --------------------------- | --------------------------------------- |
+| **static**     | Normal document flow       | N/A (no positioning)        | Default behavior, basic layouts         |
+| **relative**   | Moved from normal position | Its original position       | Small adjustments, context for absolute |
+| **absolute**   | Removed from flow          | Nearest positioned ancestor | Overlays, tooltips, dropdowns           |
+| **fixed**      | Removed from flow          | Viewport (browser window)   | Navigation bars, modals, sticky headers |
+| **sticky**     | Hybrid relative/fixed      | Viewport + container        | Section headers, table headers          |
 
-**Static (Default):**
+**Position Property Examples:**
 
 ```css
-.element {
-  position: static; /* Normal document flow */
+/* Static (default) */
+.normal {
+  position: static;
 }
-```
 
-**Relative:**
-
-```css
-.element {
+/* Relative positioning */
+.shifted {
   position: relative;
-  top: 10px; /* Move 10px down from normal position */
-  left: 20px; /* Move 20px right from normal position */
+  top: 10px; /* 10px down from normal position */
+  left: 20px; /* 20px right from normal position */
 }
-```
 
-**Absolute:**
-
-```css
-.element {
+/* Absolute positioning */
+.overlay {
   position: absolute;
   top: 50px; /* 50px from top of positioned parent */
   right: 0; /* 0px from right edge */
+}
+
+/* Fixed positioning */
+.navbar {
+  position: fixed;
+  top: 0; /* Stick to top of viewport */
+  width: 100%; /* Full width */
+}
+
+/* Sticky positioning */
+.header {
+  position: sticky;
+  top: 20px; /* Stick when 20px from viewport top */
 }
 ```
 
@@ -1756,24 +1790,23 @@ body {
 
 ## Modern CSS Units
 
-**Absolute Units:**
-
-- `px` - Pixels (screen dots)
-- `pt` - Points (print)
-
-**Relative Units:**
-
-- `em` - Relative to parent font size
-- `rem` - Relative to root font size
-- `%` - Percentage of parent
-- `vw/vh` - Viewport width/height
-- `vmin/vmax` - Smallest/largest viewport dimension
+| Unit Type    | Unit   | Description                  | Best Use Case                  | Example                   |
+| ------------ | ------ | ---------------------------- | ------------------------------ | ------------------------- |
+| **Absolute** | `px`   | Pixels (screen dots)         | Borders, small fixed sizes     | `border: 1px solid black` |
+| **Absolute** | `pt`   | Points (print measurement)   | Print stylesheets              | `font-size: 12pt`         |
+| **Relative** | `em`   | Relative to parent font size | Component spacing              | `margin: 1em`             |
+| **Relative** | `rem`  | Relative to root font size   | Font sizes, consistent spacing | `font-size: 1.2rem`       |
+| **Relative** | `%`    | Percentage of parent         | Responsive widths              | `width: 50%`              |
+| **Viewport** | `vw`   | Viewport width (1vw = 1%)    | Full-width layouts             | `width: 100vw`            |
+| **Viewport** | `vh`   | Viewport height (1vh = 1%)   | Full-height sections           | `height: 100vh`           |
+| **Viewport** | `vmin` | Smallest viewport dimension  | Square responsive elements     | `width: 50vmin`           |
+| **Viewport** | `vmax` | Largest viewport dimension   | Large responsive text          | `font-size: 5vmax`        |
 
 **Best Practices:**
 
-- Use `rem` for font sizes
-- Use `em` for component spacing
-- Use `%` or `vw/vh` for responsive layouts
+- **rem** for typography and consistent spacing
+- **em** for component-relative spacing
+- **%** or **vw/vh** for responsive layouts
 
 ---
 
@@ -2062,44 +2095,47 @@ let isValid = age >= 18; // Expression result
 
 ---
 
-## More JavaScript Data Types
+## JavaScript Data Types Reference
 
-**4. Special Values:**
+| Data Type     | Description            | Example                              | Common Use                      |
+| ------------- | ---------------------- | ------------------------------------ | ------------------------------- |
+| **Number**    | Integers and decimals  | `42`, `3.14`, `Infinity`             | Calculations, counters, prices  |
+| **String**    | Text data              | `"Hello"`, `'World'`, `\`Template\`` | User input, messages, content   |
+| **Boolean**   | True/false values      | `true`, `false`                      | Conditions, flags, states       |
+| **Array**     | Ordered list of values | `[1, 2, 3]`, `['a', 'b']`            | Collections, lists, sequences   |
+| **Object**    | Key-value pairs        | `{name: 'John', age: 30}`            | Complex data, entities, configs |
+| **null**      | Intentionally empty    | `null`                               | Reset values, empty states      |
+| **undefined** | Not yet assigned       | `undefined`                          | Uninitialized variables         |
+
+**Examples:**
 
 ```javascript
-let emptyValue = null; // Intentionally empty
-let notAssigned; // undefined (no value assigned)
-console.log(notAssigned); // undefined
-```
+// Numbers
+let age = 25;
+let price = 99.99;
 
-**5. Arrays (Lists):**
+// Strings
+let name = 'Alice';
+let message = `Hello ${name}!`;
 
-```javascript
+// Booleans
+let isActive = true;
+let isComplete = false;
+
+// Arrays
 let colors = ['red', 'green', 'blue'];
 let numbers = [1, 2, 3, 4, 5];
-let mixed = ['text', 42, true, null];
 
-// Accessing array items (zero-indexed)
-console.log(colors[0]); // 'red'
-console.log(colors.length); // 3
-```
-
-**6. Objects (Key-Value Pairs):**
-
-```javascript
+// Objects
 let person = {
   name: 'Alice',
   age: 30,
-  isStudent: false,
-  address: {
-    city: 'New York',
-    state: 'NY',
-  },
+  address: { city: 'New York', state: 'NY' },
 };
 
-// Accessing object properties
-console.log(person.name); // 'Alice'
-console.log(person['age']); // 30
+// Special values
+let emptyValue = null;
+let notAssigned; // undefined
 ```
 
 ---
@@ -2755,6 +2791,22 @@ const entries = Object.entries(obj);
 
 ---
 
+## Essential Array Methods Reference
+
+| Method        | Purpose                      | Returns              | Example                                  |
+| ------------- | ---------------------------- | -------------------- | ---------------------------------------- |
+| `map()`       | Transform each element       | New array            | `[1,2,3].map(x => x*2)` → `[2,4,6]`      |
+| `filter()`    | Keep elements that pass test | New array            | `[1,2,3,4].filter(x => x > 2)` → `[3,4]` |
+| `reduce()`    | Reduce to single value       | Single value         | `[1,2,3].reduce((a,b) => a+b, 0)` → `6`  |
+| `find()`      | Find first matching element  | Element or undefined | `[1,2,3].find(x => x > 2)` → `3`         |
+| `findIndex()` | Find index of first match    | Index or -1          | `[1,2,3].findIndex(x => x > 2)` → `2`    |
+| `some()`      | Test if any element passes   | Boolean              | `[1,2,3].some(x => x > 2)` → `true`      |
+| `every()`     | Test if all elements pass    | Boolean              | `[1,2,3].every(x => x > 0)` → `true`     |
+| `includes()`  | Check if value exists        | Boolean              | `[1,2,3].includes(2)` → `true`           |
+| `forEach()`   | Execute function on each     | undefined            | `[1,2,3].forEach(x => console.log(x))`   |
+
+---
+
 ## Advanced Array Methods
 
 **Functional Programming Approaches:**
@@ -3391,13 +3443,13 @@ results.forEach((result, index) => {
 
 **HTTP Methods and Usage:**
 
-| Method | Purpose                  | Example                   |
-|--------|--------------------------|---------------------------|
-| GET    | Retrieve data            | `GET /api/users`          |
-| POST   | Create new resource      | `POST /api/users`         |
-| PUT    | Update entire resource   | `PUT /api/users/123`      |
-| PATCH  | Partial update           | `PATCH /api/users/123`    |
-| DELETE | Remove resource          | `DELETE /api/users/123`   |
+| Method | Purpose                | Example                 |
+| ------ | ---------------------- | ----------------------- |
+| GET    | Retrieve data          | `GET /api/users`        |
+| POST   | Create new resource    | `POST /api/users`       |
+| PUT    | Update entire resource | `PUT /api/users/123`    |
+| PATCH  | Partial update         | `PATCH /api/users/123`  |
+| DELETE | Remove resource        | `DELETE /api/users/123` |
 
 **Request/Response Structure:**
 
@@ -3445,12 +3497,49 @@ const response = await fetch('/api/users', {
 - Test JavaScript expressions interactively
 - Analyze runtime errors and warnings
 
-**Console Features:**
+## Console Methods Reference
 
-- Interactive JavaScript execution
-- Error and warning messages
-- Console logging methods
-- Performance monitoring
+| Method                   | Purpose          | Output                    | Example                                    |
+| ------------------------ | ---------------- | ------------------------- | ------------------------------------------ |
+| **`console.log()`**      | General output   | Normal text               | `console.log('Hello World')`               |
+| **`console.error()`**    | Error messages   | Red text with stack trace | `console.error('Something went wrong')`    |
+| **`console.warn()`**     | Warning messages | Yellow text with icon     | `console.warn('Deprecated feature')`       |
+| **`console.info()`**     | Information      | Blue text with icon       | `console.info('Server connected')`         |
+| **`console.table()`**    | Tabular data     | Formatted table           | `console.table([{name: 'John', age: 30}])` |
+| **`console.dir()`**      | Object structure | Expandable object tree    | `console.dir(document.body)`               |
+| **`console.group()`**    | Group messages   | Collapsible group         | `console.group('User Data')`               |
+| **`console.groupEnd()`** | End group        | Closes group              | `console.groupEnd()`                       |
+| **`console.time()`**     | Start timer      | Performance timing        | `console.time('API Call')`                 |
+| **`console.timeEnd()`**  | End timer        | Shows elapsed time        | `console.timeEnd('API Call')`              |
+| **`console.trace()`**    | Stack trace      | Function call stack       | `console.trace('Debug point')`             |
+| **`console.clear()`**    | Clear console    | Clears all output         | `console.clear()`                          |
+
+**Console Examples:**
+
+```javascript
+// Basic logging
+console.log('Application started');
+console.error('Network connection failed');
+console.warn('Feature will be deprecated');
+
+// Data visualization
+const userData = [
+  { name: 'John', age: 30, role: 'Developer' },
+  { name: 'Jane', age: 25, role: 'Designer' },
+];
+console.table(userData);
+
+// Performance timing
+console.time('Data Processing');
+// ... some code ...
+console.timeEnd('Data Processing');
+
+// Grouped output
+console.group('User Authentication');
+console.log('Checking credentials...');
+console.log('User authenticated successfully');
+console.groupEnd();
+```
 
 ---
 
@@ -3491,6 +3580,7 @@ const response = await fetch('/api/users', {
 - **Virtual DOM:** Efficient updates and rendering
 
 **React Component Example:**
+
 ```jsx
 function Welcome({ name }) {
   return <h1>Hello, {name}!</h1>;
@@ -3504,7 +3594,7 @@ function App() {
     </div>
   );
 }
-````
+```
 
 ---
 
